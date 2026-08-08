@@ -1,0 +1,2 @@
+class JlptEntry < ApplicationRecord
+end
