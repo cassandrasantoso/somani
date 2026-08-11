@@ -1,2 +1,30 @@
-<h1>Adventures#show</h1>
-<p>Find me in app/views/adventures/show.html.erb</p>
+<%# story 4 - role play the scenes%>
+<%# story 6 - unblur the the text while listening %>
+<%# story 9 - end a storyline %>
+<%# story 15 - delete an adventure %>
+
+<h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
+<p><%= @adventure.scene.description %></p>
+
+<div id="messages" data-controller="blur">
+  <%= render @messages %>
+</div>
+
+<% if @adventure.status == "active" %>
+  <%= simple_form_for [@adventure, @message] do |f| %>
+    <%= f.input :body, label: "Your reply (日本語で)" %>
+    <%= f.submit "Send", class: "btn" %>
+  <% end %>
+
+  <%# story 9 — end the storyline %>
+  <% if policy(@adventure).update? %>
+    <%= button_to "End this adventure",
+                  adventure_path(@adventure, adventure: { status: "completed" }),
+                  method: :patch %>
+  <% end %>
+<% else %>
+  <p class="completed">This adventure is complete.</p>
+<% end %>
+
+<%# story 15 %>
+<%= button_to "Delete adventure", @adventure, method: :delete if policy(@adventure).destroy? %>
