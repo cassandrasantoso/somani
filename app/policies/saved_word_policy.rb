@@ -6,9 +6,13 @@ class SavedWordPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   class Scope < ApplicationPolicy::Scope
-    # NOTE: Be explicit about which records you allow access to!
-    # def resolve
-    #   scope.all
-    # end
+    # Direct, because saved_words has user_id. Joining through uploads would
+    # drop any word whose uploads were deleted.
+    def resolve = scope.where(user: user)
   end
+
+  def show?    = record.user == user
+  def create?  = true
+  def update?  = record.user == user
+  def destroy? = record.user == user
 end

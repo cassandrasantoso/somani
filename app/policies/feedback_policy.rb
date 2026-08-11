@@ -6,9 +6,10 @@ class FeedbackPolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   class Scope < ApplicationPolicy::Scope
-    # NOTE: Be explicit about which records you allow access to!
-    # def resolve
-    #   scope.all
-    # end
+    def resolve
+      scope.joins(message: { adventure: :upload }).where(uploads: { user: user })
+    end
   end
+
+  def show? = record.message.adventure.upload.user == user
 end

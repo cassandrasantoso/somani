@@ -6,9 +6,11 @@ class AdventurePolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   class Scope < ApplicationPolicy::Scope
-    # NOTE: Be explicit about which records you allow access to!
-    # def resolve
-    #   scope.all
-    # end
+    def resolve = scope.joins(:upload).where(uploads: { user: user })
   end
+
+  def show?    = record.upload.user == user
+  def create?  = record.upload.user == user
+  def update?  = record.upload.user == user
+  def destroy? = record.upload.user == user
 end
