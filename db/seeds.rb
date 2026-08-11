@@ -4,13 +4,6 @@ Scene.destroy_all
 Character.destroy_all
 JlptEntry.destroy_all
 
-puts "Creating users..."
-james = User.create!(email: "james@example.com", password: "password", username: "James")
-nina = User.create!(email: "nina@example.com", password: "password", username: "Nina")
-cassandra = User.create!(email: "cassandra@example.com", password: "password", username: "Cassandra")
-rie = User.create!(email: "rie@example.com", password: "password", username: "Rie")
-
-
 puts "Creating characters..."
 yuki = Character.create!(
   name: "Yuki",
@@ -68,4 +61,23 @@ puts "Creating JLPT entries..."
     meaning: "even monkeys fall from trees — anyone can make a mistake" }
 ].each { |attrs| JlptEntry.create!(attrs) }
 
-puts "Done: #{Character.count} characters, #{Scene.count} scenes, #{JlptEntry.count} entries."
+if Rails.env.development?
+  puts "Users..."
+
+  [
+    { username: "James",     email: "james@example.com" },
+    { username: "Nina",      email: "nina@example.com" },
+    { username: "Cassandra", email: "cassandra@example.com" },
+    { username: "Rie",       email: "rie@example.com" }
+  ].each do |attrs|
+    user = User.find_or_initialize_by(email: attrs[:email])
+    user.username = attrs[:username]
+    user.password = "password"
+    user.save!
+  end
+
+  puts "  sign in with any of the above / password"
+end
+
+puts "Done: #{Character.count} characters, #{Scene.count} scenes, " \
+     "#{JlptEntry.count} entries, #{User.count} users."
