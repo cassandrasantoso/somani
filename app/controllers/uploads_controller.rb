@@ -1,5 +1,5 @@
 class UploadsController < ApplicationController
-  before_action :set_upload, only: %i[show destroy extract]
+  before_action :set_upload, only: %i[show destroy]
 
   def index
     @uploads = policy_scope(Upload).order(created_at: :desc)
@@ -16,22 +16,18 @@ class UploadsController < ApplicationController
   end
 
   def create
+    file = upload_params[:file]
     @upload = Upload.new(upload_params)
-    @upload.user = current_user # before authorize
+    @upload.user = current_user
     authorize @upload
+    cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media")
 
+    @upload.file_location = cloudinary_value["url"]
     if @upload.save
-      ExtractContentJob.perform_later(@upload)
-      redirect_to @upload, notice: "Analysing your upload..."
+      redirect_to @upload, notice: "Upload successful."
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def extract
-    authorize @upload, :update?
-    ExtractContentJob.perform_later(@upload)
-    redirect_to @upload, notice: "Re-analysing."
   end
 
   def destroy
@@ -50,26 +46,4 @@ class UploadsController < ApplicationController
   def upload_params
     params.require(:upload).permit(:media_type, :file) # no :user_id
   end
-
-
-  def extract_from_image
-    image = params[:image]
-    return render json: { error: "No image provided" }, status: :bad_request unless image
-
-    # Upload to Cloudinary for storage
-    Cloudinary::Uploader.upload(image.path, folder: "billy/bill_scans")
-
-    json_match = ai_parse_bill(image.path)
-
-    if json_match
-      render json: JSON.parse(json_match[0])
-    else
-      render json: { error: "Could not extract data from image", raw: text }, status: :unprocessable_entity
-    end
-  rescue StandardError => e
-    Rails.logger.error "extract_from_image error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}"
-    render json: { error: e.message }, status: :unprocessable_entity
-  end
-
-
 end
