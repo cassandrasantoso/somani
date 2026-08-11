@@ -1,2 +1,10 @@
-<h1>Settings#edit</h1>
-<p>Find me in app/views/settings/edit.html.erb</p>
+<%# story 10 - reminder/notification to check in %>
+
+<h1>Reminders</h1>
+
+<%= simple_form_for @user, url: settings_path, method: :patch do |f| %>
+  <%= f.input :reminder_enabled, as: :boolean,
+              label: "Remind me to practise" %>
+  <%= f.input :reminder_time, as: :time, label: "At what time?" %>
+  <%= f.submit "Save", class: "btn" %>
+<% end %>
