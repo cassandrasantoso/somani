@@ -15,7 +15,7 @@ class AdventuresController < ApplicationController
     @upload = current_user.uploads.find(params[:upload_id])
     authorize @upload, :start_adventure?
     @adventure = @upload.adventures.new
-    @scenes = Scene.includes(:character)
+    @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
   end
 
   # Adventure has no user_id — build it through the upload, which is what the policy checks.
