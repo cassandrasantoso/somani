@@ -1,2 +1,26 @@
-<h1>JlptEntries#index</h1>
-<p>Find me in app/views/jlpt_entries/index.html.erb</p>
+<%# story 13 - can import a JLPT word list/grammar list/proverbs %>
+
+<h1>JLPT lists</h1>
+
+<%= form_with url: jlpt_entries_path, method: :get do %>
+  <%= select_tag :level, options_for_select(%w[N5 N4 N3 N2 N1], params[:level]),
+                 include_blank: "All levels" %>
+  <%= select_tag :entry_type,
+                 options_for_select(JlptEntry::ENTRY_TYPES, params[:entry_type]),
+                 include_blank: "All types" %>
+  <%= submit_tag "Filter" %>
+<% end %>
+
+<%= button_to "Import all of these",
+              bulk_save_jlpt_entries_path(level: params[:level],
+                                          entry_type: params[:entry_type]),
+              method: :post %>
+
+<ul>
+  <% @jlpt_entries.each do |entry| %>
+    <li>
+      <%= entry.content %> (<%= entry.reading %>) — <%= entry.meaning %>
+      <%= button_to "Add", save_jlpt_entry_path(entry), method: :post %>
+    </li>
+  <% end %>
+</ul>
