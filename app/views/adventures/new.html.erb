@@ -1,2 +1,11 @@
-<h1>Adventures#new</h1>
-<p>Find me in app/views/adventures/new.html.erb</p>
+<%# story 12 - create a new adventure %>
+<h1>New adventure</h1>
+<p>Using words from <%= @upload.file.filename %></p>
+
+<%= simple_form_for [@upload, @adventure] do |f| %>
+  <%= f.input :title %>
+  <%= f.input :scene_id, collection: @scenes,
+              label_method: ->(s) { "#{s.setting} (#{s.level}) — #{s.character.name}" },
+              as: :radio_buttons %>
+  <%= f.submit "Begin", class: "btn" %>
+<% end %>

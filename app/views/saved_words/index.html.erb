@@ -1,2 +1,17 @@
-<h1>SavedWords#index</h1>
-<p>Find me in app/views/saved_words/index.html.erb</p>
+<h1>My words</h1>
+<%= link_to "Due for review", due_saved_words_path %>
+
+<table>
+  <% @saved_words.each do |word| %>
+    <tr>
+      <td><%= word.surface %></td>
+      <td><%= word.reading %></td>
+      <td><%= word.meaning %></td>
+      <td><%= word.level %></td>
+      <td>
+        <%= button_to "Reviewed", review_saved_word_path(word), method: :patch %>
+        <%= link_to "Edit", edit_saved_word_path(word) if policy(word).edit? %>
+      </td>
+    </tr>
+  <% end %>
+</table>

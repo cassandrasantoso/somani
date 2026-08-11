@@ -1,2 +1,15 @@
-<h1>Feedbacks#show</h1>
-<p>Find me in app/views/feedbacks/show.html.erb</p>
+<%# story 8 - see feedback from typed words %>
+
+<turbo-frame id="<%= dom_id(@message, :feedback) %>">
+  <% if @feedback %>
+    <div class="feedback">
+      <p class="encouragement"><%= @feedback.encouragement %></p>
+      <p><strong>Assessment:</strong> <%= @feedback.assessment %></p>
+      <p><strong>Words you've been learning:</strong>
+         <%= @feedback.used_learned_words %></p>
+      <p><strong>Level estimate:</strong> <%= @feedback.level_estimate %></p>
+    </div>
+  <% else %>
+    <p>Still reviewing your message...</p>
+  <% end %>
+</turbo-frame>
