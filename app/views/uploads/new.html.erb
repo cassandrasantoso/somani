@@ -1,2 +1,8 @@
-<h1>Uploads#new</h1>
-<p>Find me in app/views/uploads/new.html.erb</p>
+<%# story 1 - can upload media& AI maps %>
+<h1>Upload media</h1>
+
+<%= simple_form_for @upload do |f| %>
+  <%= f.input :media_type, collection: Upload::MEDIA_TYPES %>
+  <%= f.input :file, as: :file %>
+  <%= f.submit "Upload", class: "btn" %>
+<% end %>
