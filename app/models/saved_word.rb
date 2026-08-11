@@ -8,4 +8,9 @@ class SavedWord < ApplicationRecord
   validates :surface, presence: true, uniqueness: { scope: :user_id }
 
   scope :due, -> { where(next_review_at: ..Time.current) }
+
+  # e.g. current_user.saved_words.pick_most_common_level => "N3"
+  def self.pick_most_common_level
+    group(:level).count.max_by { |_level, count| count }&.first
+  end
 end
