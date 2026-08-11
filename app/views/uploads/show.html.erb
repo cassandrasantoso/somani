@@ -1,6 +1,6 @@
 <%# story 2 - can select words/phrases from the scanned content %>
 <h1><%= @upload.media_type.capitalize %></h1>
-
+<%= image_tag @upload.file_location %>
 <div data-controller="word-picker">
   <p class="extracted" data-word-picker-target="text"
      data-action="mouseup->word-picker#capture">
