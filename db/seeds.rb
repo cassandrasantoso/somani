@@ -4,6 +4,13 @@ Scene.destroy_all
 Character.destroy_all
 JlptEntry.destroy_all
 
+puts "Creating users..."
+james = User.create!(email: "james@example.com", password: "password", username: "James")
+nina = User.create!(email: "nina@example.com", password: "password", username: "Nina")
+cassandra = User.create!(email: "cassandra@example.com", password: "password", username: "Cassandra")
+rie = User.create!(email: "rie@example.com", password: "password", username: "Rie")
+
+
 puts "Creating characters..."
 yuki = Character.create!(
   name: "Yuki",
