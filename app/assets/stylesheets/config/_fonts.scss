@@ -14,3 +14,8 @@ $headers-font: "Nunito", "Helvetica", "sans-serif";
 //        font-url('FontFile.ttf') format('truetype')
 // }
 // $my-font: "Font Name";
+:root {
+  --font-display: "Poppins", "Manrope", sans-serif;
+  --font-ui: "Manrope", "Noto Sans JP", -apple-system, sans-serif;
+  --font-ja: "Noto Serif JP", serif;
+}
