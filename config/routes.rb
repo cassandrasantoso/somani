@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
+  # user story 3 - see the adventures:
   root to: "pages#home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -13,4 +14,41 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # story 10 - reminders/notifications to check in
+  resource :settings, only: %i[edit update]
+
+  # ownership root
+  resources :uploads, only: %i[index new create show destroy] do  # story 1 - upload media, AI maps to JLPT level
+    member { post :extract }
+    resources :saved_words, only: %i[index new create]   # story 2 - select words from the scanned content
+    resources :adventures,  only: %i[new create]         # story 12 - create a new adventure
+  end
+
+  resources :uploaded_words, only: %i[destroy]           # unlink a word
+
+  resources :saved_words, only: %i[index show edit update destroy] do
+    collection { get :due }
+    member     { patch :review }
+  end
+
+  # story 13 (nice to have) - import word/grammar/proverb lists
+  resources :jlpt_entries, only: %i[index show] do
+    member     { post :save }
+    collection { post :bulk_save }
+  end
+
+  resources :scenes, only: %i[index show]                # story 3 - browse storylines (same list as home)
+
+  resources :adventures, only: %i[index show update destroy] do   # stories 4 - role play, 9 - storyline ends, 15 - delete
+    resources :messages, only: %i[create]                # story 7 - respond by typing
+  end
+
+  resources :messages, only: %i[show] do
+    member do
+      get :audio                                         # story 5 - hear the character speaking
+      get :translate                                     # story 16 - translate a message to English
+    end
+    resource :feedback, only: %i[show]                   # story 8 - feedback on what you typed
+  end
 end
