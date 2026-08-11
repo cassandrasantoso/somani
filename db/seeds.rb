@@ -87,9 +87,9 @@ puts "Creating JLPT entries..."
   { entry_type: "proverb", content: "急がば回れ", reading: "いそがばまわれ", level: "N2", meaning: "more haste, less speed — take the safer route" },
   { entry_type: "proverb", content: "七転び八起き", reading: "ななころびやおき", level: "N2", meaning: "fall seven times, get up eight — never give up" },
   { entry_type: "proverb", content: "口が軽い", reading: "くちがかるい", level: "N2", meaning: "to be unable to keep a secret" },
-  { entry_type: "proverb", content: "気が合う", reading: "きがあう", level: "N2", meaning: "to get along well / be compatible" }
+  { entry_type: "proverb", content: "気が合う", reading: "きがあう", level: "N2", meaning: "to get along well / be compatible" },
   { entry_type: "proverb", content: "猿も木から落ちる", reading: "さるもきからおちる", level: "N2",
-    meaning: "even monkeys fall from trees — anyone can make a mistake" }
+    meaning: "even monkeys fall from trees — anyone can make a mistake" },
 
   # Non-N2 seeds
   { entry_type: "word",    content: "会議",     reading: "かいぎ",      level: "N4", meaning: "meeting" },
