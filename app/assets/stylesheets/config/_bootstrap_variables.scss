@@ -1,28 +1,32 @@
-// This is where you override default Bootstrap variables
-// 1. Find all Bootstrap variables that you can override at the end of each component's documentation under the `Sass variables` anchor
-// e.g. here are the ones you can override for the navbar https://getbootstrap.com/docs/5.3/components/navbar/#sass-variables
-// 2. These variables are defined with default value (see https://robots.thoughtbot.com/sass-default)
-// 3. You can override them below!
+// ==========================================
+// 1. Sass Variables (For Bootstrap)
+// ==========================================
+$app-bg:             #F9F4EA;
+$main-text:          #2b2c2e;
+$main-action-button: #2b6cb0;
+$accent:             #488b72;
 
-// General style
-$font-family-sans-serif: $body-font;
-$headings-font-family:   $headers-font;
-$body-bg:                $light-gray;
-$font-size-base:         1rem;
+// Map to Bootstrap's internal variables
+$body-bg:            $app-bg;
+$body-color:         $main-text;
+$primary:            $main-action-button;
+$success:            $accent;
 
-// Colors
-$body-color: $gray;
-$primary:    $blue;
-$success:    $green;
-$info:       $yellow;
-$danger:     $red;
-$warning:    $orange;
+// ==========================================
+// 2. CSS Custom Properties (For your custom styles)
+// ==========================================
+:root {
+  /* Primary Colors */
+  --app-bg:             #{$app-bg};
+  --header:             #1f3248;
+  --border:             #cbb07b;
+  --accent:             #{$accent};
+  --main-text:          #{$main-text};
 
-// Buttons & inputs' radius
-$border-radius-sm:            .0625rem;
-$border-radius:               .125rem;
-$border-radius-lg:            .25rem;
-$border-radius-xl:            .5rem;
-$border-radius-xxl:           1rem;
-
-// Override other variables below!
+  /* Secondary Colors */
+  --card-bg:            #f1ebe0;
+  --secondary-text:     #6e6f73;
+  --secondary-border:   #9e7e45;
+  --secondary-accent:   #3b8b82;
+  --main-action-button: #{$main-action-button};
+}
