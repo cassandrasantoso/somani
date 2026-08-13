@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <%= render 'shared/ios_pwa_links' %>
+    <link rel="manifest" href="<%= asset_path 'manifest.json' %>">
     <title><%= content_for(:title) || "Somani" %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
