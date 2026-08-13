@@ -13,4 +13,17 @@
   --secondary-border: #9e7e45;
   --secondary-accent: #3b8b82;
   --main-action-button: #2b6cb0;
+
+  /* aliases used by components/navbar and pages/home */
+  --navy: var(--header);
+  --navy-2: #16283d;
+  --cream: #f6eedc;
+  --card: var(--card-bg);
+  --hairline: #e6ded0;
+  --sage: var(--accent);
+  --sage-light: #dbe9e1;
+  --gold: var(--border);
+  --gold-light: #e6d3a4;
+  --text: var(--main-text);
+  --text-soft: var(--secondary-text);
 }
