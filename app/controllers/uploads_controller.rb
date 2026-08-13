@@ -8,6 +8,8 @@ class UploadsController < ApplicationController
   def show
     authorize @upload
     @saved_words = @upload.saved_words
+    @matched_entries = @upload.matched_jlpt_entries
+    @already_saved_surfaces = current_user.saved_words.pluck(:surface)
   end
 
   def new
@@ -24,6 +26,7 @@ class UploadsController < ApplicationController
 
     @upload.file_location = cloudinary_value["url"]
     if @upload.save
+      ExtractContentJob.perform_later(@upload)
       redirect_to @upload, notice: "Upload successful."
     else
       render :new, status: :unprocessable_entity
@@ -35,7 +38,6 @@ class UploadsController < ApplicationController
     @upload.destroy
     redirect_to uploads_path, notice: "Upload deleted.", status: :see_other
   end
-
 
   private
 
