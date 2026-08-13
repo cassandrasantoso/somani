@@ -63,13 +63,13 @@
     </section>
 
     <div class="home-actions">
-      <%= link_to new_upload_path, class: "home-action home-action--primary" do %>
-        <i class="fa-solid fa-book-open"></i>
-        <span>Import Study<br>Materials</span>
-      <% end %>
       <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
-        <i class="fa-solid fa-microphone"></i>
-        <span>Upload<br>Media</span>
+        <span class="home-action__icons">
+          <i class="fa-solid fa-microphone"></i>
+          <span class="home-action__plus">+</span>
+          <i class="fa-solid fa-file-arrow-up"></i>
+        </span>
+        <span>Upload Media</span>
       <% end %>
     </div>
   </div>
