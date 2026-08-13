@@ -1,28 +1,93 @@
-<%# story 3 - see the adventures %>
-<h1>Choose an adventure</h1>
-
-<div class="scene-grid">
-  <% @scenes.each do |scene| %>
-    <div class="scene-card">
-      <h2><%= scene.setting %></h2>
-      <p class="level"><%= scene.level %></p>
-      <p><%= scene.description %></p>
-      <p class="character">With <%= scene.character.name %></p>
-    </div>
-  <% end %>
-</div>
-
 <% if user_signed_in? %>
-  <h2>Start from your material</h2>
-  <%= link_to "Upload something new", new_upload_path, class: "btn" %>
-  <ul>
-    <% @uploads.each do |upload| %>
-      <li>
-        <%= link_to upload.file.filename, upload %>
-        <%= link_to "Start an adventure", new_upload_adventure_path(upload) %>
-      </li>
-    <% end %>
-  </ul>
+  <div class="home">
+    <div class="welcome-card">
+      <span class="welcome-card__avatar"><i class="fa-solid fa-user"></i></span>
+      <div>
+        <p class="welcome-card__greeting">ようこそ <%= current_user.username %>-san!</p>
+        <p class="welcome-card__subtitle">Welcome back to Somani.</p>
+      </div>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-card__header">
+        <h2>Progress card</h2>
+        <span class="progress-card__level">Level <i class="fa-solid fa-arrow-up"></i></span>
+      </div>
+
+      <div class="progress-card__body">
+        <div class="progress-ring" style="--progress: <%= @vocabulary_progress %>">
+          <span><%= @vocabulary_progress %>%</span>
+        </div>
+
+        <div class="progress-card__stats">
+          <div class="progress-stat">
+            <div class="progress-stat__labels">
+              <span>JLPT <%= @vocabulary_level %> Vocabulary</span>
+              <span><%= @vocabulary_progress %>%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar__fill progress-bar__fill--gold" style="width: <%= @vocabulary_progress %>%"></div>
+            </div>
+          </div>
+
+          <div class="progress-stat">
+            <div class="progress-stat__labels">
+              <span>Adventures completed</span>
+              <span><%= @adventures_completed_pct %>%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-bar__fill progress-bar__fill--navy" style="width: <%= @adventures_completed_pct %>%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="continue-adventures">
+      <h2>Continue adventures</h2>
+
+      <% if @active_adventures.present? %>
+        <% @active_adventures.each do |adventure| %>
+          <%= link_to adventure_path(adventure), class: "adventure-card" do %>
+            <span class="adventure-card__avatar"><%= adventure.character.name.first %></span>
+            <div class="adventure-card__info">
+              <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
+              <span class="adventure-card__badge">Active Chat</span>
+            </div>
+            <i class="fa-solid fa-paper-plane adventure-card__icon"></i>
+          <% end %>
+        <% end %>
+      <% else %>
+        <p class="continue-adventures__empty">No active adventures yet — start one below.</p>
+      <% end %>
+    </section>
+
+    <div class="home-actions">
+      <%= link_to new_upload_path, class: "home-action home-action--primary" do %>
+        <i class="fa-solid fa-book-open"></i>
+        <span>Import Study<br>Materials</span>
+      <% end %>
+      <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
+        <i class="fa-solid fa-microphone"></i>
+        <span>Upload<br>Media</span>
+      <% end %>
+    </div>
+  </div>
 <% else %>
-  <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
+  <div class="scene-select">
+    <h1>Choose an adventure</h1>
+
+    <div class="scene-grid">
+      <% @scenes.each do |scene| %>
+        <div class="scene-card">
+          <h2><%= scene.setting %></h2>
+          <span class="level"><%= scene.level %></span>
+          <p><%= scene.description %></p>
+          <p class="character">With <%= scene.character.name %></p>
+        </div>
+      <% end %>
+    </div>
+
+    <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
+  </div>
 <% end %>
