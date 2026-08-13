@@ -331,9 +331,6 @@
   opacity: 0.9;
 }
 
-// Desktop: the layout is designed mobile-first at 480px wide. On wider
-// viewports, frame it as a centered card instead of letting it sit flush
-// left on a flat, undifferentiated background.
 @media (min-width: 640px) {
   body {
     background: var(--card);

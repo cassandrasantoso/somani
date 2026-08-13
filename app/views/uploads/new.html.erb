@@ -1,8 +1,15 @@
 <%# story 1 - can upload media& AI maps %>
-<h1>Upload media</h1>
+<div class=m-3>
+<h1>📝  Upload media</h1>
+</div>
 
-<%= simple_form_for @upload do |f| %>
-  <%= f.input :media_type, collection: Upload::MEDIA_TYPES %>
-  <%= f.input :file, as: :file %>
-  <%= f.submit "Upload", class: "btn" %>
-<% end %>
+<section class="d-flex w-100 justify-content-center">
+  <%= simple_form_for @upload, html:{class:"card p-3 m-3 w-70", style: "max-width: 750px;"} do |f| %>
+    <%= f.input :media_type, collection: Upload::MEDIA_TYPES %>
+    <%= f.input :file, as: :file %>
+    <div class="w-100 d-flex justify-content-center">
+    <%= f.submit "Upload", class: "btn btn-primary m-1 w-50" %>
+    </div>
+  <% end %>
+
+</section>
