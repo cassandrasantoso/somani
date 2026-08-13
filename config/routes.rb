@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   # story 13 (nice to have) - import word/grammar/proverb lists
   resources :jlpt_entries, only: %i[index show] do
+    collection { get :lookup }
     member     { post :save }
     collection { post :bulk_save }
   end
