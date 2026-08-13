@@ -7,47 +7,59 @@ JlptEntry.destroy_all
 puts "Creating characters..."
 yuki = Character.create!(
   name: "Yuki",
-  persona: "A friendly colleague at a Tokyo trading company. Speaks polite " \
-           "business Japanese, patient with mistakes, asks follow-up questions.",
+  persona: "A friendly and professional news reporter in Tokyo. Speaks clear, natural Japanese and reports on current events, society, business, and culture. Explains difficult news vocabulary clearly, asks thoughtful follow-up questions, and is patient with language mistakes.",
   voice: "ja-JP-NanamiNeural"
+)
+
+yuki.image.attach(
+  io: File.open(Rails.root.join("db", "character_avatars", "news.png")),
+  filename: "news.png",
+  content_type: "image/png"
 )
 
 takeshi = Character.create!(
   name: "Takeshi",
-  persona: "A samurai retainer in late Edo-period Kyoto. Formal, archaic " \
-           "register, but slows down when the traveller looks confused.",
+  persona: "A friendly coworker at a Tokyo company. Speaks natural, polite business Japanese and often talks about work, meetings, schedules, and everyday office life. Casual and approachable during conversations, but uses appropriate keigo in professional situations. Patient when the traveller makes mistakes and occasionally asks follow-up questions.",
   voice: "ja-JP-KeitaNeural"
+)
+
+takeshi.image.attach(
+  io: File.open(Rails.root.join("db", "character_avatars", "office.png")),
+  filename: "office.png",
+  content_type: "image/png"
 )
 
 hina = Character.create!(
   name: "Hina",
-  persona: "A language exchange partner. Casual, fast-paced, pushes the " \
-           "learner to read and reply quickly.",
+  persona: "A friendly and professional real estate agent in Tokyo. Helps the user find an apartment, explains properties, rent, fees, and neighborhood details, and guides them through the leasing process. Speaks clear, natural Japanese and patiently explains difficult real estate vocabulary, contracts, and important terms. Asks questions about the traveller's budget, preferred location, and housing needs.",
   voice: "ja-JP-AoiNeural"
+)
+
+hina.image.attach(
+  io: File.open(Rails.root.join("db", "character_avatars", "housing.png")),
+  filename: "housing.png",
+  content_type: "image/png"
 )
 
 puts "Creating scenes..."
 Scene.create!(
-  setting: "The office",
-  description: "You've just joined a trading company in Shinbashi. Yuki " \
-               "shows you to your desk and asks about your first week.",
-  level: "N4",
+  setting: "Tokyo Newsroom",
+  description: "You are visiting a Tokyo newsroom. Yuki, a news reporter, is preparing a story about a recent event in Japan. She asks what you think about the news and explains some difficult vocabulary used in the report.",
+  level: "N2",
   character: yuki
 )
 
 Scene.create!(
-  setting: "Back in time (samurai)",
-  description: "You wake up on the Tokaido road in 1860. A retainer stops " \
-               "you and demands to know your domain.",
+  setting: "Tokyo Office",
+  description: "It's your first week at a Tokyo trading company. Takeshi, your coworker, shows you around the office and talks with you about your schedule, upcoming meetings, and your daily responsibilities.",
   level: "N3",
   character: takeshi
 )
 
 Scene.create!(
-  setting: "Speed reading cafe",
-  description: "Hina sets a timer and challenges you to read each line " \
-               "before it disappears.",
-  level: "N4",
+  setting: "Real Estate Agency",
+  description: "You are looking for an apartment in Tokyo. Hina, a real estate agent, asks about your budget, preferred neighborhood, and housing requirements. She shows you several apartments and explains the rent, initial fees, and important contract terms.",
+  level: "N3",
   character: hina
 )
 
