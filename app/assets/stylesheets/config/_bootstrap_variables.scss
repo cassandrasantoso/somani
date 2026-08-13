@@ -11,22 +11,3 @@ $body-bg:            $app-bg;
 $body-color:         $main-text;
 $primary:            $main-action-button;
 $success:            $accent;
-
-// ==========================================
-// 2. CSS Custom Properties (For your custom styles)
-// ==========================================
-:root {
-  /* Primary Colors */
-  --app-bg:             #{$app-bg};
-  --header:             #1f3248;
-  --border:             #cbb07b;
-  --accent:             #{$accent};
-  --main-text:          #{$main-text};
-
-  /* Secondary Colors */
-  --card-bg:            #f1ebe0;
-  --secondary-text:     #6e6f73;
-  --secondary-border:   #9e7e45;
-  --secondary-accent:   #3b8b82;
-  --main-action-button: #{$main-action-button};
-}

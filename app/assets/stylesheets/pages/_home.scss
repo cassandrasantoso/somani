@@ -330,3 +330,23 @@
   color: var(--cream);
   opacity: 0.9;
 }
+
+// Desktop: the layout is designed mobile-first at 480px wide. On wider
+// viewports, frame it as a centered card instead of letting it sit flush
+// left on a flat, undifferentiated background.
+@media (min-width: 640px) {
+  body {
+    background: var(--card);
+  }
+
+  .home,
+  .scene-select {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem 2rem;
+    background: var(--app-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);
+  }
+}
