@@ -4,4 +4,13 @@ class JlptEntry < ApplicationRecord
 
   scope :by_level, ->(level) { where(level: level) if level.present? }
   scope :by_type,  ->(type)  { where(entry_type: type) if type.present? }
+
+  # the following scope is equivalent to:
+  # SELECT * FROM jlpt_entries
+  # WHERE content ILIKE '%会%' OR reading ILIKE '%会%' OR meaning ILIKE '%会%'
+  scope :search, lambda { |q|
+    next if q.blank?
+
+    where("content ILIKE :q OR reading ILIKE :q OR meaning ILIKE :q", q: "%#{q}%")
+  }
 end

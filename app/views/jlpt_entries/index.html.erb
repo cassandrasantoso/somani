@@ -24,3 +24,8 @@
     </li>
   <% end %>
 </ul>
+
+<div class="pagination">
+  <%= link_to "← Previous", request.params.merge(page: @page - 1), class: "btn" if @page > 1 %>
+  <%= link_to "Next →", request.params.merge(page: @page + 1), class: "btn" if @page * 50 < @total %>
+</div>
