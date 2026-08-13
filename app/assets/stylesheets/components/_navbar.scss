@@ -1,12 +1,137 @@
-.navbar-lewagon {
+.has-app-bottom-nav {
+  padding-bottom: calc(3.7rem + env(safe-area-inset-bottom));
+}
+
+// Top navbar
+.app-navbar {
+  background: var(--navy);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+}
+
+.app-navbar__inner {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  background: white;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
 }
 
-.navbar-lewagon .navbar-collapse {
-  flex-grow: 0;
+.app-navbar__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-size: 1.1rem;
 }
 
-.navbar-lewagon .navbar-brand img {
-  width: 40px;
+.app-navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  text-decoration: none;
+  line-height: 1;
+}
+
+// Image is a stacked icon+wordmark lockup with transparent padding around
+// the glyph; crop tightly to the icon's visible bounds on all sides since
+// the baked-in wordmark is unreadable at navbar height and the padding
+// would otherwise push the "SOMANI" text label away from the icon.
+.app-navbar__logo-crop {
+  display: flex;
+  width: 2.37rem;
+  height: 2.25rem;
+  overflow: hidden;
+}
+
+.app-navbar__logo {
+  height: 3.68rem;
+  width: auto;
+  margin-top: -0.25rem;
+  margin-left: -0.71rem;
+  flex-shrink: 0;
+}
+
+.app-navbar__wordmark {
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+// Off-canvas slide-out menu, shared trigger for top and bottom bars
+.app-menu {
+  background: var(--navy-2);
+  color: var(--cream);
+}
+
+.app-menu .offcanvas-header {
+  border-bottom: 1px solid rgba(246, 238, 220, 0.15);
+}
+
+.app-menu .offcanvas-title,
+.app-menu .btn-close {
+  color: var(--cream);
+}
+
+.app-menu .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.app-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-menu__list li + li {
+  border-top: 1px solid rgba(246, 238, 220, 0.1);
+}
+
+.app-menu__list a {
+  display: block;
+  padding: 0.85rem 0.25rem;
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.app-menu__list a:hover {
+  color: var(--gold-light);
+}
+
+// Bottom navbar
+.app-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 0 auto;
+  padding: 0.6rem 1.5rem calc(0.6rem + env(safe-area-inset-bottom));
+  background: var(--cream);
+  border-top: 1px solid var(--hairline);
+  z-index: 1030;
+}
+
+.app-bottom-nav__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: none;
+  border: none;
+  color: var(--text-soft);
+  font-size: 1.2rem;
+}
+
+.app-bottom-nav__item.is-active {
+  color: var(--navy);
 }

@@ -5,7 +5,7 @@ require "base64"
 class ExtractContentJob < ApplicationJob
   queue_as :default
 
-  GEMINI_MODEL = "gemini-2.5-flash"
+  GEMINI_MODEL = "gemini-3.5-flash"
 
   def perform(upload)
     text = extract_text(upload)

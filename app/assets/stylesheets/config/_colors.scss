@@ -1,10 +1,29 @@
 // Define variables for your color scheme
+:root {
+  /* primary colors */
+  --app-bg: #F9F4EA;
+  --header: #1f3248;
+  --border: #cbb07b;
+  --accent: #488b72;
+  --main-text: #2b2c2e;
 
-// For example:
-$red: #FD1015;
-$blue: #0D6EFD;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
+  /* secondary colors */
+  --card-bg: #f1ebe0;
+  --secondary-text: #6e6f73;
+  --secondary-border: #9e7e45;
+  --secondary-accent: #3b8b82;
+  --main-action-button: #2b6cb0;
+
+  /* aliases used by components/navbar and pages/home */
+  --navy: var(--header);
+  --navy-2: #16283d;
+  --cream: #f6eedc;
+  --card: var(--card-bg);
+  --hairline: #e6ded0;
+  --sage: var(--accent);
+  --sage-light: #dbe9e1;
+  --gold: var(--border);
+  --gold-light: #e6d3a4;
+  --text: var(--main-text);
+  --text-soft: var(--secondary-text);
+}

@@ -20,7 +20,6 @@ Rails.application.routes.draw do
 
   # ownership root
   resources :uploads, only: %i[index new create show destroy] do  # story 1 - upload media, AI maps to JLPT level
-    member { post :extract }
     resources :saved_words, only: %i[index new create]   # story 2 - select words from the scanned content
     resources :adventures,  only: %i[new create]         # story 12 - create a new adventure
   end

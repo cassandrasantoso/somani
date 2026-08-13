@@ -1,5 +1,5 @@
 class UploadsController < ApplicationController
-  before_action :set_upload, only: %i[show destroy extract]
+  before_action :set_upload, only: %i[show destroy]
 
   def index
     @uploads = policy_scope(Upload).order(created_at: :desc)
@@ -16,22 +16,18 @@ class UploadsController < ApplicationController
   end
 
   def create
+    file = upload_params[:file]
     @upload = Upload.new(upload_params)
-    @upload.user = current_user # before authorize
+    @upload.user = current_user
     authorize @upload
+    cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media")
 
+    @upload.file_location = cloudinary_value["url"]
     if @upload.save
-      ExtractContentJob.perform_later(@upload)
-      redirect_to @upload, notice: "Analysing your upload..."
+      redirect_to @upload, notice: "Upload successful."
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def extract
-    authorize @upload, :update?
-    ExtractContentJob.perform_later(@upload)
-    redirect_to @upload, notice: "Re-analysing."
   end
 
   def destroy
@@ -39,6 +35,7 @@ class UploadsController < ApplicationController
     @upload.destroy
     redirect_to uploads_path, notice: "Upload deleted.", status: :see_other
   end
+
 
   private
 
