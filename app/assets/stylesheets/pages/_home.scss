@@ -1,1 +1,332 @@
-// Specific CSS for your home-page
+.home {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.welcome-card,
+.progress-card {
+  background: var(--card);
+  border-radius: 1rem;
+  border: 1px solid var(--hairline);
+  padding: 1rem 1.25rem;
+}
+
+.welcome-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.welcome-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--sage-light);
+  color: var(--sage);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.welcome-card__greeting {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.welcome-card__subtitle {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.progress-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.progress-card__header h2 {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.progress-card__level {
+  font-size: 0.85rem;
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.progress-card__body {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.progress-ring {
+  --size: 4.5rem;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--navy);
+  background: conic-gradient(var(--gold) calc(var(--progress) * 1%), var(--sage-light) 0);
+}
+
+.progress-ring span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--size) - 0.9rem);
+  height: calc(var(--size) - 0.9rem);
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.progress-card__stats {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.progress-stat__labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.progress-bar {
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--sage-light);
+  overflow: hidden;
+}
+
+.progress-bar__fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.progress-bar__fill--gold {
+  background: var(--gold);
+}
+
+.progress-bar__fill--navy {
+  background: var(--navy);
+}
+
+.continue-adventures h2 {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-bottom: 0.6rem;
+}
+
+.continue-adventures__empty {
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.adventure-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1rem;
+  padding: 0.85rem 1.1rem;
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 0.75rem;
+}
+
+.adventure-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--cream);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.adventure-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.adventure-card__name {
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.adventure-card__name span {
+  font-weight: 400;
+  color: var(--text-soft);
+}
+
+.adventure-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--sage);
+}
+
+.adventure-card__badge::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--sage);
+}
+
+.adventure-card__icon {
+  color: var(--navy);
+}
+
+.home-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.home-action {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  border-radius: 1rem;
+  text-decoration: none;
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.home-action i {
+  font-size: 1.3rem;
+}
+
+.home-action__icons {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.home-action__plus {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.home-action--primary {
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.home-action--secondary {
+  background: var(--sage);
+  color: var(--cream);
+}
+
+// Logged-out scene selection page
+.scene-select {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.scene-select > h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 1rem;
+}
+
+.scene-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.scene-card {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.scene-card h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.scene-card .level {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--navy);
+  background: var(--sage-light);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  margin-bottom: 0.6rem;
+}
+
+.scene-card p {
+  margin: 0 0 0.5rem;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.scene-card .character {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.scene-select .btn {
+  display: block;
+  width: 100%;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 1rem;
+  padding: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+}
+
+.scene-select .btn:hover {
+  color: var(--cream);
+  opacity: 0.9;
+}
