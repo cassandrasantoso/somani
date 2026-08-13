@@ -15,16 +15,25 @@ class SavedWordsController < ApplicationController
     @saved_word = SavedWord.new
   end
 
-  # Creates the word, then links it to this upload.
+  # Creates the word, looks the word up, then links it to this upload.
   def create
     @upload = current_user.uploads.find(params[:upload_id])
     authorize @upload, :add_words?
 
+    surface   = saved_word_params[:surface].to_s.strip
+    reference = lookup_entry(surface)
+
     # Scoped to this user. A global find_or_create_by(:surface) would share one
     # word row — and its review dates — between users.
-    @saved_word = current_user.saved_words
-                              .find_or_initialize_by(surface: saved_word_params[:surface])
-    @saved_word.assign_attributes(saved_word_params)
+    @saved_word = current_user.saved_words.find_or_initialize_by(surface: surface)
+
+    # Anything the user typed wins; the reference fills the gaps.
+    @saved_word.assign_attributes(
+      reading: saved_word_params[:reading].presence || reference&.reading,
+      meaning: saved_word_params[:meaning].presence || reference&.meaning,
+      level: saved_word_params[:level].presence || reference&.level,
+      jlpt_entry: reference
+    )
 
     if @saved_word.save
       UploadedWord.find_or_create_by!(upload: @upload, saved_word: @saved_word)
@@ -67,10 +76,17 @@ class SavedWordsController < ApplicationController
   private
 
   def set_saved_word
-    @saved_word = SavedWord.find(params[:id])
+    @saved_word = current_user.saved_words.find(params[:id])
   end
 
   def saved_word_params
     params.require(:saved_word).permit(:surface, :reading, :level, :meaning)
+  end
+
+  def lookup_entry(surface)
+    return if surface.blank?
+
+    JlptEntry.find_by(content: surface, entry_type: "word") ||
+      JlptEntry.find_by(reading: surface, entry_type: "word")
   end
 end
