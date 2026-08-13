@@ -1,24 +1,16 @@
 // Define variables for your color scheme
-
-// For example:
-$red: #FD1015;
-$blue: #0D6EFD;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
-
 :root {
-  --navy:        #1E2A44;
-  --navy-2:      #2B3B5C;
-  --gold:        #C9A458;
-  --gold-light:  #EAD9AE;
-  --cream:       #F6EEDC;
-  --card:        #FFFFFF;
-  --sage:        #6E9169;
-  --sage-light:  #E4EBDE;
-  --text:        #2A2A28;
-  --text-soft:   #8B897E;
-  --hairline:    rgba(30, 42, 68, 0.08);
+  /* primary colors */
+  --app-bg: #F9F4EA;
+  --header: #1f3248;
+  --border: #cbb07b;
+  --accent: #488b72;
+  --main-text: #2b2c2e;
+
+  /* secondary colors */
+  --card-bg: #f1ebe0;
+  --secondary-text: #6e6f73;
+  --secondary-border: #9e7e45;
+  --secondary-accent: #3b8b82;
+  --main-action-button: #2b6cb0;
 }
