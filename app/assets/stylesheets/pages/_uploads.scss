@@ -1,3 +1,27 @@
+// Card background/border are bumped up from the default (which is barely
+// distinguishable from the cream app background) so cards read as raised.
+.upload-tile {
+  background: #f1ebe0;
+  border-color: var(--border);
+}
+
+.upload-tile__image {
+  height: 160px;
+}
+
+.upload-tile__image--placeholder {
+  background: var(--navy);
+  color: var(--gold-light);
+}
+
+// Bootstrap has no multi-line clamp utility, so line-clamp stays custom.
+.upload-tile__text {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
 .upload-show {
   max-width: 600px;
   min-width: 380px;

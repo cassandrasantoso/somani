@@ -2,7 +2,7 @@ class UploadsController < ApplicationController
   before_action :set_upload, only: %i[show destroy]
 
   def index
-    @uploads = policy_scope(Upload).order(created_at: :desc)
+    @uploads = policy_scope(Upload).includes(adventures: :scene).order(created_at: :desc)
   end
 
   def show
