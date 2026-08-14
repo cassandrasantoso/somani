@@ -1,0 +1,247 @@
+.upload-show {
+  max-width: 600px;
+  min-width: 380px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.upload-show__header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.upload-card {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.35);
+}
+
+.upload-card__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.upload-card__image {
+  width: 100%;
+  border-radius: 1rem;
+  display: block;
+}
+
+.extracted {
+  margin: 0;
+  padding: 1rem;
+  background: var(--app-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 1rem;
+  color: var(--text);
+  font-family: var(--font-ja);
+  line-height: 1.9;
+}
+
+.extracted .jlpt-match {
+  background: var(--gold-light);
+  color: var(--navy);
+  border-radius: 0.3rem;
+  padding: 0 0.15rem;
+  cursor: pointer;
+}
+
+.upload-card__hint {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.upload-card .form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.upload-card .form-control,
+.upload-card .form-select {
+  border: 1px solid var(--hairline);
+  border-radius: 0.85rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--app-bg);
+  color: var(--text);
+}
+
+.upload-card .form-control:focus,
+.upload-card .form-select:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 0.2rem rgba(239, 95, 150, 0.15);
+  background: var(--app-bg);
+  color: var(--text);
+}
+
+.upload-card .invalid-feedback {
+  color: var(--pink);
+  font-size: 0.8rem;
+}
+
+.upload-form__submit {
+  display: block;
+  width: 100%;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.5rem;
+  transition: transform 0.15s ease;
+}
+
+.upload-form__submit:hover {
+  color: var(--cream);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.saved-word-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.saved-word {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--app-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 0.85rem;
+}
+
+.saved-word__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.saved-word__surface {
+  font-weight: 700;
+  color: var(--text);
+  font-family: var(--font-ja);
+}
+
+.saved-word__meaning {
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.saved-word__remove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--pink-dark);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.saved-word__remove:hover {
+  text-decoration: underline;
+}
+
+.upload-show__empty {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.upload-show__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.upload-show__btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.85rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.upload-show__btn:hover {
+  transform: translateY(-2px);
+}
+
+.upload-show__btn--primary {
+  background: var(--sage);
+  color: var(--cream);
+  border: none;
+}
+
+.upload-show__btn--primary:hover {
+  color: var(--cream);
+  opacity: 0.9;
+}
+
+.upload-show__btn--danger {
+  background: transparent;
+  color: var(--pink-dark);
+  border: 1px solid var(--pink);
+}
+
+.upload-show__btn--danger:hover {
+  background: var(--pink-light);
+}
+
+@media (min-width: 640px) {
+  body:has(.upload-show) {
+    background: var(--card);
+  }
+
+  .upload-show {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem 2rem;
+    background: var(--app-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .upload-show {
+    max-width: 700px;
+    margin-top: 2.5rem;
+    padding: 2rem 2.5rem 2.5rem;
+  }
+
+  .upload-show__actions {
+    flex-direction: row;
+  }
+
+  .upload-show__btn {
+    width: auto;
+    padding: 0.85rem 2rem;
+  }
+
+  .upload-show__btn--primary {
+    flex: 1;
+  }
+}

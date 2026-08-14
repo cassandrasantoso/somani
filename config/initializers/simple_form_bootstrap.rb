@@ -276,7 +276,7 @@ SimpleForm.setup do |config|
     b.optional :hint, wrap_with: { class: 'form-text' }
   end
 
-  # inline input for boolean
+
   config.wrappers :inline_boolean, class: 'col-12' do |b|
     b.use :html5
     b.optional :readonly
@@ -289,9 +289,6 @@ SimpleForm.setup do |config|
   end
 
 
-  # bootstrap custom forms
-  #
-  # custom input switch for boolean
   config.wrappers :custom_boolean_switch, class: 'mb-3' do |b|
     b.use :html5
     b.optional :readonly

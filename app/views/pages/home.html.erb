@@ -1,89 +1,105 @@
 <% if user_signed_in? %>
   <div class="home">
-    <div class="welcome-card">
-      <span class="welcome-card__avatar"><i class="fa-solid fa-user"></i></span>
-      <div>
-        <p class="welcome-card__greeting">ようこそ <%= current_user.username %>-san!</p>
-        <p class="welcome-card__subtitle">Welcome back to Somani.</p>
-      </div>
-    </div>
-
-    <div class="progress-card">
-      <div class="progress-card__header">
-        <h2>Progress card</h2>
-        <span class="progress-card__level">Level <i class="fa-solid fa-arrow-up"></i></span>
-      </div>
-
-      <div class="progress-card__body">
-        <div class="progress-ring" style="--progress: <%= @vocabulary_progress %>">
-          <span><%= @vocabulary_progress %>%</span>
+    <div class="row g-3 g-lg-4">
+      <div class="">
+        <div class="welcome-card">
+          <span class="welcome-card__avatar"><i class="fa-solid fa-user"></i></span>
+          <div>
+            <p class="welcome-card__greeting">ようこそ <%= current_user.username %>-san!</p>
+            <p class="welcome-card__subtitle">🌸Welcome back to Somani🌸</p>
+          </div>
         </div>
+      </div>
 
-        <div class="progress-card__stats">
-          <div class="progress-stat">
-            <div class="progress-stat__labels">
-              <span>JLPT <%= @vocabulary_level %> Vocabulary</span>
+      <div class=" col-lg-4 order-lg-2">
+        <div class="progress-card">
+          <div class="progress-card__header">
+            <h2>Progress card</h2>
+            <span class="progress-card__level">Level <i class="fa-solid fa-arrow-up"></i></span>
+          </div>
+
+          <div class="progress-card__body">
+            <div class="progress-ring" style="--progress: <%= @vocabulary_progress %>">
               <span><%= @vocabulary_progress %>%</span>
             </div>
-            <div class="progress-bar">
-              <div class="progress-bar__fill progress-bar__fill--gold" style="width: <%= @vocabulary_progress %>%"></div>
-            </div>
-          </div>
 
-          <div class="progress-stat">
-            <div class="progress-stat__labels">
-              <span>Adventures completed</span>
-              <span><%= @adventures_completed_pct %>%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-bar__fill progress-bar__fill--navy" style="width: <%= @adventures_completed_pct %>%"></div>
+            <div class="progress-card__stats">
+              <div class="progress-stat">
+                <div class="progress-stat__labels">
+                  <span>JLPT <%= @vocabulary_level %> Vocabulary</span>
+                  <span><%= @vocabulary_progress %>%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill progress-bar__fill--gold" style="width: <%= @vocabulary_progress %>%"></div>
+                </div>
+              </div>
+
+              <div class="progress-stat">
+                <div class="progress-stat__labels">
+                  <span>Adventures completed</span>
+                  <span><%= @adventures_completed_pct %>%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill progress-bar__fill--navy" style="width: <%= @adventures_completed_pct %>%"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <section class="continue-adventures">
-      <h2>Continue adventures</h2>
+      <div class="col-12 col-lg-8 order-lg-1">
+        <section class="continue-adventures">
+          <h2>Continue adventures</h2>
 
-      <% if @active_adventures.present? %>
-        <% @active_adventures.each do |adventure| %>
-          <%= link_to adventure_path(adventure), class: "adventure-card" do %>
-            <span class="adventure-card__avatar"><%= adventure.character.name.first %></span>
-            <div class="adventure-card__info">
-              <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
-              <span class="adventure-card__badge">Active Chat</span>
+          <% if @active_adventures.present? %>
+            <div class="row row-cols-1 row-cols-lg-2 g-3">
+              <% @active_adventures.each do |adventure| %>
+                <div class="col">
+                  <%= link_to adventure_path(adventure), class: "adventure-card" do %>
+                    <span class="adventure-card__avatar"><%= adventure.character.name.first %></span>
+                    <div class="adventure-card__info">
+                      <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
+                      <span class="adventure-card__badge">Active Chat</span>
+                    </div>
+                    <i class="fa-solid fa-paper-plane adventure-card__icon"></i>
+                  <% end %>
+                </div>
+              <% end %>
             </div>
-            <i class="fa-solid fa-paper-plane adventure-card__icon"></i>
+          <% else %>
+            <p class="continue-adventures__empty">No active adventures yet — start one below.</p>
           <% end %>
-        <% end %>
-      <% else %>
-        <p class="continue-adventures__empty">No active adventures yet — start one below.</p>
-      <% end %>
-    </section>
+        </section>
+      </div>
 
-    <div class="home-actions">
-      <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
-        <span class="home-action__icons">
-          <i class="fa-solid fa-microphone"></i>
-          <span class="home-action__plus">+</span>
-          <i class="fa-solid fa-file-arrow-up"></i>
-        </span>
-        <span>Upload Media</span>
-      <% end %>
+      <div class="col-12 col-lg-4 order-lg-3 offset-lg-8">
+        <div class="home-actions">
+          <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
+            <span class="home-action__icons">
+              <i class="fa-solid fa-microphone"></i>
+              <span class="home-action__plus">+</span>
+              <i class="fa-solid fa-file-arrow-up"></i>
+            </span>
+            <span>Upload Media</span>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
 <% else %>
   <div class="scene-select">
     <h1>Choose an adventure</h1>
 
-    <div class="scene-grid">
+    <div class="scene-grid row row-cols-1 row-cols-lg-3 g-3 g-lg-4">
       <% @scenes.each do |scene| %>
-        <div class="scene-card">
-          <h2><%= scene.setting %></h2>
-          <span class="level"><%= scene.level %></span>
-          <p><%= scene.description %></p>
-          <p class="character">With <%= scene.character.name %></p>
+        <div class="col">
+          <div class="scene-card">
+            <h2><%= scene.setting %></h2>
+            <span class="level"><%= scene.level %></span>
+            <p><%= scene.description %></p>
+            <p class="character">With <%= scene.character.name %></p>
+          </div>
         </div>
       <% end %>
     </div>

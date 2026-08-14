@@ -1,37 +1,66 @@
 <%# story 2 - can select words/phrases from the scanned content %>
-<h1><%= @upload.media_type.capitalize %></h1>
-<%= image_tag @upload.file_location %>
-<div data-controller="word-picker" data-word-picker-already-saved-value="<%= @already_saved_surfaces.to_json %>">
-  <p class="extracted" data-word-picker-target="text"
-     data-action="mouseup->word-picker#capture">
-    <%= highlight_jlpt_matches(@upload.extracted_text, @matched_entries) %>
-  </p>
+<div class="upload-show">
+  <div class="upload-show__header">
+    <h1><%= @upload.media_type.capitalize %></h1>
+  </div>
 
-  <%= simple_form_for [@upload, SavedWord.new] do |f| %>
-    <%= f.input :surface, input_html: { data: { word_picker_target: "surface" } } %>
-    <%= f.input :reading %>
-    <%= f.input :meaning %>
-    <%= f.input :level, collection: %w[N5 N4 N3 N2 N1] %>
-    <%= f.submit "Save this word", class: "btn" %>
-  <% end %>
-</div>
+  <div class="upload-card">
+    <%= image_tag @upload.file_location, class: "upload-card__image" %>
+  </div>
 
-<h2>Words from this upload</h2>
-<ul>
-  <% @saved_words.each do |word| %>
-    <li>
-      <%= word.surface %> — <%= word.meaning %>
-      <% link = word.uploaded_words.find_by(upload: @upload) %>
-      <% if link && policy(link).destroy? %>
-        <%= button_to "Remove", uploaded_word_path(link), method: :delete %>
+  <div data-controller="word-picker" data-word-picker-already-saved-value="<%= @already_saved_surfaces.to_json %>">
+    <div class="upload-card">
+      <h2 class="upload-card__title">Extracted text</h2>
+      <p class="extracted" data-word-picker-target="text"
+         data-action="mouseup->word-picker#capture">
+        <%= highlight_jlpt_matches(@upload.extracted_text, @matched_entries) %>
+      </p>
+      <p class="upload-card__hint">Select a word or phrase above to fill in the form below.</p>
+    </div>
+
+    <div class="upload-card">
+      <h2 class="upload-card__title">Add a word</h2>
+      <%= simple_form_for [@upload, SavedWord.new] do |f| %>
+        <%= f.input :surface, input_html: { data: { word_picker_target: "surface" } } %>
+        <%= f.input :reading %>
+        <%= f.input :meaning %>
+        <%= f.input :level, collection: %w[N5 N4 N3 N2 N1] %>
+        <%= f.submit "Save this word", class: "upload-form__submit" %>
       <% end %>
-    </li>
-  <% end %>
-</ul>
+    </div>
+  </div>
 
-<% if policy(@upload).start_adventure? %>
-  <%= link_to "Start an adventure with these words",
-              new_upload_adventure_path(@upload), class: "btn" %>
-<% end %>
+  <div class="upload-card">
+    <h2 class="upload-card__title">📕 Words from this upload</h2>
 
-<%= button_to "Delete upload", @upload, method: :delete if policy(@upload).destroy? %>
+    <% if @saved_words.any? %>
+      <ul class="saved-word-list">
+        <% @saved_words.each do |word| %>
+          <li class="saved-word">
+            <div class="saved-word__info">
+              <span class="saved-word__surface"><%= word.surface %></span>
+              <span class="saved-word__meaning"><%= word.meaning %></span>
+            </div>
+            <% link = word.uploaded_words.find_by(upload: @upload) %>
+            <% if link && policy(link).destroy? %>
+              <%= button_to "Remove", uploaded_word_path(link), method: :delete, class: "saved-word__remove" %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p class="upload-show__empty">No words saved from this upload yet.</p>
+    <% end %>
+  </div>
+
+  <div class="upload-show__actions">
+    <% if policy(@upload).start_adventure? %>
+      <%= link_to "Start an adventure with these words",
+                  new_upload_adventure_path(@upload), class: "upload-show__btn upload-show__btn--primary" %>
+    <% end %>
+
+    <% if policy(@upload).destroy? %>
+      <%= button_to "Delete upload", @upload, method: :delete, class: "upload-show__btn upload-show__btn--danger" %>
+    <% end %>
+  </div>
+</div>

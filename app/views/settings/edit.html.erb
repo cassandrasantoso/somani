@@ -1,10 +1,15 @@
 <%# story 10 - reminder/notification to check in %>
+<div class="m-3">
+  <h1>⏰ Reminders</h1>
+</div>
 
-<h1>Reminders</h1>
-
-<%= simple_form_for @user, url: settings_path, method: :patch do |f| %>
-  <%= f.input :reminder_enabled, as: :boolean,
-              label: "Remind me to practise" %>
-  <%= f.input :reminder_time, as: :time, label: "At what time?" %>
-  <%= f.submit "Save", class: "btn" %>
-<% end %>
+<section class="d-flex w-100 justify-content-center">
+  <%= simple_form_for @user, url: settings_path, method: :patch, html: { class: "card p-3 m-3 w-100", style: "max-width: 1100px;" } do |f| %>
+    <%= f.input :reminder_enabled, as: :boolean,
+                label: "Remind me to practise" %>
+    <%= f.input :reminder_time, as: :time, label: "At what time?" %>
+    <div class="w-100 d-flex justify-content-center">
+      <%= f.submit "Save", class: "btn btn-primary m-1 w-50" %>
+    </div>
+  <% end %>
+</section>

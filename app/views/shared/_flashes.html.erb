@@ -1,14 +1,22 @@
-<% if notice %>
-  <div class="alert alert-info alert-dismissible fade show m-1" role="alert">
-    <%= notice %>
+<% if notice || alert %>
+  <div class="alert alert-info alert-dismissible fade show m-1" role="alert" id="autoAlert">
+    <%= notice || alert %>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
     </button>
   </div>
 <% end %>
-<% if alert %>
-  <div class="alert alert-warning alert-dismissible fade show m-1" role="alert">
-    <%= alert %>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-    </button>
-  </div>
-<% end %>
+
+<script>
+  // Wait 4000 milliseconds (4 seconds) before closing
+  setTimeout(() => {
+    const alertElement = document.getElementById('autoAlert');
+    if (alertElement) {
+      // If using Bootstrap 5, trigger its programmatic close:
+      const bsAlert = bootstrap.Alert.getOrCreateInstance(alertElement);
+      bsAlert.close();
+
+      // OR if not using Bootstrap's JS library, standard DOM removal:
+      // alertElement.remove();
+    }
+  }, 8000);
+</script>

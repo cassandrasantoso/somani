@@ -1,0 +1,156 @@
+body:has(.auth-page) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.auth-page {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1.5rem;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.35);
+}
+
+.auth-card__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.auth-card__subtitle {
+  margin: 0 0 1.75rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.auth-card .form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.auth-card .form-control {
+  border: 1px solid var(--hairline);
+  border-radius: 0.85rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--app-bg);
+  color: var(--text);
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 0.2rem rgba(239, 95, 150, 0.15);
+  background: var(--app-bg);
+  color: var(--text);
+}
+
+.auth-card .form-check {
+  padding-left: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-card .form-check-input {
+  margin: 0;
+  border-color: var(--gold);
+}
+
+.auth-card .form-check-input:checked {
+  background-color: var(--sage);
+  border-color: var(--sage);
+}
+
+.auth-card .form-check-label {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.auth-card .invalid-feedback {
+  color: var(--pink);
+  font-size: 0.8rem;
+}
+
+.auth-card .form-text {
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.auth-card .alert-danger {
+  border-radius: 0.85rem;
+  border: 1px solid var(--pink);
+  background: var(--pink-light);
+  color: var(--pink-dark);
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.auth-card .alert-danger h2 {
+  font-size: 0.9rem;
+  margin: 0 0 0.35rem;
+}
+
+.auth-card .alert-danger ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.auth-form__submit {
+  display: block;
+  width: 100%;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.5rem;
+  transition: transform 0.15s ease;
+}
+
+.auth-form__submit:hover {
+  color: var(--cream);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.auth-card__links {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.auth-card__links p {
+  margin: 0;
+}
+
+.auth-card__links a {
+  color: var(--pink-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-card__links a:hover {
+  text-decoration: underline;
+}
