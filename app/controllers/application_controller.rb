@@ -4,9 +4,9 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
   after_action :verify_authorized,
-               unless: -> { skip_pundit? || action_name == "index" }
+               unless: -> { skip_pundit? || action_name.in?(%w[index due]) }
   after_action :verify_policy_scoped,
-               if: -> { action_name == "index" }, unless: :skip_pundit?
+               if: -> { action_name.in?(%w[index due]) }, unless: :skip_pundit?
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
