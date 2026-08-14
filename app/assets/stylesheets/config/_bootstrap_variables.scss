@@ -11,3 +11,16 @@ $body-bg:            $app-bg;
 $body-color:         $main-text;
 $primary:            $main-action-button;
 $success:            $accent;
+
+// Rounded, friendly type everywhere Bootstrap renders text (buttons,
+// form labels, inputs, headings) — not just the custom components.
+$font-family-sans-serif: $body-font;
+$font-family-base:       $font-family-sans-serif;
+$headings-font-family:   $headers-font;
+$headings-font-weight:   700;
+
+// Softer, bubblier corners app-wide.
+$border-radius:      0.75rem;
+$border-radius-sm:   0.5rem;
+$border-radius-lg:   1rem;
+$border-radius-xl:   1.25rem;

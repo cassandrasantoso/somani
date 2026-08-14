@@ -1,29 +1,31 @@
-// Define variables for your color scheme
 :root {
-  /* primary colors */
   --app-bg: #F9F4EA;
   --header: #1f3248;
   --border: #cbb07b;
   --accent: #488b72;
   --main-text: #2b2c2e;
 
-  /* secondary colors */
+
   --card-bg: #f1ebe0;
   --secondary-text: #6e6f73;
   --secondary-border: #9e7e45;
   --secondary-accent: #3b8b82;
   --main-action-button: #2b6cb0;
+  --bs-btn-hover-bg: var(--main-action-button);
 
-  /* aliases used by components/navbar and pages/home */
   --navy: var(--header);
   --navy-2: #16283d;
   --cream: #f6eedc;
   --card: var(--card-bg);
   --hairline: #e6ded0;
   --sage: var(--accent);
-  --sage-light: #dbe9e1;
+  --sage-light: #bfe4d3;
   --gold: var(--border);
-  --gold-light: #e6d3a4;
+  --gold-light: #f2d383;
   --text: var(--main-text);
   --text-soft: var(--secondary-text);
+
+  --pink: #ef5f96;
+  --pink-light: #ffd2e2;
+  --pink-dark: #a8305f;
 }

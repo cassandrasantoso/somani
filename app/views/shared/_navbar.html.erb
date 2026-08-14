@@ -1,8 +1,6 @@
 <nav class="app-navbar">
   <div class="app-navbar__inner">
-    <button class="app-navbar__icon-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#appMenu" aria-controls="appMenu" aria-label="Open menu">
-      <i class="fa-solid fa-bars"></i>
-    </button>
+  
 
     <%= link_to root_path, class: "app-navbar__brand" do %>
       <span class="app-navbar__logo-crop">
@@ -11,7 +9,21 @@
       <span class="app-navbar__wordmark">SOMANI</span>
     <% end %>
 
-    <%= link_to (user_signed_in? ? edit_settings_path : new_user_session_path), class: "app-navbar__icon-btn", "aria-label": "Notifications" do %>
+    <ul class="app-navbar__links">
+      <li><%= link_to "Home", root_path, class: current_page?(root_path) ? "is-active" : nil %></li>
+      <li><%= link_to "Adventures", scenes_path, class: current_page?(scenes_path) ? "is-active" : nil %></li>
+      <% if user_signed_in? %>
+        <li><%= link_to "Saved words", saved_words_path %></li>
+        <li><%= link_to "Uploads", uploads_path %></li>
+        <li><%= link_to "Settings", edit_settings_path %></li>
+        <li><%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete } %></li>
+      <% else %>
+        <li><%= link_to "Log in", new_user_session_path %></li>
+        <li><%= link_to "Sign up", new_user_registration_path, class: "app-navbar__links-cta" %></li>
+      <% end %>
+    </ul>
+
+    <%= link_to (user_signed_in? ? edit_settings_path : new_user_session_path), class: "app-navbar__icon-btn app-navbar__icon-btn--bell", "aria-label": "Notifications" do %>
       <i class="fa-solid fa-bell"></i>
     <% end %>
   </div>

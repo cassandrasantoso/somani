@@ -38,10 +38,7 @@
   line-height: 1;
 }
 
-// Image is a stacked icon+wordmark lockup with transparent padding around
-// the glyph; crop tightly to the icon's visible bounds on all sides since
-// the baked-in wordmark is unreadable at navbar height and the padding
-// would otherwise push the "SOMANI" text label away from the icon.
+
 .app-navbar__logo-crop {
   display: flex;
   width: 2.37rem;
@@ -64,7 +61,11 @@
   letter-spacing: 0.04em;
 }
 
-// Off-canvas slide-out menu, shared trigger for top and bottom bars
+.app-navbar__links {
+  display: none;
+}
+
+
 .app-menu {
   background: var(--navy-2);
   color: var(--cream);
@@ -128,10 +129,67 @@
   height: 2.5rem;
   background: none;
   border: none;
+  border-radius: 999px;
   color: var(--text-soft);
   font-size: 1.2rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.app-bottom-nav__item.is-active {
-  color: var(--navy);
+
+@media (min-width: 1024px) {
+  .has-app-bottom-nav {
+    padding-bottom: 0;
+  }
+
+  .app-navbar__inner {
+    max-width: 900px;
+    padding: 0.9rem 2rem;
+  }
+
+  .app-navbar > .app-navbar__inner > .app-navbar__icon-btn:not(.app-navbar__icon-btn--bell) {
+    display: none;
+  }
+
+  .app-navbar__links {
+    display: flex;
+    align-items: center;
+    gap: 1.6rem;
+    list-style: none;
+    margin: 0 0 0 1.5rem;
+    padding: 0;
+    flex: 1;
+  }
+
+  .app-navbar__links li {
+    display: flex;
+  }
+
+  .app-navbar__links a {
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    opacity: 0.8;
+  }
+
+  .app-navbar__links a:hover,
+  .app-navbar__links a.is-active {
+    opacity: 1;
+  }
+
+  .app-navbar__links a.is-active {
+    color: var(--gold-light);
+  }
+
+  .app-navbar__links-cta {
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: var(--gold);
+    color: var(--navy) !important;
+    opacity: 1 !important;
+  }
+
+  .app-bottom-nav {
+    display: none;
+  }
 }
