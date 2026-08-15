@@ -1,17 +1,60 @@
-<h1>My words</h1>
-<%= link_to "Due for review", due_saved_words_path %>
+<% due_page = action_name == "due" %>
 
-<table>
-  <% @saved_words.each do |word| %>
-    <tr>
-      <td><%= word.surface %></td>
-      <td><%= word.reading %></td>
-      <td><%= word.meaning %></td>
-      <td><%= word.level %></td>
-      <td>
-        <%= button_to "Reviewed", review_saved_word_path(word), method: :patch %>
-        <%= link_to "Edit", edit_saved_word_path(word) if policy(word).edit? %>
-      </td>
-    </tr>
+<div class="my-words">
+  <div class="my-words__header">
+    <h1><%= due_page ? "Due for review" : "My words" %></h1>
+    <p class="my-words__subtitle">
+      <%= due_page ? "Words ready for another look" : pluralize(@saved_words.size, "word") %>
+    </p>
+  </div>
+
+  <div class="my-words__tabs">
+    <%= link_to "All words", saved_words_path, class: "my-words__tab#{" is-active" unless due_page}" %>
+    <%= link_to "Due for review", due_saved_words_path, class: "my-words__tab#{" is-active" if due_page}" %>
+  </div>
+
+  <% if @saved_words.any? %>
+    <ul class="word-card-list">
+      <% @saved_words.each do |word| %>
+        <li class="word-card">
+          <div class="word-card__main">
+            <div class="word-card__headword">
+              <span class="word-card__surface"><%= word.surface %></span>
+              <% if word.reading.present? %>
+                <span class="word-card__reading"><%= word.reading %></span>
+              <% end %>
+              <% if word.level.present? %>
+                <span class="word-card__level"><%= word.level %></span>
+              <% end %>
+            </div>
+            <% if word.meaning.present? %>
+              <p class="word-card__meaning"><%= word.meaning %></p>
+            <% end %>
+          </div>
+
+          <div class="word-card__actions">
+            <%= button_to review_saved_word_path(word), method: :patch, class: "word-card__btn word-card__btn--reviewed" do %>
+              <i class="fa-solid fa-check"></i> Reviewed
+            <% end %>
+            <% if policy(word).edit? %>
+              <%= link_to edit_saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
+                <i class="fa-solid fa-pen"></i> Edit
+              <% end %>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div class="my-words__empty">
+      <i class="fa-solid fa-book-open"></i>
+      <p>
+        <% if due_page %>
+          Nothing due for review right now — check back later.
+        <% else %>
+          No words saved yet. Words you save from uploads will show up here.
+        <% end %>
+      </p>
+    </div>
   <% end %>
-</table>
+</div>

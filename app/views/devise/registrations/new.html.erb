@@ -1,4 +1,12 @@
-<div class="auth-page">
+<div class="auth-page auth-page--sakura">
+  <div class="sakura-fall" aria-hidden="true">
+    <% 14.times do %>
+      <span class="sakura-fall__petal"></span>
+    <% end %>
+  </div>
+
+  <%= render "devise/shared/tagline" %>
+
   <div class="auth-card">
     <h1 class="auth-card__title">Sign up</h1>
     <p class="auth-card__subtitle">Create an account to start your adventure.</p>

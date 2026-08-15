@@ -1,0 +1,195 @@
+.my-words {
+  max-width: 600px;
+  min-width: 380px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.my-words__header h1 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.my-words__subtitle {
+  margin: 0.15rem 0 1rem;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.my-words__tabs {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.my-words__tab {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  text-decoration: none;
+}
+
+.my-words__tab:hover {
+  color: var(--text);
+}
+
+.my-words__tab.is-active {
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.word-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.word-card {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1.25rem;
+  padding: 0.9rem 1.1rem;
+  box-shadow: 0 8px 20px -16px rgba(31, 50, 72, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.word-card__headword {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.word-card__surface {
+  font-family: var(--font-ja);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.word-card__reading {
+  font-family: var(--font-ja);
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.word-card__level {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--pink-dark);
+  background: var(--pink-light);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+.word-card__meaning {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.word-card__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.word-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  transition: transform 0.15s ease;
+}
+
+.word-card__btn:hover {
+  transform: translateY(-2px);
+}
+
+.word-card__btn--reviewed {
+  background: var(--sage);
+  color: var(--cream);
+}
+
+.word-card__btn--reviewed:hover {
+  color: var(--cream);
+  opacity: 0.9;
+}
+
+.word-card__btn--edit {
+  background: transparent;
+  color: var(--text-soft);
+  border: 1px solid var(--hairline);
+}
+
+.word-card__btn--edit:hover {
+  color: var(--text);
+  background: var(--app-bg);
+}
+
+.my-words__empty {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1.25rem;
+  color: var(--text-soft);
+}
+
+.my-words__empty i {
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.my-words__empty p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+@media (min-width: 640px) {
+  body:has(.my-words) {
+    background: var(--card);
+  }
+
+  .my-words {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem 2rem;
+    background: var(--app-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .my-words {
+    max-width: 700px;
+    margin-top: 2.5rem;
+    padding: 2rem 2.5rem 2.5rem;
+  }
+}
