@@ -1,7 +1,8 @@
 module UploadsHelper
   # Renders extracted_text as safe HTML, wrapping any substring that
-  # matches a seeded JlptEntry in a <mark> tag with the entry's id/level
-  # attached, so matched words render highlighted on the page.
+  # matches a seeded JlptEntry in a <mark> tag carrying its full data
+  # (surface/reading/meaning/level), so clicking it can instantly fill
+  # the save-word form below without needing another lookup.
   def highlight_jlpt_matches(text, entries)
     return "".html_safe if text.blank?
     return ERB::Util.html_escape(text) if entries.blank?
@@ -16,7 +17,14 @@ module UploadsHelper
       match = Regexp.last_match
       html << ERB::Util.html_escape(text[last_end...match.begin(0)])
       entry = lookup[match[0]]
-      html << %(<mark class="jlpt-match" data-jlpt-entry-id="#{entry.id}" data-level="#{entry.level}">#{ERB::Util.html_escape(match[0])}</mark>)
+      html << %(<mark class="jlpt-match"
+                       data-jlpt-entry-id="#{entry.id}"
+                       data-level="#{entry.level}"
+                       data-action="click->word-picker#selectMatch"
+                       data-word-picker-surface-param="#{ERB::Util.html_escape(entry.content)}"
+                       data-word-picker-reading-param="#{ERB::Util.html_escape(entry.reading)}"
+                       data-word-picker-meaning-param="#{ERB::Util.html_escape(entry.meaning)}"
+                       data-word-picker-level-param="#{ERB::Util.html_escape(entry.level)}">#{ERB::Util.html_escape(match[0])}</mark>)
       last_end = match.end(0)
     end
 
