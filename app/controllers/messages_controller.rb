@@ -9,6 +9,7 @@ class MessagesController < ApplicationController
 
     if @message.save
       RespondToMessageJob.perform_later(@message, mode: params[:mode])
+      @message = @adventure.messages.new
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to @adventure }
