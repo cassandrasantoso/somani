@@ -18,7 +18,7 @@
       <p class="upload-card__hint">Select a word or phrase above to fill in the form below.</p>
     </div>
 
-    <div class="upload-card">
+    <div class="upload-card m-1 mt-3">
       <h2 class="upload-card__title">Add a word</h2>
       <%= simple_form_for [@upload, SavedWord.new] do |f| %>
         <%= f.input :surface, input_html: { data: { word_picker_target: "surface" } } %>
