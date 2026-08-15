@@ -1,0 +1,25 @@
+.jlpt-match {
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.jlpt-match[data-level="N5"] {
+  background-color: #8ee88e;
+}
+
+.jlpt-match[data-level="N4"] {
+  background-color: #a1c6e8;
+}
+
+.jlpt-match[data-level="N3"] {
+  background-color: #f6df9a;
+}
+
+.jlpt-match[data-level="N2"] {
+  background-color: #f7c2c2;
+}
+
+.jlpt-match[data-level="N1"] {
+  background-color: #dccff8;
+}
