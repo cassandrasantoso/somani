@@ -3,28 +3,32 @@
 <%# story 9 - end a storyline %>
 <%# story 15 - delete an adventure %>
 
-<h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
-<p><%= @adventure.scene.description %></p>
+<div class="adventure-show">
+  <div class="adventure-show__header">
+    <h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
+    <p><%= @adventure.scene.description %></p>
+  </div>
 
-<div id="messages" data-controller="blur">
-  <%= render @messages %>
+  <div id="messages" data-controller="blur">
+    <%= render @messages %>
+  </div>
+
+  <% if @adventure.status == "active" %>
+    <%= simple_form_for [@adventure, @message] do |f| %>
+      <%= f.input :body, label: "Your reply (日本語で)" %>
+      <%= f.submit "Send", class: "btn" %>
+    <% end %>
+
+    <%# story 9 — end the storyline %>
+    <% if policy(@adventure).update? %>
+      <%= button_to "End this adventure",
+                    adventure_path(@adventure, adventure: { status: "completed" }),
+                    method: :patch %>
+    <% end %>
+  <% else %>
+    <p class="completed">This adventure is complete.</p>
+  <% end %>
+
+  <%# story 15 %>
+  <%= button_to "Delete adventure", @adventure, method: :delete if policy(@adventure).destroy? %>
 </div>
-
-<% if @adventure.status == "active" %>
-  <%= simple_form_for [@adventure, @message] do |f| %>
-    <%= f.input :body, label: "Your reply (日本語で)" %>
-    <%= f.submit "Send", class: "btn" %>
-  <% end %>
-
-  <%# story 9 — end the storyline %>
-  <% if policy(@adventure).update? %>
-    <%= button_to "End this adventure",
-                  adventure_path(@adventure, adventure: { status: "completed" }),
-                  method: :patch %>
-  <% end %>
-<% else %>
-  <p class="completed">This adventure is complete.</p>
-<% end %>
-
-<%# story 15 %>
-<%= button_to "Delete adventure", @adventure, method: :delete if policy(@adventure).destroy? %>
