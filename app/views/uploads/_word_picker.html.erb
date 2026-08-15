@@ -1,0 +1,21 @@
+<div id="word-picker" data-controller="word-picker" data-word-picker-already-saved-value="<%= already_saved_surfaces.to_json %>">
+  <div class="upload-card">
+    <h2 class="upload-card__title">Extracted text</h2>
+    <p class="extracted" data-word-picker-target="text"
+       data-action="mouseup->word-picker#capture">
+      <%= highlight_jlpt_matches(upload.extracted_text, matched_entries) %>
+    </p>
+    <p class="upload-card__hint">Select a word or phrase above to fill in the form below.</p>
+  </div>
+
+  <div class="upload-card m-1 mt-3">
+    <h2 class="upload-card__title">Add a word</h2>
+    <%= simple_form_for [upload, SavedWord.new] do |f| %>
+      <%= f.input :surface, input_html: { data: { word_picker_target: "surface" } } %>
+      <%= f.input :reading, input_html: { data: { word_picker_target: "reading" } } %>
+      <%= f.input :meaning, input_html: { data: { word_picker_target: "meaning" } } %>
+      <%= f.input :level, collection: %w[N5 N4 N3 N2 N1], input_html: { data: { word_picker_target: "level" } } %>
+      <%= f.submit "Save this word", class: "upload-form__submit" %>
+    <% end %>
+  </div>
+</div>
