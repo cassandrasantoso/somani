@@ -9,4 +9,8 @@ class Message < ApplicationRecord
   validates :body, presence: true
 
   scope :chronological, -> { order(:created_at) }
+
+  after_create_commit lambda {
+    broadcast_append_to adventure, target: "messages", partial: "messages/message", locals: { message: self }
+  }
 end

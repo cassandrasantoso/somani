@@ -9,15 +9,16 @@
     <p><%= @adventure.scene.description %></p>
   </div>
 
+  <%= turbo_stream_from @adventure %>
+
   <div id="messages" data-controller="blur">
     <%= render @messages %>
   </div>
 
   <% if @adventure.status == "active" %>
-    <%= simple_form_for [@adventure, @message] do |f| %>
-      <%= f.input :body, label: "Your reply (日本語で)" %>
-      <%= f.submit "Send", class: "btn" %>
-    <% end %>
+    <div id="message-form">
+      <%= render "messages/form", adventure: @adventure, message: @message %>
+    </div>
 
     <%# story 9 — end the storyline %>
     <% if policy(@adventure).update? %>
