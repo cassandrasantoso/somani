@@ -103,6 +103,22 @@ puts "Creating JLPT entries..."
   { entry_type: "proverb", content: "猿も木から落ちる", reading: "さるもきからおちる", level: "N2",
     meaning: "even monkeys fall from trees — anyone can make a mistake" },
 
+    # Vocabulary from the 円安 / financial article
+  { entry_type: "word", content: "円安", reading: "えんやす", level: "N2", meaning: "weak yen / depreciation of the yen" },
+  { entry_type: "word", content: "物価", reading: "ぶっか", level: "N2", meaning: "prices / cost of goods" },
+  { entry_type: "word", content: "生活", reading: "せいかつ", level: "N4", meaning: "daily life / livelihood" },
+  { entry_type: "word", content: "活かす", reading: "いかす", level: "N2", meaning: "to make use of / utilize" },
+  { entry_type: "word", content: "資産", reading: "しさん", level: "N2", meaning: "asset / property" },
+  { entry_type: "word", content: "運用", reading: "うんよう", level: "N2", meaning: "management / investment" },
+  { entry_type: "word", content: "記事", reading: "きじ", level: "N3", meaning: "article" },
+  { entry_type: "word", content: "為替", reading: "かわせ", level: "N2", meaning: "foreign exchange" },
+  { entry_type: "word", content: "見通し", reading: "みとおし", level: "N2", meaning: "outlook / forecast / prospects" },
+  { entry_type: "word", content: "動向", reading: "どうこう", level: "N2", meaning: "trend / movement / developments" },
+  { entry_type: "word", content: "資産運用", reading: "しさんうんよう", level: "N2", meaning: "asset management / investment" },
+  { entry_type: "word", content: "効果的", reading: "こうかてき", level: "N3", meaning: "effective" },
+  { entry_type: "word", content: "紹介", reading: "しょうかい", level: "N4", meaning: "introduction / presentation" },
+  { entry_type: "word", content: "参考", reading: "さんこう", level: "N3", meaning: "reference / something to refer to" },
+
   # Non-N2 seeds
   { entry_type: "word",    content: "会議",     reading: "かいぎ",      level: "N4", meaning: "meeting" },
   { entry_type: "word",    content: "提出",     reading: "ていしゅつ",  level: "N3", meaning: "submission" },
