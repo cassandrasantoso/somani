@@ -37,7 +37,15 @@ class SavedWordsController < ApplicationController
 
     if @saved_word.save
       UploadedWord.find_or_create_by!(upload: @upload, saved_word: @saved_word)
-      redirect_to @upload, notice: "「#{@saved_word.surface}」 saved."
+      notice = "「#{@saved_word.surface}」 saved."
+      @saved_words = @upload.saved_words
+      @matched_entries = @upload.matched_jlpt_entries
+      @already_saved_surfaces = current_user.saved_words.pluck(:surface)
+
+      respond_to do |format|
+        format.turbo_stream { flash.now[:notice] = notice }
+        format.html { redirect_to @upload, notice: notice }
+      end
     else
       render :new, status: :unprocessable_entity
     end
