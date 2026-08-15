@@ -31,9 +31,9 @@
 
 .welcome-card,
 .progress-card {
-  background: var(--card);
+  background: var(--card-bg);
   border-radius: 1.5rem;
-  border: 1px solid var(--hairline);
+  border: 2px solid var(--gold);
   padding: 1rem 1.25rem;
   box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.35);
 }
