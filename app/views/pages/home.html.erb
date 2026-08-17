@@ -1,5 +1,5 @@
 <% if user_signed_in? %>
-  <div class="home">
+  <div class="home home-container">
     <div class="row g-3 g-lg-4">
       <div class="">
         <div class="welcome-card">
@@ -86,9 +86,11 @@
         </div>
       </div>
     </div>
+    <!-- Background Decoration Image -->
+    <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
   </div>
 <% else %>
-  <div class="scene-select">
+  <div class="scene-select scene-container">
     <h1>Choose an adventure</h1>
 
     <div class="scene-grid row row-cols-1 row-cols-lg-3 g-3 g-lg-4">
@@ -105,5 +107,8 @@
     </div>
 
     <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
+          <!-- Mt Fuji BG photo -->
+          <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
+    <!-- Background Decoration Image -->
   </div>
 <% end %>
