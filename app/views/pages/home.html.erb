@@ -54,6 +54,19 @@
         </div>
       </div>
 
+      <div class="col-12 col-lg-4 order-lg-3">
+        <div class="home-actions">
+          <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
+            <span class="home-action__icons">
+              <i class="fa-solid fa-microphone"></i>
+              <span class="home-action__plus">+</span>
+              <i class="fa-solid fa-file-arrow-up"></i>
+            </span>
+            <span>Upload Media</span>
+          <% end %>
+        </div>
+      </div>
+
       <div class="col-12 col-lg-8 order-lg-1">
         <section class="continue-adventures">
           <h2>Continue adventures</h2>
@@ -79,18 +92,6 @@
         </section>
       </div>
 
-      <div class="col-12 col-lg-4 order-lg-3 offset-lg-8">
-        <div class="home-actions">
-          <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
-            <span class="home-action__icons">
-              <i class="fa-solid fa-microphone"></i>
-              <span class="home-action__plus">+</span>
-              <i class="fa-solid fa-file-arrow-up"></i>
-            </span>
-            <span>Upload Media</span>
-          <% end %>
-        </div>
-      </div>
     </div>
     <!-- Background Decoration Image -->
     <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
