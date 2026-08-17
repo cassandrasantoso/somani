@@ -12,7 +12,7 @@
 
   <%= render "saved_words/list", upload: @upload, saved_words: @saved_words %>
 
-  <div class="upload-show__actions">
+  <div class="upload-show__actions mt-3">
     <% if policy(@upload).start_adventure? %>
       <%= link_to "Start an adventure with these words",
                   new_upload_adventure_path(@upload), class: "upload-show__btn upload-show__btn--primary" %>

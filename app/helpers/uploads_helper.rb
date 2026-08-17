@@ -24,7 +24,9 @@ module UploadsHelper
                        data-word-picker-surface-param="#{ERB::Util.html_escape(entry.content)}"
                        data-word-picker-reading-param="#{ERB::Util.html_escape(entry.reading)}"
                        data-word-picker-meaning-param="#{ERB::Util.html_escape(entry.meaning)}"
-                       data-word-picker-level-param="#{ERB::Util.html_escape(entry.level)}">#{ERB::Util.html_escape(match[0])}</mark>)
+                       data-word-picker-level-param="#{ERB::Util.html_escape(entry.level)}"
+                       data-bs-toggle="modal" data-bs-target="#exampleModal"
+                       >#{ERB::Util.html_escape(match[0])}</mark>)
       last_end = match.end(0)
     end
 
