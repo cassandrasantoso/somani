@@ -27,7 +27,7 @@ class UploadsController < ApplicationController
     @upload = Upload.new(upload_params)
     @upload.user = current_user
     authorize @upload
-    cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media")
+    cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media", resource_type: "auto")
 
     @upload.file_location = cloudinary_value["url"]
     if @upload.save
