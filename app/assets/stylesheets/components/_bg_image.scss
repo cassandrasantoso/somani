@@ -1,12 +1,8 @@
 .home-container,
 .scene-container {
-  display: flex;
   position: relative;
-  min-height: 100vh;
   overflow: hidden;
-  flex-direction: column;
   height: calc(100dvh - 120px);
-  padding-bottom: 0.5rem;
 }
 
 /* Position the PNG image in the bottom-right corner */
@@ -19,7 +15,6 @@
   pointer-events: none;
   z-index: 0;
   opacity: 0.8;
-  margin-bottom: 65px;
 }
 
 /* Ensure content sits on top of the background image */
@@ -38,7 +33,6 @@
 
   /* 2. Make middle content scroll internally if space is tight */
   .continue-adventures {
-    overflow-y: auto;
     max-height: 100%;
   }
 

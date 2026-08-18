@@ -1,4 +1,5 @@
-  <div id="word-picker" data-controller="word-picker" data-word-picker-already-saved-value="<%= already_saved_surfaces.to_json %>">
+  <div id="word-picker" data-controller="word-picker" data-word-picker-already-saved-value="<%= already_saved_surfaces.to_json %>"
+    data-action="turbo:submit-end->word-picker#closeModal">
     <div class="upload-card">
       <h2 class="upload-card__title">Study Material・読み取ったテキスト</h2>
       <p class="extracted" data-word-picker-target="text"
@@ -28,6 +29,7 @@
     </div>
   </div>
 
+  </div>
 </div>
   <!---
     <div class="upload-card m-1 mt-3">
