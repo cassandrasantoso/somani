@@ -1,0 +1,81 @@
+/* Container & Headers */
+.adventure-setup__title {
+  color: var(--navy, #1e293b);
+}
+
+/* Custom Radio Card Grid */
+.scene-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Hide default radio input circle, turn entire container into a clickable card */
+.scene-card-wrapper {
+  position: relative;
+  margin: 0;
+}
+
+.scene-card-wrapper input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.scene-card-wrapper label {
+  display: flex;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background-color: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin: 0;
+}
+
+/* Card Hover State */
+.scene-card-wrapper:hover label {
+  border-color: #cbd5e1;
+  background-color: #f1f5f9;
+}
+
+/* Card Selected/Checked State */
+.scene-card-wrapper input[type="radio"]:checked + label {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+/* JLPT Level Badges inside cards */
+.level-badge {
+  font-weight: 700;
+  padding: 0.35em 0.75em;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.level-badge--n5 { background-color: #a4daa4; color: #1e293b; }
+.level-badge--n4 { background-color: #a1c6e8; color: #1e293b; }
+.level-badge--n3 { background-color: #efdb9e; color: #1e293b; }
+.level-badge--n2 { background-color: #edbcbc; color: #1e293b; }
+.level-badge--n1 { background-color: #d4c2f8; color: #1e293b; }
+
+/* Avatar Styling */
+.scene-card__avatar {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
+}
+
+/* Subtle border color change on selected card */
+.scene-card-wrapper input[type="radio"]:checked + label .scene-card__avatar {
+  border-color: #3b82f6;
+}

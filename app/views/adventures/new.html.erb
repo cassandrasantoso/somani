@@ -1,11 +1,59 @@
 <%# story 12 - create a new adventure %>
-<h1>New adventure</h1>
-<p>Using words from <%= @upload.file.filename %></p>
+<div class="adventure-setup container my-4" style="max-width: 680px;">
 
-<%= simple_form_for [@upload, @adventure] do |f| %>
-  <%= f.input :title %>
-  <%= f.input :scene_id, collection: @scenes,
-              label_method: ->(s) { "#{s.setting} (#{s.level}) — #{s.character.name}" },
-              as: :radio_buttons %>
-  <%= f.submit "Begin", class: "btn" %>
-<% end %>
+  <!-- Header & Context Banner -->
+  <div class="adventure-setup__header text-center mb-4">
+    <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-2 rounded-pill">
+      📖 Vocabulary Source
+    </span>
+    <h1 class="adventure-setup__title h2 fw-bold mb-1">Start a New Adventure</h1>
+    <p class="text-muted fs-6">
+      Generate an interactive story using vocabulary extracted from
+      <strong class="text-dark"><%= @upload.file.filename %></strong>.
+    </p>
+  </div>
+
+  <!-- Form Card -->
+  <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+    <%= simple_form_for [@upload, @adventure] do |f| %>
+
+      <!-- Adventure Title Input -->
+      <div class="mb-4">
+        <%= f.input :title,
+                    label: "Adventure Title",
+                    placeholder: "e.g., NHK News Article...Meeting notes...",
+                    input_html: { class: "form-control form-control-lg rounded-3 fs-6" } %>
+      </div>
+
+      <!-- Scene Selection -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold text-dark mb-2">Select Your Setting & Character</label>
+
+        <%= f.input :scene_id,
+                    as: :radio_buttons,
+                    collection: @scenes,
+                    label: false,
+                    wrapper_html: { class: "scene-grid" },
+                    item_wrapper_class: "scene-card-wrapper",
+                    label_method: ->(s) {
+                      raw(%Q(
+                        <div class="scene-card__content d-flex justify-content-between align-items-center w-100">
+                          <div>
+                            <div class="fw-bold text-dark fs-6">#{ERB::Util.html_escape(s.setting)}</div>
+                            <div class="text-muted small">Character: <strong>#{ERB::Util.html_escape(s.character.name)}</strong></div>
+                          </div>
+                          <span class="badge level-badge level-badge--#{s.level.to_s.downcase}">
+                            #{s.level}
+                          </span>
+                        </div>
+                      ))
+                    } %>
+      </div>
+
+      <!-- Submit Action -->
+      <div class="d-grid gap-2 mt-4">
+        <%= f.submit "Begin Adventure ⚔️", class: "btn btn-primary btn-lg rounded-3 fw-bold py-3" %>
+      </div>
+    <% end %>
+  </div>
+</div>
