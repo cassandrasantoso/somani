@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   resources :scenes, only: %i[index show]                # story 3 - browse storylines (same list as home)
 
   resources :adventures, only: %i[index show update destroy] do   # stories 4 - role play, 9 - storyline ends, 15 - delete
+    member { patch: continue }  # keep playing after hitting the word goal
     resources :messages, only: %i[create]                # story 7 - respond by typing
   end
 
