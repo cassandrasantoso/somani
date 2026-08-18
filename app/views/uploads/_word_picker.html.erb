@@ -1,17 +1,17 @@
   <div id="word-picker" data-controller="word-picker" data-word-picker-already-saved-value="<%= already_saved_surfaces.to_json %>">
     <div class="upload-card">
-      <h2 class="upload-card__title">Extracted text</h2>
+      <h2 class="upload-card__title">Study Material・読み取ったテキスト</h2>
       <p class="extracted" data-word-picker-target="text"
         data-action="mouseup->word-picker#capture">
         <%= highlight_jlpt_matches(upload.extracted_text, matched_entries) %>
       </p>
-      <p class="upload-card__hint">Select a word or phrase above to fill in the form below.</p>
+      <p class="upload-card__hint">Select a word or phrase above to save it.</p>
     </div>
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Add a word</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Save to Vocabulary List</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <%= simple_form_for [upload, SavedWord.new] do |f| %>

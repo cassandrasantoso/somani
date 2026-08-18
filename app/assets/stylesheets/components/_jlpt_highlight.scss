@@ -1,25 +1,76 @@
-.jlpt-match {
+/* Base highlight styles */
+.extracted .jlpt-match {
   padding: 2px 4px;
   border-radius: 4px;
   cursor: pointer;
+  color: #1e293b; /* Dark navy for strong legibility on light highlights */
+  font-weight: 500;
+  display: inline-block;
+  line-height: 1.3;
+  transition: transform 0.1s ease, filter 0.15s ease, box-shadow 0.15s ease;
 }
 
-.jlpt-match[data-level="N5"] {
-  background-color: #8ee88e;
+/* Base level colors */
+.extracted .jlpt-match[data-level="N5"] { background-color: #a4daa4; } /* Pastel Green */
+.extracted .jlpt-match[data-level="N4"] { background-color: #a1c6e8; } /* Pastel Blue */
+.extracted .jlpt-match[data-level="N3"] { background-color: #efdb9e; } /* Pastel Yellow/Gold */
+.extracted .jlpt-match[data-level="N2"] { background-color: #f9c26f; } /* Pastel Coral/Red */
+.extracted .jlpt-match[data-level="N1"] { background-color: #fb8e8e; } /* Pastel Purple */
+
+/* Hover state: Subtle brightness bump & rise effect */
+.extracted .jlpt-match:hover {
+  filter: brightness(0.93); /* Darkens slightly so highlight pops */
+  transform: translateY(-1px);
 }
 
-.jlpt-match[data-level="N4"] {
-  background-color: #a1c6e8;
+/* Click/Active state: Feel like a pressed button */
+.extracted .jlpt-match:active {
+  transform: translateY(0);
+  filter: brightness(0.88);
 }
 
-.jlpt-match[data-level="N3"] {
-  background-color: #f6df9a;
+/* Keyboard accessibility outline */
+.extracted .jlpt-match:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 1px;
 }
 
-.jlpt-match[data-level="N2"] {
-  background-color: #f7c2c2;
+/* JLPT Legend Container */
+.jlpt-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  flex-wrap: wrap;
 }
 
-.jlpt-match[data-level="N1"] {
-  background-color: #dccff8;
+.jlpt-legend__title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
 }
+
+.jlpt-legend__items {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+/* Reuses data-level backgrounds */
+.jlpt-legend__item {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #1e293b;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.jlpt-legend__item[data-level="N5"] { background-color: #a4daa4; }
+.jlpt-legend__item[data-level="N4"] { background-color: #a1c6e8; }
+.jlpt-legend__item[data-level="N3"] { background-color: #efdb9e; }
+.jlpt-legend__item[data-level="N2"] { background-color: #f9c26f; }
+.jlpt-legend__item[data-level="N1"] { background-color: #fb8e8e; }
