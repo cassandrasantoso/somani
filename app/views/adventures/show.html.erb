@@ -29,6 +29,11 @@
     <%= render @messages %>
   </div>
 
+  <%= render "adventures/tracker",
+             adventure: @adventure,
+             target_words: @target_words,
+             usage_counts: @usage_counts %>
+
   <% if @adventure.status == "active" %>
     <div id="message-form">
       <%= render "messages/form", adventure: @adventure, message: @message %>
