@@ -19,8 +19,27 @@
   z-index: 1;
 }
 
-.home-landing > .scene-select {
+.home-landing__signup {
+  display: block;
   width: 100%;
+  margin-top: 4rem;
+  max-width: 320px;
+  margin: 0 auto;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.home-landing__signup:hover {
+  color: var(--cream);
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 .home {
@@ -339,6 +358,32 @@
 .home-action--secondary {
   background: var(--sage);
   color: var(--cream);
+  animation: home-action-pulse 2.4s ease-out 2;
+}
+
+.home-action--secondary:hover,
+.home-action--secondary:focus-visible {
+  animation-play-state: paused;
+}
+
+@keyframes home-action-pulse {
+  0% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(72, 139, 114, 0.55);
+  }
+
+  70% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 14px rgba(72, 139, 114, 0);
+  }
+
+  100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(72, 139, 114, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-action--secondary {
+    animation: none;
+  }
 }
 
 // Logged-out scene selection page

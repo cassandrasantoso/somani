@@ -2,7 +2,13 @@
 .scene-container {
   position: relative;
   overflow: hidden;
-  height: calc(100dvh - 120px);
+}
+
+@include media-breakpoint-down(lg) {
+  .home-container,
+  .scene-container {
+    height: calc(100dvh - 120px);
+  }
 }
 
 /* Position the PNG image in the bottom-right corner */
@@ -24,12 +30,14 @@
   z-index: 1;
 }
 
-.home-container > .row {
+@include media-breakpoint-down(lg) {
+  .home-container > .row {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-height: 0; /* Crucial for internal scrolling */
   }
+}
 
   /* 2. Make middle content scroll internally if space is tight */
   .continue-adventures {
