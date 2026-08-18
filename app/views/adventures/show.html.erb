@@ -11,6 +11,20 @@
 
   <%= turbo_stream_from @adventure %>
 
+  <% if @adventure.prompt_goal? %>
+    <div class="goal-banner">
+      <h2>You've used every word <%= @adventure.goal_per_word %> times.</h2>
+      <p>That's the goal for this adventure. Finish here, or keep the story going.</p>
+
+      <%= button_to "Finish this adventure",
+                  adventure_path(@adventure, adventure: { status: "completed" }),
+                  method: :patch, class: "btn btn--primary" %>
+
+      <%= button_to "Keep going", continue_adventure_path(@adventure),
+                  method: :patch, class: "btn btn--ghost" %>
+    </div>
+  <% end %>
+
   <div id="messages" data-controller="blur">
     <%= render @messages %>
   </div>
