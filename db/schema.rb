@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_11_114318) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_18_120340) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,6 +44,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_114318) do
 
   create_table "adventures", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.datetime "goal_dismissed_at"
+    t.integer "goal_per_word", default: 5, null: false
+    t.datetime "goal_reached_at"
     t.bigint "scene_id", null: false
     t.string "status"
     t.string "title"
@@ -153,6 +156,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_114318) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "word_usages", force: :cascade do |t|
+    t.bigint "adventure_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "message_id", null: false
+    t.bigint "saved_word_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["adventure_id", "saved_word_id"], name: "index_word_usages_on_adventure_id_and_saved_word_id"
+    t.index ["adventure_id"], name: "index_word_usages_on_adventure_id"
+    t.index ["message_id", "saved_word_id"], name: "index_word_usages_on_message_id_and_saved_word_id", unique: true
+    t.index ["message_id"], name: "index_word_usages_on_message_id"
+    t.index ["saved_word_id"], name: "index_word_usages_on_saved_word_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "adventures", "scenes"
@@ -165,4 +181,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_11_114318) do
   add_foreign_key "uploaded_words", "saved_words"
   add_foreign_key "uploaded_words", "uploads"
   add_foreign_key "uploads", "users"
+  add_foreign_key "word_usages", "adventures"
+  add_foreign_key "word_usages", "messages"
+  add_foreign_key "word_usages", "saved_words"
 end
