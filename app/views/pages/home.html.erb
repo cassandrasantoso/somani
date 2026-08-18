@@ -6,9 +6,15 @@
   </div>
 
 <% if user_signed_in? %>
-  <div class="home">
+  <div class="home home-container">
     <div class="row g-3 g-lg-4">
       <div class="">
+        <!--Sakura animation-->
+        <div class="sakura-fall" aria-hidden="true">
+          <% 14.times do %>
+          <span class="sakura-fall__petal"></span>
+          <% end %>
+        </div>
         <div class="welcome-card">
           <span class="welcome-card__avatar"><i class="fa-solid fa-user"></i></span>
           <div>
@@ -55,6 +61,19 @@
         </div>
       </div>
 
+      <div class="col-12 col-lg-4 order-lg-3">
+        <div class="home-actions">
+          <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
+            <span class="home-action__icons">
+              <i class="fa-solid fa-microphone"></i>
+              <span class="home-action__plus">+</span>
+              <i class="fa-solid fa-file-arrow-up"></i>
+            </span>
+            <span>Upload Media</span>
+          <% end %>
+        </div>
+      </div>
+
       <div class="col-12 col-lg-8 order-lg-1">
         <section class="continue-adventures">
           <h2>Continue adventures</h2>
@@ -80,19 +99,9 @@
         </section>
       </div>
 
-      <div class="col-12 col-lg-4 order-lg-3 offset-lg-8">
-        <div class="home-actions">
-          <%= link_to new_upload_path, class: "home-action home-action--secondary" do %>
-            <span class="home-action__icons">
-              <i class="fa-solid fa-microphone"></i>
-              <span class="home-action__plus">+</span>
-              <i class="fa-solid fa-file-arrow-up"></i>
-            </span>
-            <span>Upload Media</span>
-          <% end %>
-        </div>
-      </div>
     </div>
+    <!-- Background Decoration Image -->
+    <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
   </div>
 <% else %>
 
@@ -120,6 +129,9 @@
       <% end %>
     </div>
     <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
+          <!-- Mt Fuji BG photo -->
+          <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
+    <!-- Background Decoration Image -->
   </div>
 <% end %>
 </div>
