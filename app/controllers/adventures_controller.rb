@@ -1,5 +1,5 @@
 class AdventuresController < ApplicationController
-  before_action :set_adventure, only: %i[show update destroy]
+  before_action :set_adventure, only: %i[show update destroy continue]
 
   def index
     @adventures = policy_scope(Adventure).includes(:scene).order(created_at: :desc)
@@ -9,6 +9,8 @@ class AdventuresController < ApplicationController
     authorize @adventure
     @messages = @adventure.messages.chronological.includes(:feedback)
     @message  = Message.new
+    @target_words = @adventure.target_words
+    @usage_counts = @adventure.usage_counts
   end
 
   def new
@@ -49,6 +51,12 @@ class AdventuresController < ApplicationController
     authorize @adventure
     @adventure.destroy
     redirect_to adventures_path, notice: "Adventure deleted.", status: :see_other
+  end
+
+  def continue
+    authorize @adventure, :update?
+    @adventure.update!(goal_dismissed_at: Time.current)
+    redirect_to @adventure, notice: "Keep going — no more reminders."
   end
 
   private
