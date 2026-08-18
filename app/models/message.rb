@@ -4,6 +4,7 @@ class Message < ApplicationRecord
   belongs_to :adventure
   has_one :feedback, dependent: :destroy
   has_one_attached :audio
+  has_many :word_usages, dependent: :destroy
 
   validates :role, inclusion: { in: ROLES }
   validates :body, presence: true
