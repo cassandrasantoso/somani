@@ -8,6 +8,7 @@ class MessagesController < ApplicationController
     authorize @message
 
     if @message.save
+      CreditWordUsage.call(@message)
       RespondToMessageJob.perform_later(@message, mode: params[:mode])
       @message = @adventure.messages.new
       respond_to do |format|
