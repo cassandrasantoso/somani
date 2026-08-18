@@ -30,7 +30,7 @@
 .scene-card-wrapper label {
   display: flex;
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 0.6rem 0.6rem;
   background-color: #f8fafc;
   border: 2px solid #e2e8f0;
   border-radius: 0.75rem;
@@ -68,11 +68,20 @@
 
 /* Avatar Styling */
 .scene-card__avatar {
-  width: 48px;
-  height: 48px;
+  width: 4rem;
+  height: 4rem;
   border: 2px solid #ffffff;
+  border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   flex-shrink: 0;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+span.scene-card__avatar {
+  background: var(--navy, #1e293b);
+  color: #ffffff;
+  font-weight: 700;
 }
 
 /* Subtle border color change on selected card */

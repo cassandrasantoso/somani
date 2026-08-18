@@ -8,8 +8,8 @@
 /* Position the PNG image in the bottom-right corner */
 .bg-corner-image {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: -30px;
+  right: -20px;
   width: 350px;
   height: auto;
   pointer-events: none;
@@ -34,6 +34,7 @@
   /* 2. Make middle content scroll internally if space is tight */
   .continue-adventures {
     max-height: 100%;
+    font-size: 1.0rem;
   }
 
 
