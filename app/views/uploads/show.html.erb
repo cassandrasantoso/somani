@@ -9,6 +9,17 @@
       <%= image_tag @upload.file_location, class: "upload-card__image" %>
     </div>
 <% end %>
+  <!-- JLPT Level Legend -->
+  <div class="jlpt-legend">
+    <span class="jlpt-legend__title">JLPT Levels:</span>
+    <div class="jlpt-legend__items">
+      <span class="jlpt-legend__item" data-level="N5">N5</span>
+      <span class="jlpt-legend__item" data-level="N4">N4</span>
+      <span class="jlpt-legend__item" data-level="N3">N3</span>
+      <span class="jlpt-legend__item" data-level="N2">N2</span>
+      <span class="jlpt-legend__item" data-level="N1">N1</span>
+    </div>
+  </div>
   <%= render "word_picker", upload: @upload, matched_entries: @matched_entries, already_saved_surfaces: @already_saved_surfaces %>
 
   <%= render "saved_words/list", upload: @upload, saved_words: @saved_words %>
