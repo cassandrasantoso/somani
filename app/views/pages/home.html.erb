@@ -1,3 +1,10 @@
+<div class="page-sakura">
+  <div class="sakura-fall" aria-hidden="true">
+    <% 14.times do %>
+      <span class="sakura-fall__petal"></span>
+    <% end %>
+  </div>
+
 <% if user_signed_in? %>
   <div class="home home-container">
     <div class="row g-3 g-lg-4">
@@ -11,7 +18,7 @@
         <div class="welcome-card">
           <span class="welcome-card__avatar"><i class="fa-solid fa-user"></i></span>
           <div>
-            <p class="welcome-card__greeting">ようこそ <%= current_user.username %>-san!</p>
+            <p class="welcome-card__greeting">ようこそ <%= current_user.username %>さん!</p>
             <p class="welcome-card__subtitle">🌸Welcome back to Somani🌸</p>
           </div>
         </div>
@@ -97,8 +104,17 @@
     <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
   </div>
 <% else %>
-  <div class="scene-select scene-container">
-    <h1>Choose an adventure</h1>
+
+<div class="auth-tagline text-center mx-auto" style="max-width: 600px;">
+  <p class="auth-tagline__title" style="font-size: 2rem;">🌸 What is SOMANI? 🌸</p>
+  <p class="auth-tagline__body" style="font-size: 1rem;"> From 染まる (somaru) "to become immersed." <br>Immerse yourself in Japanese <br>and master the JLPT N2.</p>
+</div>
+
+
+
+
+  <div class="scene-select">
+  <h1>Choose an adventure</h1>
 
     <div class="scene-grid row row-cols-1 row-cols-lg-3 g-3 g-lg-4">
       <% @scenes.each do |scene| %>
@@ -112,10 +128,10 @@
         </div>
       <% end %>
     </div>
-
     <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
           <!-- Mt Fuji BG photo -->
           <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
     <!-- Background Decoration Image -->
   </div>
 <% end %>
+</div>

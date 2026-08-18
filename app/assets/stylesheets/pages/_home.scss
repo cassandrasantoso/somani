@@ -1,8 +1,19 @@
+.page-sakura {
+  position: relative;
+  overflow: hidden;
+}
+
+.page-sakura > .sakura-fall {
+  position: fixed;
+}
+
 .home {
   max-width: 600px;
   min-width: 380px;
   margin: 0 auto;
   padding: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 @include media-breakpoint-down(lg) {
@@ -313,6 +324,8 @@
   max-width: 480px;
   margin: 0 auto;
   padding: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .scene-select > h1 {
