@@ -74,7 +74,7 @@
         </div>
       </div>
 
-      <div class="col-12 col-lg-8 order-lg-1">
+      <div class="col-12 col-lg-8 order-lg-1 g-3">
         <section class="continue-adventures">
           <h2>Continue adventures</h2>
 
@@ -83,7 +83,13 @@
               <% @active_adventures.each do |adventure| %>
                 <div class="col">
                   <%= link_to adventure_path(adventure), class: "adventure-card" do %>
-                    <span class="adventure-card__avatar"><%= adventure.character.name.first %></span>
+                    <span class="adventure-card__avatar">
+                      <% if adventure.character.image.attached? %>
+                        <%= image_tag adventure.character.image, alt: adventure.character.name %>
+                      <% else %>
+                        <%= adventure.character.name.first %>
+                      <% end %>
+                    </span>
                     <div class="adventure-card__info">
                       <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
                       <span class="adventure-card__badge">Active Chat</span>
@@ -105,14 +111,18 @@
   </div>
 <% else %>
 
-<div class="auth-tagline text-center mx-auto" style="max-width: 600px;">
-  <p class="auth-tagline__title" style="font-size: 2rem;">🌸 What is SOMANI? 🌸</p>
-  <p class="auth-tagline__body" style="font-size: 1rem;"> From 染まる (somaru) "to become immersed." <br>Immerse yourself in Japanese <br>and master the JLPT N2.</p>
+<div class="home-landing">
+  <div class="auth-tagline text-center mx-auto" style="max-width: 600px;">
+    <p class="auth-tagline__title" style="font-size: 2rem;">🌸 What is SOMANI? 🌸</p>
+    <p class="auth-tagline__body" style="font-size: 1rem;"> From 染まる (somaru) "to become immersed." <br>Immerse yourself in Japanese <br>and master the JLPT N2.</p>
+  </div>
+
+  <div class="scene-select">
+    <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
+  </div>
 </div>
 
-
-
-
+  <% if false %>
   <div class="scene-select">
   <h1>Choose an adventure</h1>
 
@@ -129,9 +139,9 @@
       <% end %>
     </div>
     <%= link_to "Sign up", new_user_registration_path, class: "btn" %>
-          <!-- Mt Fuji BG photo -->
-          <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
-    <!-- Background Decoration Image -->
   </div>
+  <!-- Mt Fuji BG photo -->
+  <%= image_tag "fujibg.png", class: "bg-corner-image", alt: "painted mt fuji" %>
+  <% end %>
 <% end %>
 </div>
