@@ -1,9 +1,11 @@
-<div id="word-tracker" class="tracker">
+<details id="word-tracker" class="tracker">
   <% done = target_words.count { |w| usage_counts.fetch(w.id, 0) >= adventure.goal_per_word } %>
 
-  <h3><%= done %> of <%= target_words.size %> words mastered</h3>
+  <summary class="tracker__summary">
+    <span><%= done %> of <%= target_words.size %> words mastered</span>
+  </summary>
 
-  <ul>
+  <ul class="tracker__list">
     <% target_words.sort_by { |w| usage_counts.fetch(w.id, 0) }.each do |word| %>
       <% used = usage_counts.fetch(word.id, 0) %>
       <% goal = adventure.goal_per_word %>
@@ -18,4 +20,4 @@
       </li>
     <% end %>
   </ul>
-</div>
+</details>
