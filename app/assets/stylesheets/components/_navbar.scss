@@ -2,12 +2,16 @@
   padding-bottom: calc(3.7rem + env(safe-area-inset-bottom));
 }
 
-// Top navbar
+
 .app-navbar {
   background: var(--navy);
   position: sticky;
   top: 0;
   z-index: 1030;
+}
+
+.turbo-progress-bar {
+  display: none !important;
 }
 
 .app-navbar__inner {
@@ -41,13 +45,13 @@
 
 .app-navbar__logo-crop {
   display: flex;
-  width: 2.37rem;
+  width: 2.40rem;
   height: 2.25rem;
   overflow: hidden;
 }
 
 .app-navbar__logo {
-  height: 3.68rem;
+  height: 4.00rem;
   width: auto;
   margin-top: -0.25rem;
   margin-left: -0.71rem;
@@ -57,7 +61,7 @@
 .app-navbar__wordmark {
   color: var(--cream);
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.50rem;
   letter-spacing: 0.04em;
 }
 

@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "word-picker" do %>
+  <%= render "uploads/word_picker", upload: @upload, matched_entries: @matched_entries, already_saved_surfaces: @already_saved_surfaces %>
+<% end %>
+
+<%= turbo_stream.replace "saved-word-list" do %>
+  <%= render "saved_words/list", upload: @upload, saved_words: @saved_words %>
+<% end %>
