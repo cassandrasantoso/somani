@@ -2,33 +2,163 @@
   max-width: 600px;
   min-width: 380px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.6rem;
 }
 
-.adventure-show__header h1 {
-  margin: 0 0 0.35rem;
-  font-size: 1.4rem;
+// Below the card breakpoint the page is a single mobile "screen": header and
+// footer controls stay put and only the message log scrolls, so nothing
+// ever pushes the page itself into a taller-than-viewport scroll.
+@media (max-width: 639.98px) {
+  body:has(.adventure-show) {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .adventure-show {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
+.adventure-show__hero {
+  position: relative;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background: var(--navy);
+  box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.45);
+}
+
+.adventure-show__hero-collapsed {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.9rem;
+  background: none;
+  border: none;
+  color: var(--cream);
+  text-align: left;
+  cursor: pointer;
+}
+
+.adventure-show__hero-face {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.adventure-show__hero-name {
+  flex: 1 1 auto;
+  min-width: 0;
   font-weight: 700;
-  color: var(--text);
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.adventure-show__header p {
+.adventure-show__hero-chevron {
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid var(--gold-light);
+  border-bottom: 2px solid var(--gold-light);
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.adventure-show__hero--expanded .adventure-show__hero-chevron {
+  transform: rotate(-135deg);
+}
+
+.adventure-show__hero-expanded {
+  position: relative;
+}
+
+.adventure-show__hero-expanded[hidden] {
+  display: none;
+}
+
+.adventure-show__hero-img {
+  width: 100%;
+  height: 10.5rem;
+  object-fit: cover;
+  display: block;
+}
+
+.adventure-show__hero-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(to top, rgba(22, 40, 61, 0.95) 25%, rgba(22, 40, 61, 0.55) 70%, rgba(22, 40, 61, 0) 100%);
+}
+
+.adventure-show__hero--no-image .adventure-show__hero-overlay {
+  position: static;
+  background: none;
+  padding: 0.75rem 1rem;
+}
+
+.adventure-show__hero h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--cream);
+}
+
+.adventure-show__hero p {
   margin: 0;
-  color: var(--text-soft);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  color: var(--gold-light);
+  font-size: 0.8rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 #messages {
+  flex: 1 1 auto;
+  min-height: 5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  padding: 0.15rem 0.15rem 0.4rem;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.message-row--user {
+  justify-content: flex-end;
+}
+
+.message-row__avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .message {
+  position: relative;
   max-width: 85%;
   padding: 0.85rem 1rem;
   border-radius: 1.25rem;
@@ -36,17 +166,38 @@
 }
 
 .message--assistant {
-  align-self: flex-start;
   background: var(--card);
   border: 1px solid var(--hairline);
-  border-bottom-left-radius: 0.3rem;
+}
+
+.message--assistant::after {
+  content: "";
+  position: absolute;
+  left: 1rem;
+  bottom: -0.4rem;
+  width: 0;
+  height: 0;
+  border-left: 0.45rem solid transparent;
+  border-right: 0.45rem solid transparent;
+  border-top: 0.45rem solid var(--card);
+  filter: drop-shadow(0 2px 1px rgba(31, 50, 72, 0.12));
 }
 
 .message--user {
-  align-self: flex-end;
   background: var(--navy);
   color: var(--cream);
-  border-bottom-right-radius: 0.3rem;
+}
+
+.message--user::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  bottom: -0.4rem;
+  width: 0;
+  height: 0;
+  border-left: 0.45rem solid transparent;
+  border-right: 0.45rem solid transparent;
+  border-top: 0.45rem solid var(--navy);
 }
 
 .message--user p {
@@ -109,19 +260,260 @@
   opacity: 0.75;
 }
 
-.adventure-show .form-label {
+.tracker {
+  flex-shrink: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 0.85rem;
+  background: var(--card);
+  padding: 0.5rem 0.85rem;
+}
+
+.tracker__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  list-style: none;
   font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tracker__summary::-webkit-details-marker {
+  display: none;
+}
+
+.tracker__summary::after {
+  content: "▾";
+  color: var(--text-soft);
+  transition: transform 0.15s ease;
+}
+
+.tracker[open] .tracker__summary::after {
+  transform: rotate(180deg);
+}
+
+.tracker__list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 8rem;
+  overflow-y: auto;
+}
+
+.tracker__word {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.6rem;
+  background: var(--app-bg);
+}
+
+.tracker__word.is-done {
+  background: var(--sage-light);
+}
+
+.tracker__surface {
+  font-family: var(--font-ja);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tracker__level {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--pink-dark);
+  background: var(--pink-light);
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+}
+
+.tracker__meaning {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text-soft);
+}
+
+.tracker__count {
+  font-size: 0.7rem;
+  color: var(--sage);
+  white-space: nowrap;
+}
+
+.word-hint {
+  position: relative;
+  align-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem;
+  background: var(--navy-2);
+  color: var(--cream);
+  border-radius: 1rem;
+  padding: 0.65rem 1.25rem 0.65rem 1rem;
+  margin: 0.25rem 0;
+  box-shadow: 0 8px 20px -16px rgba(31, 50, 72, 0.45);
+}
+
+.word-hint::before {
+  content: "";
+  position: absolute;
+  top: -0.5rem;
+  left: 1.75rem;
+  border: 0.35rem solid transparent;
+  border-bottom-color: var(--navy-2);
+  border-top: 0;
+}
+
+.word-hint::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5rem;
+  left: 1.75rem;
+  border: 0.35rem solid transparent;
+  border-top-color: var(--navy-2);
+  border-bottom: 0;
+}
+
+.word-hint__flag {
+  position: absolute;
+  top: 0;
+  right: 0.85rem;
+  width: 0;
+  height: 0;
+  border-left: 0.45rem solid transparent;
+  border-top: 0.7rem solid var(--gold-light);
+}
+
+.word-hint__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--navy);
+  background: var(--gold-light);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.word-hint__word {
+  font-family: var(--font-ja);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.word-hint__meaning {
+  color: var(--sage-light);
+  font-size: 0.8rem;
+}
+
+#message-form {
+  flex-shrink: 0;
+}
+
+.adventure-show__composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.adventure-show__composer form {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.adventure-show__send-btn {
+  margin-top: 0.5rem;
+}
+
+.adventure-show__menu {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.adventure-show__kebab {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--hairline);
+  background: var(--app-bg);
+  color: var(--navy);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.adventure-show__kebab:hover {
+  background: var(--card);
+}
+
+.adventure-show__menu-list {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 11rem;
+  background: var(--app-bg);
+  border: 1px solid var(--hairline);
+  border-radius: 0.85rem;
+  padding: 0.35rem;
+  box-shadow: 0 12px 28px -16px rgba(31, 50, 72, 0.4);
+  z-index: 20;
+}
+
+.adventure-show__menu.is-open .adventure-show__menu-list {
+  display: flex;
+}
+
+.adventure-show__menu-item {
+  display: block;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--navy);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.adventure-show__menu-item:hover {
+  background: var(--card);
+}
+
+.adventure-show__menu-item--danger {
+  color: var(--pink-dark);
+}
+
+.adventure-show__menu-item--danger:hover {
+  background: var(--pink-light);
+}
+
+.adventure-show .form-label {
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
 }
 
 .adventure-show .form-control {
   border: 1px solid var(--hairline);
   border-radius: 0.85rem;
-  padding: 0.65rem 0.9rem;
+  padding: 0.5rem 0.9rem;
   background: var(--app-bg);
   color: var(--text);
+  height: 2.75rem;
+  resize: vertical;
 }
 
 .adventure-show .form-control:focus {
@@ -138,7 +530,7 @@
   color: var(--cream);
   border: none;
   border-radius: 999px;
-  padding: 0.85rem;
+  padding: 0.6rem;
   font-weight: 600;
   text-align: center;
   margin-top: 0.5rem;
@@ -152,10 +544,56 @@
 }
 
 .adventure-show .completed {
+  flex-shrink: 0;
   text-align: center;
   color: var(--text-soft);
   font-style: italic;
-  padding: 1rem;
+  padding: 0.5rem;
+  margin: 0;
+}
+
+.adventure-show__actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.adventure-show__actions > form {
+  flex: 1 1 0;
+}
+
+.adventure-show__btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.55rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.adventure-show__btn--ghost {
+  background: transparent;
+  color: var(--navy);
+  border: 1px solid var(--hairline);
+}
+
+.adventure-show__btn--ghost:hover {
+  background: var(--card);
+  color: var(--navy);
+}
+
+.adventure-show__btn--danger {
+  background: transparent;
+  color: var(--pink-dark);
+  border: 1px solid var(--pink);
+}
+
+.adventure-show__btn--danger:hover {
+  background: var(--pink-light);
+  color: var(--pink-dark);
 }
 
 @media (min-width: 640px) {
@@ -171,6 +609,19 @@
     border: 1px solid var(--hairline);
     border-radius: 1.25rem;
     box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);
+  }
+
+  .adventure-show__hero-img {
+    min-height: 13rem;
+    height: 13rem;
+  }
+
+  .adventure-show__hero p {
+    -webkit-line-clamp: 3;
+  }
+
+  #messages {
+    overflow-y: visible;
   }
 }
 

@@ -1,6 +1,10 @@
 <%# stories 5 (hear the characters), 6 (unblur the text), 8 (see feedback on typed messages), 16 - (click and translate) %>
 
-<div class="message message--<%= message.role %>" id="<%= dom_id(message) %>">
+<div class="message-row message-row--<%= message.role %>">
+  <% if message.role == "assistant" && message.adventure.character.image.attached? %>
+    <%= image_tag message.adventure.character.image, class: "message-row__avatar", alt: message.adventure.character.name %>
+  <% end %>
+  <div class="message message--<%= message.role %>" id="<%= dom_id(message) %>">
   <% if message.role == "assistant" %>
     <%# story 5: audio plays; story 6: text starts blurred %>
     <span data-controller="audio-player" data-audio-player-url-value="<%= audio_message_path(message) %>">
@@ -24,7 +28,8 @@
     <% end %>
   <% end %>
 
-  <%# story 16 - click and translate %>
-  <%= link_to "Translate", translate_message_path(message),
-              data: { turbo_stream: true }, class: "btn-link" %>
+    <%# story 16 - click and translate %>
+    <%= link_to "Translate", translate_message_path(message),
+                data: { turbo_stream: true }, class: "btn-link" %>
+  </div>
 </div>

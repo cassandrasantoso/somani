@@ -4,9 +4,26 @@
 <%# story 15 - delete an adventure %>
 
 <div class="adventure-show">
-  <div class="adventure-show__header">
-    <h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
-    <p><%= @adventure.scene.description %></p>
+  <div class="adventure-show__hero <%= "adventure-show__hero--no-image" unless @adventure.character.image.attached? %>"
+       data-controller="hero">
+    <button type="button" class="adventure-show__hero-collapsed" data-action="hero#toggle"
+            aria-expanded="false" aria-controls="hero-expanded-<%= @adventure.id %>">
+      <% if @adventure.character.image.attached? %>
+        <%= image_tag @adventure.character.image, class: "adventure-show__hero-face", alt: @adventure.character.name %>
+      <% end %>
+      <span class="adventure-show__hero-name"><%= @adventure.title.presence || @adventure.scene.setting %></span>
+      <span class="adventure-show__hero-chevron" aria-hidden="true"></span>
+    </button>
+
+    <div id="hero-expanded-<%= @adventure.id %>" class="adventure-show__hero-expanded" data-hero-target="panel" hidden>
+      <% if @adventure.character.image.attached? %>
+        <%= image_tag @adventure.character.image, class: "adventure-show__hero-img", alt: @adventure.character.name %>
+      <% end %>
+      <div class="adventure-show__hero-overlay">
+        <h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
+        <p><%= @adventure.scene.description %></p>
+      </div>
+    </div>
   </div>
 
   <%= turbo_stream_from @adventure %>
@@ -35,20 +52,51 @@
              usage_counts: @usage_counts %>
 
   <% if @adventure.status == "active" %>
-    <div id="message-form">
-      <%= render "messages/form", adventure: @adventure, message: @message %>
-    </div>
-
-    <%# story 9 — end the storyline %>
-    <% if policy(@adventure).update? %>
-      <%= button_to "End this adventure",
-                    adventure_path(@adventure, adventure: { status: "completed" }),
-                    method: :patch %>
+    <% next_word = @target_words.min_by { |w| @usage_counts.fetch(w.id, 0) } %>
+    <% if next_word && @usage_counts.fetch(next_word.id, 0) < @adventure.goal_per_word %>
+      <div class="word-hint">
+        <span class="word-hint__flag"></span>
+        <span class="word-hint__label"><%= next_word.level %> Word</span>
+        <span class="word-hint__word"><%= next_word.surface %></span>
+        <span class="word-hint__meaning">Try using it in your reply — <%= next_word.meaning %></span>
+      </div>
     <% end %>
+
+    <div id="message-form" class="adventure-show__composer">
+      <%= render "messages/form", adventure: @adventure, message: @message %>
+
+      <%# story 9 — end the storyline / story 15 — delete an adventure %>
+      <% if policy(@adventure).update? || policy(@adventure).destroy? %>
+        <div class="adventure-show__menu" data-controller="menu">
+          <button type="button" class="adventure-show__kebab" data-menu-target="button" data-action="menu#toggle"
+                  aria-haspopup="true" aria-expanded="false" aria-label="More actions">
+            <span aria-hidden="true">&#8942;</span>
+          </button>
+
+          <div class="adventure-show__menu-list">
+            <% if policy(@adventure).update? %>
+              <%= link_to "End this adventure",
+                          adventure_path(@adventure, adventure: { status: "completed" }),
+                          data: { turbo_method: :patch }, class: "adventure-show__menu-item" %>
+            <% end %>
+
+            <% if policy(@adventure).destroy? %>
+              <%= link_to "Delete adventure", @adventure,
+                          data: { turbo_method: :delete, turbo_confirm: "Delete this adventure? This can't be undone." },
+                          class: "adventure-show__menu-item adventure-show__menu-item--danger" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
   <% else %>
     <p class="completed">This adventure is complete.</p>
-  <% end %>
 
-  <%# story 15 %>
-  <%= button_to "Delete adventure", @adventure, method: :delete if policy(@adventure).destroy? %>
+    <% if policy(@adventure).destroy? %>
+      <div class="adventure-show__actions">
+        <%= button_to "Delete adventure", @adventure, method: :delete,
+                      class: "adventure-show__btn adventure-show__btn--danger" %>
+      </div>
+    <% end %>
+  <% end %>
 </div>
