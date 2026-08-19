@@ -114,10 +114,14 @@
 <div class="home-landing">
   <div class="auth-tagline text-center mx-auto" style="max-width: 600px;">
     <p class="auth-tagline__title" style="font-size: 2rem;">🌸 What is SOMANI? 🌸</p>
+    <p class="auth-tagline__title" style="font-size: 1.5rem;">染まる + N2 = SOMANI</p>
     <p class="auth-tagline__body" style="font-size: 1rem;"> From 染まる (somaru) "to become immersed." <br>Immerse yourself in Japanese <br>and master the JLPT N2.</p>
   </div>
 
-  <%= link_to "Sign up", new_user_registration_path, class: "home-landing__signup" %>
+  <div class="home-landing__actions">
+    <%= link_to "Sign up", new_user_registration_path, class: "home-landing__signup" %>
+    <%= link_to "Log in", new_user_session_path, class: "home-landing__login" %>
+  </div>
 </div>
 
   <% if false %>

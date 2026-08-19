@@ -1,2 +1,41 @@
-<h1>Adventures#index</h1>
-<p>Find me in app/views/adventures/index.html.erb</p>
+<%# story 3 - see the adventures %>
+<div class="adventure-index">
+  <div class="adventure-index__header">
+    <h1>Your Adventures</h1>
+    <p class="adventure-index__subtitle">Every storyline you've started, in one place.</p>
+  </div>
+
+  <%= link_to uploads_path, class: "adventure-index__cta" do %>
+    <i class="fa-solid fa-plus"></i>
+    <span>Start a new adventure</span>
+  <% end %>
+
+  <% if @adventures.any? %>
+    <div class="adventure-index__list">
+      <% @adventures.each do |adventure| %>
+        <%= link_to adventure_path(adventure), class: "adventure-card adventure-card--#{adventure.status}" do %>
+          <span class="adventure-card__avatar">
+            <% if adventure.character.image.attached? %>
+              <%= image_tag adventure.character.image, alt: adventure.character.name %>
+            <% else %>
+              <%= adventure.character.name.first %>
+            <% end %>
+          </span>
+          <div class="adventure-card__info">
+            <p class="adventure-card__name"><%= adventure.title.presence || adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
+            <span class="adventure-card__badge adventure-card__badge--<%= adventure.status %>">
+              <%= adventure.status == "active" ? "Active" : "Completed" %>
+            </span>
+          </div>
+          <i class="fa-solid fa-chevron-right adventure-card__icon"></i>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="adventure-index__empty">
+      <span class="adventure-index__empty-icon">🌸</span>
+      <p>No adventures yet — upload something in Japanese and start your first storyline.</p>
+      <%= link_to "Go to uploads", uploads_path, class: "adventure-index__empty-btn" %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,123 @@
+.adventure-index {
+  max-width: 600px;
+  min-width: 380px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.adventure-index__header h1 {
+  margin: 0 0 0.15rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.adventure-index__subtitle {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.adventure-index__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--sage);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.adventure-index__cta:hover {
+  color: var(--cream);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.adventure-index__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.adventure-card--completed {
+  opacity: 0.75;
+}
+
+.adventure-card__badge--completed {
+  color: var(--text-soft);
+}
+
+.adventure-card__badge--completed::before {
+  background: var(--text-soft);
+}
+
+.adventure-index__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 3rem 1rem;
+  color: var(--text-soft);
+}
+
+.adventure-index__empty-icon {
+  font-size: 2rem;
+}
+
+.adventure-index__empty p {
+  margin: 0;
+  max-width: 320px;
+}
+
+.adventure-index__empty-btn {
+  display: inline-block;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.adventure-index__empty-btn:hover {
+  color: var(--cream);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+@media (min-width: 640px) {
+  body:has(.adventure-index) {
+    background: var(--card);
+  }
+
+  .adventure-index {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem 2rem;
+    background: var(--app-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 1.25rem;
+    box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .adventure-index {
+    max-width: 700px;
+    margin-top: 2.5rem;
+    padding: 2rem 2.5rem 2.5rem;
+  }
+}
