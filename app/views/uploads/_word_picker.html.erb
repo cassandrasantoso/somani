@@ -1,7 +1,7 @@
   <div id="word-picker" data-controller="word-picker" data-word-picker-already-saved-value="<%= already_saved_surfaces.to_json %>"
     data-action="turbo:submit-end->word-picker#closeModal">
     <div class="upload-card">
-      <h2 class="upload-card__title">Study Material・読み取ったテキスト</h2>
+      <h2 class="upload-card__title">Study Material<br>読み取ったテキスト</h2>
       <p class="extracted" data-word-picker-target="text"
         data-action="mouseup->word-picker#capture">
         <%= highlight_jlpt_matches(upload.extracted_text, matched_entries) %>
