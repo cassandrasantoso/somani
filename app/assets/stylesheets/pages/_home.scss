@@ -125,6 +125,13 @@
   flex-shrink: 0;
 }
 
+.welcome-card__avatar img,
+.adventure-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .welcome-card__greeting {
   margin: 0;
   font-weight: 700;

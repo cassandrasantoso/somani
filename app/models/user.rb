@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :adventures, through: :uploads
   # this keeps user's words alive when an upload is deleted:
   has_many :saved_words, dependent: :destroy
+  has_one_attached :avatar
 
   validates :username, presence: true, uniqueness: true
 end
