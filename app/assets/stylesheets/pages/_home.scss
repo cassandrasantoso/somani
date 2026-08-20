@@ -100,7 +100,8 @@
   border-radius: 1.5rem;
   border: 2px solid var(--gold);
   padding: 1rem 1.25rem;
-  box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.35);
+  box-shadow: 0 10px 20px -4px rgba(245, 120, 160, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .welcome-card {
@@ -261,13 +262,13 @@
   align-items: center;
   gap: 0.85rem;
   background: var(--card);
-  border: 1px solid var(--hairline);
+  border: 1px solid rgba(245, 120, 160, 0.45);
   border-radius: 1.25rem;
   padding: 0.2rem 1.1rem;
   text-decoration: none;
   color: inherit;
-  box-shadow: 0 8px 20px -16px rgba(31, 50, 72, 0.35);
-  transition: transform 0.15s ease;
+  box-shadow: 0 10px 20px -4px rgba(245, 120, 160, 0.45);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .adventure-card:hover {
