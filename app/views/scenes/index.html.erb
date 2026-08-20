@@ -1,2 +1,7 @@
-<h1>Scenes#index</h1>
-<p>Find me in app/views/scenes/index.html.erb</p>
+<div class="my-words">
+  <div class="my-words__header">
+    <h1><%= due_page ? "Due for review" : "My words・単語帳" %></h1>
+    <p class="my-words__subtitle">
+      <%= due_page ? "Words ready for another look" : pluralize(@saved_words.size, "word") %>
+    </p>
+  </div>
