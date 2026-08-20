@@ -12,6 +12,8 @@ class RespondToMessageJob < ApplicationJob
 
     adventure.messages.create!(role: "assistant", body: reply_text)
 
+    # after the reply — that's what the user is waiting for. #recheck rescues
+    # internally so a failed word check can't take this job down.
     CreditWordUsage.recheck(message)
   end
 
