@@ -16,7 +16,13 @@
           <% end %>
         </div>
         <div class="welcome-card">
-          <span class="welcome-card__avatar"><i class="fa-solid fa-user"></i></span>
+          <span class="welcome-card__avatar">
+            <% if current_user.avatar.attached? %>
+              <%= image_tag current_user.avatar, class: "avatar-img", alt: current_user.username %>
+            <% else %>
+              <%= image_tag "somani_bird.png", class: "avatar-img", alt: "Somani Mascot" %>
+            <% end %>
+          </span>
           <div>
             <p class="welcome-card__greeting">おかえり <%= current_user.username %>さん!</p>
             <p class="welcome-card__subtitle">🌸Welcome back to Somani🌸</p>
