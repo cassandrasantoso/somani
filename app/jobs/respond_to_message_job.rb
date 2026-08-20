@@ -11,6 +11,8 @@ class RespondToMessageJob < ApplicationJob
     reply_text = generate_reply(adventure, mode)
 
     adventure.messages.create!(role: "assistant", body: reply_text)
+
+    CreditWordUsage.recheck(message)
   end
 
   private

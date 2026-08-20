@@ -85,8 +85,9 @@ class CreditWordUsage
     forms.flat_map { |f| bases(f) }.uniq.any? { |b| body.include?(b) }
   end
 
-  # Bare する and 来る are exact-match only. Any string short enough to
-  # identify them collides with everything else — see the note below.
+  # Bare する and 来る are exact-match only: any string short enough to
+  # identify them (し, した, して) also appears in the polite forms of every
+  # other verb — 食べました contains した.
   IRREGULAR = %w[する くる 来る].freeze
 
   # Ichidan: the stem plus whatever can follow it.
