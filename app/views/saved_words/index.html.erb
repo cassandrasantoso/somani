@@ -7,11 +7,12 @@
       <%= due_page ? "Words ready for another look" : pluralize(@saved_words.size, "word") %>
     </p>
   </div>
-
+ <!--!
   <div class="my-words__tabs">
     <%= link_to "All words", saved_words_path, class: "my-words__tab#{" is-active" unless due_page}" %>
     <%= link_to "Due for review", due_saved_words_path, class: "my-words__tab#{" is-active" if due_page}" %>
   </div>
+   -->
 
   <% if @saved_words.any? %>
     <ul class="word-card-list">
@@ -33,9 +34,9 @@
           </div>
 
           <div class="word-card__actions">
-            <%= button_to review_saved_word_path(word), method: :patch, class: "word-card__btn word-card__btn--reviewed" do %>
-              <i class="fa-solid fa-check"></i> Reviewed
-            <% end %>
+            <button type="button" class="word-card__btn word-card__btn--adventures" data-bs-toggle="modal" data-bs-target="#word-adventures-<%= word.id %>">
+              <i class="fa-solid fa-compass"></i> Adventures
+            </button>
             <% if policy(word).edit? %>
               <%= link_to edit_saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
                 <i class="fa-solid fa-pen"></i> Edit
@@ -43,6 +44,18 @@
             <% end %>
           </div>
         </li>
+
+        <%= render layout: "shared/modal", locals: { id: "word-adventures-#{word.id}", header: word.surface } do %>
+          <% if word.adventures.any? %>
+            <div class="adventure-list">
+              <% word.adventures.each do |adventure| %>
+                <%= render "shared/adventure_card", adventure: adventure %>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="adventure-list__empty">No adventures are using this word yet.</p>
+          <% end %>
+        <% end %>
       <% end %>
     </ul>
   <% else %>

@@ -108,6 +108,7 @@
 
 .word-card__actions {
   display: flex;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
@@ -147,6 +148,53 @@
 .word-card__btn--edit:hover {
   color: var(--text);
   background: var(--app-bg);
+}
+
+.word-card__btn--adventures {
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.word-card__btn--adventures:hover {
+  color: var(--cream);
+  opacity: 0.9;
+}
+
+.modal-content {
+  border: 1px solid var(--hairline);
+  border-radius: 1.25rem;
+  background: var(--app-bg);
+  box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.35);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--hairline);
+  padding: 1.1rem 1.4rem;
+}
+
+.modal-title {
+  font-family: var(--font-ja);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-body {
+  padding: 1.1rem 1.4rem 1.4rem;
+}
+
+.adventure-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.adventure-list__empty {
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  padding: 1.5rem 0.5rem;
+  margin: 0;
 }
 
 .my-words__empty {

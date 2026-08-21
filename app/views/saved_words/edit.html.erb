@@ -1,2 +1,18 @@
-<h1>SavedWords#edit</h1>
-<p>Find me in app/views/saved_words/edit.html.erb</p>
+<div class="my-words">
+  <div class="my-words__header">
+    <h1>Edit word</h1>
+    <p class="my-words__subtitle">Update「<%= @saved_word.surface %>」</p>
+  </div>
+
+  <div class="upload-card">
+    <%= simple_form_for @saved_word do |f| %>
+      <%= f.input :surface %>
+      <%= f.input :reading %>
+      <%= f.input :meaning %>
+      <%= f.input :level, collection: %w[N5 N4 N3 N2 N1] %>
+      <%= f.submit "Save changes", class: "upload-form__submit" %>
+    <% end %>
+  </div>
+
+  <%= link_to "Cancel", saved_words_path, class: "word-card__btn word-card__btn--edit" %>
+</div>
