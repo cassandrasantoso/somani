@@ -4,6 +4,7 @@ class SavedWord < ApplicationRecord
 
   has_many :uploaded_words, dependent: :destroy
   has_many :uploads, through: :uploaded_words
+  has_many :adventures, through: :uploads
 
   validates :surface, presence: true, uniqueness: { scope: :user_id }
 

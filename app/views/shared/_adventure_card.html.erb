@@ -1,0 +1,14 @@
+<%= link_to adventure_path(adventure), class: "adventure-card" do %>
+  <span class="adventure-card__avatar">
+    <% if adventure.character.image.attached? %>
+      <%= image_tag adventure.character.image, alt: adventure.character.name %>
+    <% else %>
+      <%= adventure.character.name.first %>
+    <% end %>
+  </span>
+  <div class="adventure-card__info">
+    <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
+    <span class="adventure-card__badge">Active Chat</span>
+  </div>
+  <i class="fa-solid fa-paper-plane adventure-card__icon"></i>
+<% end %>

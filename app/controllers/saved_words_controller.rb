@@ -2,7 +2,7 @@ class SavedWordsController < ApplicationController
   before_action :set_saved_word, only: %i[show edit update destroy review]
 
   def index
-    @saved_words = policy_scope(SavedWord)
+    @saved_words = policy_scope(SavedWord).includes(adventures: { scene: :character })
     return unless params[:upload_id]
 
     @saved_words = @saved_words.joins(:uploads)
@@ -57,7 +57,7 @@ class SavedWordsController < ApplicationController
   def update
     authorize @saved_word
     if @saved_word.update(saved_word_params)
-      redirect_to @saved_word
+      redirect_to saved_words_path, notice: "「#{@saved_word.surface}」updated."
     else
       render :edit, status: :unprocessable_entity
     end
@@ -71,7 +71,7 @@ class SavedWordsController < ApplicationController
   end
 
   def due
-    @saved_words = policy_scope(SavedWord).due
+    @saved_words = policy_scope(SavedWord).due.includes(adventures: { scene: :character })
     render :index
   end
 
