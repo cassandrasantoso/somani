@@ -4,6 +4,7 @@ class JlptEntry < ApplicationRecord
 
   scope :by_level, ->(level) { where(level: level) if level.present? }
   scope :by_type,  ->(type)  { where(entry_type: type) if type.present? }
+  scope :words,    -> { by_type("word") }
 
   # the following scope is equivalent to:
   # SELECT * FROM jlpt_entries
