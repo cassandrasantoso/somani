@@ -52,14 +52,14 @@ Scene.create!(
 Scene.create!(
   setting: "Tokyo Office",
   description: "It's your first week at a Tokyo trading company. Takeshi, your coworker, shows you around the office and talks with you about your schedule, upcoming meetings, and your daily responsibilities.",
-  level: "N3",
+  level: "N2",
   character: takeshi
 )
 
 Scene.create!(
   setting: "Real Estate Agency",
   description: "You are looking for an apartment in Tokyo. Hina, a real estate agent, asks about your budget, preferred neighborhood, and housing requirements. She shows you several apartments and explains the rent, initial fees, and important contract terms.",
-  level: "N3",
+  level: "N2",
   character: hina
 )
 
