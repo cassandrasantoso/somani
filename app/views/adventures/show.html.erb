@@ -3,7 +3,11 @@
 <%# story 9 - end a storyline %>
 <%# story 15 - delete an adventure %>
 
-<div class="adventure-show">
+<div class="adventure-show"
+     data-controller="chat"
+     data-action="turbo:before-stream-render@document->chat#handleStream"
+     >
+
   <div class="adventure-show__hero <%= "adventure-show__hero--no-image" unless @adventure.character.image.attached? %>"
        data-controller="hero">
     <button type="button" class="adventure-show__hero-collapsed" data-action="hero#toggle"
@@ -32,6 +36,13 @@
   <div id="messages" data-controller="blur">
     <%= render @messages %>
   </div>
+
+       <%# Loading animation before AI response %>
+    <div class="ai-loading"
+         data-chat-target="loader"
+         hidden>
+      <div class="loader"></div>
+    </div>
 
   <%= render "adventures/tracker",
             adventure: @adventure,
