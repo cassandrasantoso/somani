@@ -36,7 +36,11 @@ class AdventuresController < ApplicationController
       OpeningLineJob.perform_later(@adventure)
       redirect_to @adventure
     else
-      @scenes = Scene.includes(:character)
+      @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
+      existing = @adventure.word_goals.map(&:saved_word_id)
+      (@upload.saved_words.pluck(:id) - existing).each do |id|
+        @adventure.word_goals.build(saved_word_id: id, target: WordGoal::DEFAULT_TARGET)
+      end
       render :new, status: :unprocessable_entity
     end
   end
