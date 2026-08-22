@@ -24,6 +24,22 @@
                     input_html: { class: "form-control" } %>
       </div>
 
+      <!-- Word Goals -->                                                    <!-- NEW -->
+      <fieldset class="adventure-goals">                                     <!-- NEW -->
+        <legend>How many times will you use each word?</legend>              <!-- NEW -->
+        <%= f.fields_for :word_goals do |g| %>                               <!-- NEW -->
+          <div class="adventure-goals__row">                                 <!-- NEW -->
+            <%= g.hidden_field :saved_word_id %>                             <!-- NEW -->
+            <span class="adventure-goals__surface"><%= g.object.saved_word.surface %></span>   <!-- NEW -->
+            <span class="adventure-goals__level"><%= g.object.saved_word.level %></span>       <!-- NEW -->
+            <span class="adventure-goals__meaning"><%= g.object.saved_word.meaning %></span>   <!-- NEW -->
+            <%= g.select :target,                                            <!-- NEW -->
+                         WordGoal::RANGE.map { |n| ["#{n}×", n] },            <!-- NEW -->
+                         { include_blank: "1× (default)" } %>                <!-- NEW -->
+          </div>                                                             <!-- NEW -->
+        <% end %>                                                            <!-- NEW -->
+      </fieldset>
+
       <!-- Scene Selection -->
       <div class="adventure-setup__field">
         <label class="adventure-setup__label">Select Your Setting &amp; Character</label>
