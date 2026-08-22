@@ -1,4 +1,14 @@
-<%= simple_form_for [adventure, message] do |f| %>
-  <%= f.input :body, label: "Your reply (日本語で)" %>
-  <%= f.submit "Send", class: "btn adventure-show__send-btn" %>
+<%= simple_form_for [adventure, message], html: { class: "chat-form" } do |f| %>
+  <div class="chat-form__input-wrapper">
+    <%= f.input :body,
+                label: false,
+                placeholder: "ここに返事を入力",
+                input_html: {
+                  class: "chat-form__input",
+                  autocomplete: "off"
+                },
+                wrapper_html: { class: "chat-form__field" } %>
+
+    <%= f.submit "➤", class: "chat-form__send", aria: { label: "Send message" } %>
+  </div>
 <% end %>
