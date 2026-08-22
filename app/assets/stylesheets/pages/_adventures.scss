@@ -182,6 +182,21 @@
   box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
 }
 
+.message--assistant::before {
+  content: "";
+  position: absolute;
+
+  left: 1rem;
+  bottom: -0.6rem;
+
+  width: 0;
+  height: 0;
+
+  border-left: 0.55rem solid transparent;
+  border-right: 0.55rem solid transparent;
+  border-top: 0.6rem solid var(--border);
+}
+
 .message--assistant::after {
   content: "";
   position: absolute;
