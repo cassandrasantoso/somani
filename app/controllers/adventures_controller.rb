@@ -51,6 +51,10 @@ class AdventuresController < ApplicationController
     if @adventure.update(adventure_params)
       redirect_to @adventure, notice: "Adventure complete."
     else
+      @messages     = @adventure.messages.chronological.includes(:feedback)
+      @message      = Message.new
+      @target_words = @adventure.target_words
+      @usage_counts = @adventure.usage_counts
       render :show, status: :unprocessable_entity
     end
   end
