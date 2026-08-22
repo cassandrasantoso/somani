@@ -30,7 +30,7 @@
 
   <% if @adventure.prompt_goal? %>
     <div class="goal-banner">
-      <h2>You've used every word <%= @adventure.goal_per_word %> times.</h2>
+      <h2>You've reached the target for every word.</h2>
       <p>That's the goal for this adventure. Finish here, or keep the story going.</p>
 
       <%= button_to "Finish this adventure",
@@ -47,13 +47,18 @@
   </div>
 
   <%= render "adventures/tracker",
-             adventure: @adventure,
-             target_words: @target_words,
-             usage_counts: @usage_counts %>
+            adventure: @adventure,
+            target_words: @target_words,
+            usage_counts: @usage_counts,
+            goal_targets: @goal_targets %>
 
   <% if @adventure.status == "active" %>
-    <% next_word = @target_words.min_by { |w| @usage_counts.fetch(w.id, 0) } %>
-    <% if next_word && @usage_counts.fetch(next_word.id, 0) < @adventure.goal_per_word %>
+    <% next_word = @target_words.min_by { |w|
+      @usage_counts.fetch(w.id, 0) - @goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+    } %>
+    <% if next_word &&
+          @usage_counts.fetch(next_word.id, 0) <
+            @goal_targets.fetch(next_word.id, WordGoal::DEFAULT_TARGET) %>
       <div class="word-hint">
         <span class="word-hint__flag"></span>
         <span class="word-hint__label"><%= next_word.level %> Word</span>

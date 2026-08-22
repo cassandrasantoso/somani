@@ -11,6 +11,7 @@ class AdventuresController < ApplicationController
     @message  = Message.new
     @target_words = @adventure.target_words
     @usage_counts = @adventure.usage_counts
+    @goal_targets = @adventure.goal_targets
   end
 
   def new
@@ -55,6 +56,7 @@ class AdventuresController < ApplicationController
       @message      = Message.new
       @target_words = @adventure.target_words
       @usage_counts = @adventure.usage_counts
+      @goal_targets = @adventure.goal_targets
       render :show, status: :unprocessable_entity
     end
   end
