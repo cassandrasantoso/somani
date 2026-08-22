@@ -40,9 +40,13 @@ Rails.application.routes.draw do
 
   resources :scenes, only: %i[index show]                # story 3 - browse storylines (same list as home)
 
-  resources :adventures, only: %i[index show update destroy] do   # stories 4 - role play, 9 - storyline ends, 15 - delete
-    member { patch :continue }  # keep playing after hitting the word goal
-    resources :messages, only: %i[create]                # story 7 - respond by typing
+  resources :adventures, only: %i[index show update destroy] do
+  member { patch :continue }  # keep playing after hitting the word goal
+
+  # one word's target — keyed by the word, which may not have a row yet
+  patch "word_goals/:saved_word_id", to: "word_goals#update", as: :word_goal
+
+  resources :messages, only: %i[create]                # story 7 - respond by typing
   end
 
   resources :messages, only: %i[show] do

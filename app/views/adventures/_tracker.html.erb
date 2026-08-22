@@ -1,20 +1,28 @@
 <details id="word-tracker" class="tracker">
-  <% done = target_words.count { |w| usage_counts.fetch(w.id, 0) >= adventure.goal_per_word } %>
+  <% done = target_words.count { |w|
+       usage_counts.fetch(w.id, 0) >= goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+     } %>
 
   <summary class="tracker__summary">
     <span><%= done %> of <%= target_words.size %> words mastered</span>
   </summary>
 
   <ul class="tracker__list">
-    <% target_words.sort_by { |w| usage_counts.fetch(w.id, 0) }.each do |word| %>
+    <% target_words.sort_by { |w|
+         used = usage_counts.fetch(w.id, 0)
+         goal = goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+         [used >= goal ? 1 : 0, used - goal]      # unfinished first, furthest short next
+       }.each do |word| %>
       <% used = usage_counts.fetch(word.id, 0) %>
-      <% goal = adventure.goal_per_word %>
+      <% goal = goal_targets.fetch(word.id, WordGoal::DEFAULT_TARGET) %>
       <li class="tracker__word <%= used >= goal ? 'is-done' : (used.zero? ? 'is-untouched' : 'is-partial') %>">
         <span class="tracker__surface"><%= word.surface %></span>
         <span class="tracker__level"><%= word.level %></span>
         <span class="tracker__meaning"><%= word.meaning %></span>
         <span class="tracker__count">
-          <%= "●" * [used, goal].min %><%= "○" * [goal - used, 0].max %>
+          <% if goal <= 10 %>
+            <%= "●" * [used, goal].min %><%= "○" * [goal - used, 0].max %>
+          <% end %>
           <%= used %>/<%= goal %>
         </span>
       </li>

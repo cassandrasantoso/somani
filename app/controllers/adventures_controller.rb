@@ -11,12 +11,18 @@ class AdventuresController < ApplicationController
     @message  = Message.new
     @target_words = @adventure.target_words
     @usage_counts = @adventure.usage_counts
+    @goal_targets = @adventure.goal_targets
   end
 
   def new
     @upload = current_user.uploads.find(params[:upload_id])
     authorize @upload, :start_adventure?
+
     @adventure = @upload.adventures.new
+    @upload.saved_words.each do |word|
+      @adventure.word_goals.build(saved_word: word, target: WordGoal::DEFAULT_TARGET)
+    end
+
     @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
   end
 
@@ -31,7 +37,11 @@ class AdventuresController < ApplicationController
       OpeningLineJob.perform_later(@adventure)
       redirect_to @adventure
     else
-      @scenes = Scene.includes(:character)
+      @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
+      existing = @adventure.word_goals.map(&:saved_word_id)
+      (@upload.saved_words.pluck(:id) - existing).each do |id|
+        @adventure.word_goals.build(saved_word_id: id, target: WordGoal::DEFAULT_TARGET)
+      end
       render :new, status: :unprocessable_entity
     end
   end
@@ -42,6 +52,11 @@ class AdventuresController < ApplicationController
     if @adventure.update(adventure_params)
       redirect_to @adventure, notice: "Adventure complete."
     else
+      @messages     = @adventure.messages.chronological.includes(:feedback)
+      @message      = Message.new
+      @target_words = @adventure.target_words
+      @usage_counts = @adventure.usage_counts
+      @goal_targets = @adventure.goal_targets
       render :show, status: :unprocessable_entity
     end
   end
@@ -66,6 +81,7 @@ class AdventuresController < ApplicationController
   end
 
   def adventure_params
-    params.require(:adventure).permit(:scene_id, :title, :status)
+    params.require(:adventure).permit(:scene_id, :title, :status,
+                                      word_goals_attributes: %i[saved_word_id target])
   end
 end
