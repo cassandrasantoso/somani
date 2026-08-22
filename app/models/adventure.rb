@@ -40,4 +40,8 @@ class Adventure < ApplicationRecord
   def prompt_goal?
     goal_reached_at? && goal_dismissed_at.nil? && status == "active"
   end
+
+  def re_evaluate_goal!
+    update!(goal_reached_at: (Time.current if goal_met?), goal_dismissed_at: nil)
+  end
 end
