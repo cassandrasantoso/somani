@@ -54,12 +54,14 @@
   <% if @adventure.status == "active" %>
     <% next_word = @target_words.min_by { |w| @usage_counts.fetch(w.id, 0) } %>
     <% if next_word && @usage_counts.fetch(next_word.id, 0) < @adventure.goal_per_word %>
+      <% if false %>
       <div class="word-hint">
         <span class="word-hint__flag"></span>
         <span class="word-hint__label"><%= next_word.level %> Word</span>
         <span class="word-hint__word"><%= next_word.surface %></span>
         <span class="word-hint__meaning">Try using it in your reply — <%= next_word.meaning %></span>
       </div>
+      <% end %>
     <% end %>
 
     <div id="message-form" class="adventure-show__composer">
