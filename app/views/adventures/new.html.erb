@@ -1,33 +1,32 @@
 <%# story 12 - create a new adventure %>
-<div class="adventure-setup container my-4" style="max-width: 680px;">
+<div class="adventure-setup">
 
   <!-- Header & Context Banner -->
-  <div class="adventure-setup__header text-center mb-4">
-    <span class="badge bg-primary-subtle text-primary mb-2 px-3 py-2 rounded-pill">
-      📖 Vocabulary Source
-    </span>
-    <h1 class="adventure-setup__title h2 fw-bold mb-1">Start a New Adventure</h1>
-    <p class="text-muted fs-6">
+  <div class="adventure-setup__header">
+    <span class="adventure-setup__badge">📖 Vocabulary Source</span>
+    <h1 class="adventure-setup__title">Start a New Adventure</h1>
+    <p class="adventure-setup__subtitle">
       Generate an interactive story using vocabulary extracted from
-      <strong class="text-dark"><%= @upload.file.filename %></strong>.
+      <strong><%= @upload.file.filename %></strong>.
     </p>
   </div>
 
   <!-- Form Card -->
-  <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+  <div class="adventure-setup__card">
     <%= simple_form_for [@upload, @adventure] do |f| %>
 
       <!-- Adventure Title Input -->
-      <div class="mb-4">
+      <div class="adventure-setup__field">
         <%= f.input :title,
                     label: "Adventure Title",
                     placeholder: "e.g., NHK News Article...Meeting notes...",
-                    input_html: { class: "form-control form-control-lg rounded-3 fs-6" } %>
+                    label_html: { class: "adventure-setup__label" },
+                    input_html: { class: "form-control" } %>
       </div>
 
       <!-- Scene Selection -->
-      <div class="mb-4">
-        <label class="form-label fw-semibold text-dark mb-2">Select Your Setting & Character</label>
+      <div class="adventure-setup__field">
+        <label class="adventure-setup__label">Select Your Setting &amp; Character</label>
 
         <%= f.input :scene_id,
                     as: :radio_buttons,
@@ -37,18 +36,18 @@
                     item_wrapper_class: "scene-card-wrapper",
                     label_method: ->(s) {
                       avatar_html = if s.character.image.attached?
-                        image_tag(s.character.image, class: "scene-card__avatar rounded-circle", alt: s.character.name)
+                        image_tag(s.character.image, class: "scene-card__avatar", alt: s.character.name)
                       else
-                        %Q(<span class="scene-card__avatar rounded-circle d-flex align-items-center justify-content-center">#{ERB::Util.html_escape(s.character.name.first)}</span>)
+                        %Q(<span class="scene-card__avatar scene-card__avatar--placeholder">#{ERB::Util.html_escape(s.character.name.first)}</span>)
                       end
 
                       raw(%Q(
-                        <div class="scene-card__content d-flex justify-content-between align-items-center w-100">
-                          <div class="d-flex align-items-center gap-3">
+                        <div class="scene-card__content">
+                          <div class="scene-card__info">
                             #{avatar_html}
                             <div>
-                              <div class="fw-bold text-dark fs-6">#{ERB::Util.html_escape(s.setting)}</div>
-                              <div class="text-muted small">Character: <strong>#{ERB::Util.html_escape(s.character.name)}</strong></div>
+                              <div class="scene-card__setting">#{ERB::Util.html_escape(s.setting)}</div>
+                              <div class="scene-card__character">Character: <strong>#{ERB::Util.html_escape(s.character.name)}</strong></div>
                             </div>
                           </div>
                           <span class="badge level-badge level-badge--#{s.level.to_s.downcase}">
@@ -60,9 +59,7 @@
       </div>
 
       <!-- Submit Action -->
-      <div class="d-grid gap-2 mt-4">
-        <%= f.submit "Begin Adventure ⚔️", class: "btn btn-primary btn-lg rounded-3 fw-bold py-3" %>
-      </div>
+      <%= f.submit "Begin Adventure ⚔️", class: "adventure-setup__submit" %>
     <% end %>
   </div>
 </div>
