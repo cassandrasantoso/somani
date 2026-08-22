@@ -81,6 +81,8 @@ puts "Creating JLPT entries..."
   { entry_type: "word", content: "特徴", reading: "とくちょう", level: "N2", meaning: "characteristic / feature" },
   { entry_type: "word", content: "目的", reading: "もくてき", level: "N2", meaning: "purpose / objective" },
   { entry_type: "word", content: "現状", reading: "げんじょう", level: "N2", meaning: "current situation / current state" },
+  { entry_type: "word", content: "上昇", reading: "じょうしょう", level: "N2", meaning: "rise / increase" },
+  { entry_type: "word", content: "活かせる", reading: "いかせる", level: "N3", meaning: "to be able to utilize / can make use of (potential form of 活かす)" },
 
   # Grammar
   { entry_type: "grammar", content: "〜わけではない", reading: "わけではない", level: "N2", meaning: "it does not mean that ~ / not necessarily ~" },
