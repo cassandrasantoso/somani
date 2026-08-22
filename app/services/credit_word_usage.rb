@@ -56,15 +56,17 @@ class CreditWordUsage
   def pending_words
     already = @message.word_usages.pluck(:saved_word_id)
     counts  = @adventure.usage_counts
+    targets = @adventure.goal_targets
 
     @adventure.target_words.to_a.reject do |w|
-      already.include?(w.id) || counts.fetch(w.id, 0) >= @adventure.goal_per_word
+      already.include?(w.id) || counts.fetch(w.id, 0) >= targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
     end
   end
 
   def broadcast_tracker
-    words  = @adventure.target_words
-    counts = @adventure.usage_counts
+    words   = @adventure.target_words
+    counts  = @adventure.usage_counts
+    targets = @adventure.goal_targets
 
     @adventure.broadcast_replace_to(
       @adventure,
@@ -72,7 +74,8 @@ class CreditWordUsage
       partial: "adventures/tracker",
       locals: { adventure: @adventure,
                 target_words: words,
-                usage_counts: counts }
+                usage_counts: counts,
+                goal_targets: targets }
     )
   end
 
