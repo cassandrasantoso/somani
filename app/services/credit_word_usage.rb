@@ -44,11 +44,20 @@ class CreditWordUsage
         message_id: @message.id, created_at: now, updated_at: now }
     end
 
-    # the unique index means a word can only be credited once per message
     WordUsage.insert_all(rows, unique_by: %i[message_id saved_word_id])
 
     @adventure.check_goal!
     broadcast_tracker
+    broadcast_goal_banner
+  end
+
+  def broadcast_goal_banner
+    @adventure.broadcast_replace_to(
+      @adventure,
+      target: "goal-banner",
+      partial: "adventures/goal_banner",
+      locals: { adventure: @adventure }
+    )
   end
 
   # skip words this message already credited, and words that already hit the goal,
