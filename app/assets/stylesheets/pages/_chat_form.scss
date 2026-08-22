@@ -1,15 +1,16 @@
-.chat-form {
+center.chat-form {
   width: 100%;
 }
 
 .chat-form__input-wrapper {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.5rem;
   width: 100%;
-  padding: 0.4rem;
+  height: 2.75rem;
+  padding: 0.25rem 0.3rem 0.25rem 0.9rem;
   background: var(--card);
-  border: 1px solid var(--hairline);
+  border: 1px solid var(--border);
   border-radius: 999px;
   box-shadow: 0 4px 15px -8px rgba(31, 50, 72, 0.3);
 }
@@ -18,13 +19,17 @@
   flex: 1;
   margin: 0 !important;
   min-width: 0;
+  display: flex;
+  align-items: center;
 }
 
 .chat-form__field .form-control {
   width: 100%;
-  height: 2.75rem;
+  height: 2rem;
+  min-height: 2rem;
+  line-height: 1.5rem;
   margin: 0;
-  padding: 0.6rem 0.9rem;
+  padding: 0.25rem 0;
   border: none;
   border-radius: 999px;
   background: transparent;
@@ -34,33 +39,43 @@
 
 .chat-form__field .form-control:focus {
   border: none;
+  outline: none;
   box-shadow: none;
   background: transparent;
 }
 
 .chat-form__field .form-control::placeholder {
   color: var(--text-soft);
+  opacity: 0.8;
 }
 
 .chat-form__send {
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
+   flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
   padding: 0;
   margin: 0 !important;
+
   border: none;
   border-radius: 50%;
+
   background: var(--navy);
   color: var(--cream);
-  font-size: 1rem;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+
+  font-size: 0.9rem;
+  cursor: pointer;            box-shadow: 0 5px 10px rgba(31, 50, 72, 0.25);
 }
 
 .chat-form__send:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
+  background: var(--navy-2);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(31, 50, 72, 0.25);
+}
+
+.chat-form__send:active {
+  transform: translateY(0);
 }

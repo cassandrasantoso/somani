@@ -177,7 +177,8 @@
 
 .message--assistant {
   background: var(--card);
-  border: 1px solid var(--hairline);
+  border: 2px solid var(--border);
+  box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
 }
 
 .message--assistant::after {
@@ -196,6 +197,7 @@
 .message--user {
   background: var(--navy);
   color: var(--cream);
+  border: 2px solid #152c43;
 }
 
 .message--user::after {
@@ -272,22 +274,23 @@
 
 .tracker {
   flex-shrink: 0;
-  border: 1px solid var(--hairline);
+  border: 2px solid var(--sage);
   border-radius: 0.85rem;
-  background: var(--card);
+  background: var(--tracker-bg);
   padding: 0.5rem 0.85rem;
+  box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
 }
 
 .tracker__summary {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
   list-style: none;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--navy);
 }
 
 .tracker__summary::-webkit-details-marker {
@@ -450,21 +453,39 @@
 .adventure-show__kebab {
   width: 2.75rem;
   height: 2.75rem;
+  flex-shrink: 0;
+
   border-radius: 50%;
-  border: 1px solid var(--hairline);
-  background: var(--app-bg);
+  border: 2px solid var(--border);
+
+  background: var(--card);
   color: var(--navy);
+
   font-size: 1.2rem;
   line-height: 1;
+
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s ease;
+
+  box-shadow: 0 3px 8px rgba(31, 50, 72, 0.12);
+
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
 }
 
 .adventure-show__kebab:hover {
-  background: var(--card);
+  background: var(--cream);
+  border-color: var(--secondary-border);
+  transform: translateY(-1px);
+}
+
+.adventure-show__kebab:active {
+  transform: translateY(0);
 }
 
 .adventure-show__menu-list {
