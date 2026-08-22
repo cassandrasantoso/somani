@@ -24,20 +24,20 @@
                     input_html: { class: "form-control" } %>
       </div>
 
-      <!-- Word Goals -->                                                    <!-- NEW -->
-      <fieldset class="adventure-goals">                                     <!-- NEW -->
-        <legend>How many times will you use each word?</legend>              <!-- NEW -->
-        <%= f.fields_for :word_goals do |g| %>                               <!-- NEW -->
-          <div class="adventure-goals__row">                                 <!-- NEW -->
-            <%= g.hidden_field :saved_word_id %>                             <!-- NEW -->
-            <span class="adventure-goals__surface"><%= g.object.saved_word.surface %></span>   <!-- NEW -->
-            <span class="adventure-goals__level"><%= g.object.saved_word.level %></span>       <!-- NEW -->
-            <span class="adventure-goals__meaning"><%= g.object.saved_word.meaning %></span>   <!-- NEW -->
-            <%= g.select :target,                                            <!-- NEW -->
-                         WordGoal::RANGE.map { |n| ["#{n}×", n] },            <!-- NEW -->
-                         { include_blank: "1× (default)" } %>                <!-- NEW -->
-          </div>                                                             <!-- NEW -->
-        <% end %>                                                            <!-- NEW -->
+      <!-- Word Goals -->
+      <fieldset class="adventure-goals">
+        <legend>How many times will you use each word?</legend>
+        <%= f.fields_for :word_goals do |g| %>
+          <div class="adventure-goals__row">
+            <%= g.hidden_field :saved_word_id %>
+            <span class="adventure-goals__surface"><%= g.object.saved_word.surface %></span>
+            <span class="adventure-goals__level"><%= g.object.saved_word.level %></span>
+            <span class="adventure-goals__meaning"><%= g.object.saved_word.meaning %></span>
+            <%= g.select :target,
+                         WordGoal::RANGE.map { |n| ["#{n}×", n] },
+                         { include_blank: "1× (default)" } %>
+          </div>
+        <% end %>
       </fieldset>
 
       <!-- Scene Selection -->
