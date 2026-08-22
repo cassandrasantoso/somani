@@ -8,9 +8,6 @@
        data-controller="hero">
     <button type="button" class="adventure-show__hero-collapsed" data-action="hero#toggle"
             aria-expanded="false" aria-controls="hero-expanded-<%= @adventure.id %>">
-      <% if @adventure.character.image.attached? %>
-        <%= image_tag @adventure.character.image, class: "adventure-show__hero-face", alt: @adventure.character.name %>
-      <% end %>
       <span class="adventure-show__hero-name"><%= @adventure.title.presence || @adventure.scene.setting %></span>
       <span class="adventure-show__hero-chevron" aria-hidden="true"></span>
     </button>
@@ -48,7 +45,7 @@
     <% if next_word &&
           @usage_counts.fetch(next_word.id, 0) <
             @goal_targets.fetch(next_word.id, WordGoal::DEFAULT_TARGET) %>
-  
+
     <div id="message-form" class="adventure-show__composer">
       <%= render "messages/form", adventure: @adventure, message: @message %>
 

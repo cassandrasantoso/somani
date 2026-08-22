@@ -48,10 +48,11 @@
 
 .adventure-show__hero {
   position: relative;
+  opacity: 0.6;
   flex-shrink: 0;
   border-radius: 1.25rem;
   overflow: hidden;
-  background: var(--navy);
+  background: var(--accent);
   box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.45);
 }
 
