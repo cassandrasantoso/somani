@@ -48,10 +48,11 @@
 
 .adventure-show__hero {
   position: relative;
+  opacity: 0.6;
   flex-shrink: 0;
   border-radius: 1.25rem;
   overflow: hidden;
-  background: var(--navy);
+  background: var(--accent);
   box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.45);
 }
 
@@ -179,6 +180,21 @@
   background: var(--card);
   border: 2px solid var(--border);
   box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
+}
+
+.message--assistant::before {
+  content: "";
+  position: absolute;
+
+  left: 1rem;
+  bottom: -0.6rem;
+
+  width: 0;
+  height: 0;
+
+  border-left: 0.55rem solid transparent;
+  border-right: 0.55rem solid transparent;
+  border-top: 0.6rem solid var(--border);
 }
 
 .message--assistant::after {
