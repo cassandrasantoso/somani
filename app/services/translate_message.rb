@@ -2,7 +2,7 @@
 require "gemini-ai"
 
 class TranslateMessage
-  GEMINI_MODEL = "gemini-3.5-flash"
+  GEMINI_MODEL = "gemini-3.1-flash-lite"
 
   def self.call(message)
     new(message).call
