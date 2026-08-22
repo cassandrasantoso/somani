@@ -99,7 +99,7 @@
   background: var(--card-bg);
   border-radius: 1.5rem;
   border: 2px solid var(--gold);
-  padding: 1rem 1.25rem;
+  padding: 1rem 1rem;
   box-shadow: 0 10px 20px -4px rgba(245, 120, 160, 0.45);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -142,7 +142,7 @@
 .welcome-card__subtitle {
   margin: 0;
   color: var(--text-soft);
-  font-size: -0.1rem;
+  font-size: 15px;
 }
 
 .progress-card__header {
@@ -155,7 +155,7 @@
 
 .progress-card__header h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 18px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-soft);
@@ -213,7 +213,7 @@
 .progress-stat__labels {
   display: flex;
   justify-content: space-between;
-  font-size: 1.0rem;
+  font-size: 16px;
   color: var(--text-soft);
   margin-bottom: 0.25rem;
 }
