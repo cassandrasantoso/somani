@@ -16,7 +16,12 @@ class AdventuresController < ApplicationController
   def new
     @upload = current_user.uploads.find(params[:upload_id])
     authorize @upload, :start_adventure?
+
     @adventure = @upload.adventures.new
+    @upload.saved_words.each do |word|
+      @adventure.word_goals.build(saved_word: word, target: WordGoal::DEFAULT_TARGET)
+    end
+
     @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
   end
 
@@ -66,6 +71,7 @@ class AdventuresController < ApplicationController
   end
 
   def adventure_params
-    params.require(:adventure).permit(:scene_id, :title, :status)
+    params.require(:adventure).permit(:scene_id, :title, :status,
+                                      word_goals_attributes: %i[saved_word_id target])
   end
 end
