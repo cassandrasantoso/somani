@@ -1,14 +1,28 @@
-<%= simple_form_for [adventure, message], html: { class: "chat-form" } do |f| %>
-  <div class="chat-form__input-wrapper">
-    <%= f.input :body,
-                label: false,
-                placeholder: "ここに返事を入力",
-                input_html: {
-                  class: "chat-form__input",
-                  autocomplete: "off"
-                },
-                wrapper_html: { class: "chat-form__field" } %>
+<%= simple_form_for [adventure, message],
+      html: {
+        class: "chat-form",
+        data: {
+          action: "submit->chat#showLoader"
+        }
+      } do |f| %>
 
-    <%= f.submit "➤", class: "chat-form__send", aria: { label: "Send message" } %>
+  <div class="chat-form__input-wrapper">
+
+    <%= f.input :body,
+          label: false,
+          placeholder: "ここに返事を入力",
+          input_html: {
+            class: "chat-form__input",
+            autocomplete: "off"
+          },
+          wrapper_html: {
+            class: "chat-form__field"
+          } %>
+
+    <%= f.submit "➤",
+          class: "chat-form__send",
+          aria: { label: "Send message" } %>
+
   </div>
+
 <% end %>
