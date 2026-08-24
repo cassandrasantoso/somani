@@ -48,11 +48,11 @@
 
 .adventure-show__hero {
   position: relative;
-  opacity: 0.6;
   flex-shrink: 0;
+  border: 2px solid #5f907e;
   border-radius: 1.25rem;
   overflow: hidden;
-  background: var(--accent);
+  background: var(--header-sage);
   box-shadow: 0 10px 24px -16px rgba(31, 50, 72, 0.45);
 }
 
@@ -154,6 +154,7 @@
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .message-row--user {
@@ -182,6 +183,14 @@
   box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
 }
 
+.message--assistant p {
+  margin: 0.5rem 0;
+  color: var(--text);
+  font-family: var(--font-ja);
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
 .message--assistant::before {
   content: "";
   position: absolute;
@@ -200,8 +209,8 @@
 .message--assistant::after {
   content: "";
   position: absolute;
-  left: 1rem;
-  bottom: -0.4rem;
+  left: 1.1rem;
+  bottom: -0.43rem;
   width: 0;
   height: 0;
   border-left: 0.45rem solid transparent;
@@ -211,9 +220,9 @@
 }
 
 .message--user {
-  background: var(--navy);
+  background: var(--user-message);
   color: var(--cream);
-  border: 2px solid #152c43;
+  border: 2px solid #315f54;
 }
 
 .message--user::after {
@@ -231,6 +240,8 @@
 .message--user p {
   margin: 0;
   color: var(--cream);
+  font-size: 0.85rem;
+  line-height: 1.7;
 }
 
 .message--assistant p {
