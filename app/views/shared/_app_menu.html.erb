@@ -1,0 +1,21 @@
+<div class="offcanvas offcanvas-start app-menu" tabindex="-1" id="appMenu" aria-labelledby="appMenuLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="appMenuLabel">Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="app-menu__list">
+      <li><%= link_to "Home", root_path %></li>
+      <% if user_signed_in? %>
+        <li><%= link_to "Saved words", saved_words_path %></li>
+        <li><%= link_to "Uploads", uploads_path %></li>
+        <li><%= link_to "Settings", edit_settings_path %></li>
+        <li><%= link_to "What is SOMANI?", about_path %></li>
+        <li><%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete } %></li>
+      <% else %>
+        <li><%= link_to "Log in", new_user_session_path %></li>
+        <li><%= link_to "Sign up", new_user_registration_path %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
