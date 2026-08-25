@@ -16,6 +16,7 @@
         <li><%= link_to "Saved words", saved_words_path %></li>
         <li><%= link_to "Uploads", uploads_path %></li>
         <li><%= link_to "Settings", edit_settings_path %></li>
+        <li><%= link_to "What is SOMANI?", about_path, class: current_page?(about_path) ? "is-active" : nil %></li>
         <li><%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete } %></li>
       <% else %>
         <li><%= link_to "Log in", new_user_session_path %></li>
@@ -41,6 +42,7 @@
         <li><%= link_to "Saved words", saved_words_path %></li>
         <li><%= link_to "Uploads", uploads_path %></li>
         <li><%= link_to "Settings", edit_settings_path %></li>
+        <li><%= link_to "What is SOMANI?", about_path %></li>
         <li><%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete } %></li>
       <% else %>
         <li><%= link_to "Log in", new_user_session_path %></li>

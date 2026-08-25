@@ -1,0 +1,132 @@
+.about-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.about-intro {
+  max-width: 400px;
+  margin: 1rem auto 1.5rem;
+}
+
+.about-intro__title {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.15rem, 6.5vw, 2rem);
+  font-weight: 700;
+  color: var(--pink-dark);
+  white-space: nowrap;
+}
+
+.about-intro__subtitle {
+  margin: 0 0 0.25rem;
+  font-size: clamp(0.95rem, 4.8vw, 1.5rem);
+  font-weight: 700;
+  color: var(--pink-dark);
+  white-space: nowrap;
+}
+
+.about-intro__body {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+}
+
+.about-page__heading {
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  text-align: center;
+  margin: 0 0 1rem;
+}
+
+.about-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.about-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 8px 20px -16px rgba(31, 50, 72, 0.35);
+}
+
+.about-step h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.about-step p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+}
+
+.about-step__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--pink-light);
+  color: var(--pink-dark);
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.about-page__cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 320px;
+  margin: 2rem auto 0;
+}
+
+.about-page__button {
+  display: block;
+  width: 100%;
+  border-radius: 999px;
+  padding: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+}
+
+.about-page__button:hover {
+  color: var(--cream);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.about-page__button--secondary {
+  background: transparent;
+  color: var(--navy);
+  border: 1px solid var(--navy);
+}
+
+.about-page__button--secondary:hover {
+  background: var(--card);
+  color: var(--navy);
+}
+
+@include media-breakpoint-up(lg) {
+  .about-page {
+    max-width: 700px;
+    margin-top: 1rem;
+  }
+}

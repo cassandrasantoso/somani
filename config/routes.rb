@@ -18,6 +18,8 @@ Rails.application.routes.draw do
   # story 10 - reminders/notifications to check in
   resource :settings, only: %i[edit update]
 
+  get "about" => "pages#about", as: :about
+
   # ownership root
   resources :uploads, only: %i[index new create show destroy] do  # story 1 - upload media, AI maps to JLPT level
     resources :saved_words, only: %i[index new create]   # story 2 - select words from the scanned content

@@ -1,3 +1,100 @@
+.upload-container {
+  position: relative;
+  min-height: 100vh;
+  padding: 8vh 0 2rem;
+  overflow: hidden;
+}
+
+/* Blurred photo fills the entire screen behind the form */
+.upload-container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: image-url("uplaod.jpeg");
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: cover;
+  filter: blur(1px);
+  transform: scale(1.02);
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* Soft scrim so the heading and card stay readable over the photo */
+.upload-container::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(31, 40, 61, 0.55) 0%,
+    rgba(31, 40, 61, 0.25) 35%,
+    rgba(31, 40, 61, 0.45) 100%
+  );
+  z-index: 0;
+}
+
+.upload-container__heading {
+  position: relative;
+  z-index: 1;
+}
+
+.upload-container__heading h1 {
+  color: var(--cream);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+/* Frosted-glass card so it reads clearly against the photo behind it */
+.upload-form-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(249, 244, 234, 0.88);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 45px -18px rgba(0, 0, 0, 0.45);
+}
+
+.upload-form-card .form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+}
+
+.upload-form-card .form-control,
+.upload-form-card .form-select {
+  border: 1px solid var(--hairline);
+  border-radius: 0.85rem;
+  padding: 0.65rem 0.9rem;
+  background: #fff;
+  color: var(--text);
+}
+
+.upload-form-card .form-control:focus,
+.upload-form-card .form-select:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 0.2rem rgba(239, 95, 150, 0.15);
+  background: #fff;
+  color: var(--text);
+}
+
+.upload-form-card .btn-primary {
+  border-radius: 999px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 600;
+  border: none;
+  background: var(--navy);
+  transition: transform 0.15s ease;
+}
+
+.upload-form-card .btn-primary:hover {
+  transform: translateY(-2px);
+  background: var(--navy);
+  opacity: 0.92;
+}
+
 // Card background/border are bumped up from the default (which is barely
 // distinguishable from the cream app background) so cards read as raised.
 .upload-tile {

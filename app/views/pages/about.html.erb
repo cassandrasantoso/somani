@@ -1,0 +1,58 @@
+<div class="about-page">
+  <div class="about-intro text-center mx-auto">
+    <p class="about-intro__title">🌸 What is SOMANI? 🌸</p>
+    <p class="about-intro__subtitle">染まる + N2 = SOMANI</p>
+    <p class="about-intro__body">
+      From 染まる (somaru) "to become immersed." <br>
+      Immerse yourself in Japanese <br>
+      and master the JLPT N2.
+    </p>
+  </div>
+
+  <h2 class="about-page__heading">How to use SOMANI</h2>
+
+  <div class="about-steps">
+    <div class="about-step">
+      <span class="about-step__icon"><i class="fa-solid fa-file-arrow-up"></i></span>
+      <div>
+        <h3>1. Upload media</h3>
+        <p>Upload audio, images, or text from anything you're watching, reading, or listening to. SOMANI scans it and maps the Japanese it finds to JLPT N2 vocabulary.</p>
+      </div>
+    </div>
+
+    <div class="about-step">
+      <span class="about-step__icon"><i class="fa-solid fa-book-open"></i></span>
+      <div>
+        <h3>2. Save words</h3>
+        <p>Pick out the words worth learning from your upload and add them to your saved words list, ready to study and review.</p>
+      </div>
+    </div>
+
+    <div class="about-step">
+      <span class="about-step__icon"><i class="fa-solid fa-khanda"></i></span>
+      <div>
+        <h3>3. Start an adventure</h3>
+        <p>Put your saved words into practice by chatting with a character in a storyline built around them. Keep the conversation going until you hit your word goal.</p>
+      </div>
+    </div>
+
+    <div class="about-step">
+      <span class="about-step__icon"><i class="fa-solid fa-clock"></i></span>
+      <div>
+        <h3>4. Review and get reminders</h3>
+        <p>Come back to review words that are due, and turn on reminders in Settings so SOMANI nudges you to keep practising.</p>
+      </div>
+    </div>
+  </div>
+
+  <% if user_signed_in? %>
+    <div class="about-page__cta">
+      <%= link_to "Back to home", root_path, class: "about-page__button" %>
+    </div>
+  <% else %>
+    <div class="about-page__cta">
+      <%= link_to "Sign up", new_user_registration_path, class: "about-page__button" %>
+      <%= link_to "Log in", new_user_session_path, class: "about-page__button about-page__button--secondary" %>
+    </div>
+  <% end %>
+</div>

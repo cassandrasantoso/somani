@@ -25,9 +25,10 @@ body:has(.auth-page) {
 
 .auth-tagline__title {
   margin: 0 0 0.25rem;
-  font-size: 2rem;
+  font-size: clamp(1.15rem, 6.5vw, 2rem);
   font-weight: 700;
   color: var(--pink-dark);
+  white-space: nowrap;
 }
 
 .auth-tagline__body {
