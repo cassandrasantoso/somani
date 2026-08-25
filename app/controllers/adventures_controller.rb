@@ -6,6 +6,8 @@ class AdventuresController < ApplicationController
   end
 
   def show
+    raise ActiveRecord::RecordNotFound if @adventure.nil?
+
     authorize @adventure
     @messages = @adventure.messages.chronological.includes(:feedback)
     @message  = Message.new
@@ -77,7 +79,7 @@ class AdventuresController < ApplicationController
   private
 
   def set_adventure
-    @adventure = Adventure.find(params[:id])
+    @adventure = Adventure.find_by(id: params[:id])
   end
 
   def adventure_params

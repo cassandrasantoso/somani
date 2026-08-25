@@ -21,7 +21,6 @@
         <%= image_tag @adventure.character.image, class: "adventure-show__hero-img", alt: @adventure.character.name %>
       <% end %>
       <div class="adventure-show__hero-overlay">
-        <h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
         <p><%= @adventure.scene.description %></p>
       </div>
     </div>
@@ -85,13 +84,20 @@
       <% end %>
     </div>
   <% else %>
-    <p class="completed">This adventure is complete.</p>
-
-    <% if policy(@adventure).destroy? %>
-      <div class="adventure-show__actions">
-        <%= button_to "Delete adventure", @adventure, method: :delete,
-                      class: "adventure-show__btn adventure-show__btn--danger" %>
+    <% mastered = @target_words.count { |w|
+         @usage_counts.fetch(w.id, 0) >= @goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+       } %>
+    <div class="adventure-show__complete-card">
+      <div class="adventure-show__complete-body">
+        <p class="adventure-show__complete-title">Adventure Complete!</p>
+        <p class="adventure-show__complete-subtitle"><%= pluralize(mastered, "word") %> mastered</p>
       </div>
-    <% end %>
+
+      <% if policy(@adventure).destroy? %>
+        <%= button_to "Delete adventure", @adventure, method: :delete,
+                      data: { turbo_confirm: "Delete this adventure?" },
+                      class: "adventure-show__complete-delete" %>
+      <% end %>
+    </div>
   <% end %>
 </div>
