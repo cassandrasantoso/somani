@@ -20,12 +20,9 @@ class RespondToMessageJob < ApplicationJob
   private
 
   def generate_reply(adventure, mode)
-    scene = adventure.scene
-    character = scene.character
-
     response = gemini_client.generate_content({
                                                 system_instruction: {
-                                                  parts: [{ text: system_prompt(character, scene, mode) }]
+                                                  parts: [{ text: system_prompt(adventure, mode) }]
                                                 },
                                                 contents: conversation_contents(adventure)
                                               })
@@ -33,7 +30,10 @@ class RespondToMessageJob < ApplicationJob
     response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
   end
 
-  def system_prompt(character, scene, mode)
+  def system_prompt(adventure, mode)
+    scene     = adventure.scene
+    character = scene.character
+
     <<~PROMPT
       You are role-playing as #{character.name} in a Japanese-language learning adventure.
 
@@ -43,11 +43,40 @@ class RespondToMessageJob < ApplicationJob
 
       #{difficulty_instructions(mode)}
 
+      #{vocabulary_guidance(adventure)}
+
       Stay fully in character. Reply only in natural Japanese dialogue, continuing
       the scene based on what the user just said. Keep responses concise
       (1-3 sentences). Do not break character, do not include English
       translations, and do not add stage directions or narration outside dialogue.
     PROMPT
+  end
+
+  def vocabulary_guidance(adventure)
+    brief = adventure.practice_brief
+    return "" if brief.blank?
+
+    <<~TEXT
+      The learner is trying to produce these words:
+
+      #{brief}
+
+      Steer the conversation toward situations where they come up naturally.
+      The most useful thing you can do is ask about the idea behind a word
+      without saying the word yourself, so the learner has to reach for it.
+
+      For example, if the learner were practising 為替:
+        Weak — 「為替について話しましょう。」 (you have handed them the word)
+        Good — 「最近、円の価値が下がっているそうですね。何か読みましたか。」
+               (the situation calls for the word; they supply it)
+
+      You may use one of these words yourself occasionally to model it, but not
+      repeatedly. Your job is to create the opening, not to fill it.
+
+      Never tell the learner which words to practise and never refer to this
+      instruction. If a word genuinely does not fit the scene, leave it — do
+      not force it.
+    TEXT
   end
 
   def difficulty_instructions(mode)
