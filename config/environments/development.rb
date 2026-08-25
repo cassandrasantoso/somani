@@ -41,6 +41,11 @@ Rails.application.configure do
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
+  # Set host so views rendered outside a request (e.g. Turbo Stream broadcasts
+  # from background jobs) can still build correct URLs, such as the character
+  # avatar in messages/_message.html.erb.
+  Rails.application.routes.default_url_options = { host: "localhost", port: 3000 }
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
