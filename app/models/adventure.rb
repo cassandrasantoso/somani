@@ -1,5 +1,6 @@
 class Adventure < ApplicationRecord
   STATUSES = %w[active completed].freeze
+  PROMPT_FOCUS_LIMIT = 4
 
   belongs_to :scene
   belongs_to :upload
@@ -65,5 +66,30 @@ class Adventure < ApplicationRecord
   # show the banner
   def prompt_goal?
     goal_reached_at? && goal_dismissed_at.nil? && status == "active"
+  end
+
+  # Words that still need credit, the ones furthest from their goal first.
+  # As a word earns credit it drops down the list, so the next one comes up.
+  def practice_words(limit: nil)
+    counts  = usage_counts
+    targets = goal_targets
+
+    unfinished = target_words.to_a.reject do |w|
+      counts.fetch(w.id, 0) >= targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+    end
+
+    words = unfinished.sort_by do |w|
+      counts.fetch(w.id, 0) - targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+    end
+    limit ? words.first(limit) : words
+  end
+
+  # The vocabulary block both jobs paste into their prompt.
+  # Returns "" when every word is finished, so the character just converses normally.
+  def practice_brief(limit: PROMPT_FOCUS_LIMIT)
+    words = practice_words(limit: limit)
+    return "" if words.empty?
+
+    words.map { |w| "・#{w.surface}（#{w.reading}）— #{w.meaning}" }.join("\n")
   end
 end

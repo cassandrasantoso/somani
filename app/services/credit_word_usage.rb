@@ -60,16 +60,10 @@ class CreditWordUsage
     )
   end
 
-  # skip words this message already credited, and words that already hit the goal,
-  # anything already counted for this message, or already finished, is left out of the prompt
+  # words this message hasn't already credited, and that still need credit
   def pending_words
     already = @message.word_usages.pluck(:saved_word_id)
-    counts  = @adventure.usage_counts
-    targets = @adventure.goal_targets
-
-    @adventure.target_words.to_a.reject do |w|
-      already.include?(w.id) || counts.fetch(w.id, 0) >= targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
-    end
+    @adventure.practice_words.reject { |w| already.include?(w.id) }
   end
 
   def broadcast_tracker
