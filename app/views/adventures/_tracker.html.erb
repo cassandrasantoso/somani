@@ -16,7 +16,7 @@
       <% used = usage_counts.fetch(word.id, 0) %>
       <% goal = goal_targets.fetch(word.id, WordGoal::DEFAULT_TARGET) %>
       <li class="tracker__word <%= used >= goal ? 'is-done' : (used.zero? ? 'is-untouched' : 'is-partial') %>">
-        <span class="tracker__surface"><%= word.surface %></span>
+        <span class="tracker__surface"><%= word.surface %> (<%= word.reading %>) </span>
         <span class="tracker__level"><%= word.level %></span>
         <span class="tracker__meaning"><%= word.meaning %></span>
         <span class="tracker__count">
