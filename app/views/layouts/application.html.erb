@@ -31,7 +31,10 @@
 
   <body class="has-app-bottom-nav">
     <div id="flash-container"><%= render "shared/flashes" %></div>
-    <%= render "shared/navbar" %>
+    <% unless controller_name == "adventures" && action_name == "show" %>
+      <%= render "shared/navbar" %>
+    <% end %>
+    <%= render "shared/app_menu" %>
     <%= yield %>
 
     <%= render "shared/bottom_navbar" %>
