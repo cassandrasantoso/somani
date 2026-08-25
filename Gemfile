@@ -76,3 +76,4 @@ end
 gem "pundit"
 gem "gemini-ai"
 gem "cloudinary"
+gem "neighbor"
