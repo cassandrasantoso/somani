@@ -32,11 +32,55 @@ class UploadsController < ApplicationController
     @upload.file_location = cloudinary_value["url"]
     if @upload.save
       text = extract_text(@upload)
-      @upload.update!(extracted_text: text)
+      summary = generate_summary(text)
+
+      @upload.update!(
+        extracted_text: text,
+        summary: summary
+      )
+
       redirect_to @upload, notice: "Upload successful."
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def generate_summary(text)
+    return nil if text.blank?
+
+    prompt = <<~PROMPT
+      Identify the main topic of the following Japanese text.
+
+      Return exactly one English sentence using this format:
+      Oh, it looks like you are reading about [topic]!
+
+      Requirements:
+      - Replace [topic] with a natural 3-to-6-word English topic
+      - Keep the entire response on one line
+      - Do not include brackets
+      - Do not include quotation marks
+      - Do not add explanations
+      - Use only information found in the original text
+
+      Japanese text:
+      #{text}
+    PROMPT
+
+    response = gemini_client.generate_content({
+                                                contents: [
+                                                  {
+                                                    role: "user",
+                                                    parts: [
+                                                      { text: prompt }
+                                                    ]
+                                                  }
+                                                ]
+                                              })
+
+    response
+      .dig("candidates", 0, "content", "parts", 0, "text")
+      .to_s
+      .strip
   end
 
   def destroy
