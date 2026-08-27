@@ -737,10 +737,42 @@
   opacity: 0.9;
 }
 
+.adventure-show__complete-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0 1rem 1rem;
+}
+
+.adventure-show__complete-actions > a,
+.adventure-show__complete-actions > form {
+  flex: 1 1 0;
+  margin: 0;
+}
+
+.adventure-show__complete-home {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.75rem;
+  border: 2px solid var(--cream);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cream);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.adventure-show__complete-home:hover {
+  background: rgba(246, 238, 220, 0.15);
+  color: var(--cream);
+  transform: translateY(-1px);
+}
+
 .adventure-show__complete-delete {
   display: block;
-  width: calc(100% - 2rem);
-  margin: 0 1rem 1rem;
+  width: 100%;
+  margin: 0;
   text-align: center;
   padding: 0.75rem;
   border: 2px solid var(--red-dark);

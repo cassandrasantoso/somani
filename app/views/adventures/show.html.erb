@@ -88,11 +88,15 @@
         <p class="adventure-show__complete-subtitle"><%= pluralize(mastered, "word") %> mastered</p>
       </div>
 
-      <% if policy(@adventure).destroy? %>
-        <%= button_to "Delete adventure", @adventure, method: :delete,
-                      data: { turbo_confirm: "Delete this adventure?" },
-                      class: "adventure-show__complete-delete" %>
-      <% end %>
+      <div class="adventure-show__complete-actions">
+        <%= link_to "Back to home", root_path, class: "adventure-show__complete-home" %>
+
+        <% if policy(@adventure).destroy? %>
+          <%= button_to "Delete adventure", @adventure, method: :delete,
+                        data: { turbo_confirm: "Delete this adventure?" },
+                        class: "adventure-show__complete-delete" %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>
