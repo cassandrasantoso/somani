@@ -38,7 +38,6 @@ class AdventuresController < ApplicationController
     @adventure.status = "active"
 
     selected_words = @adventure.word_goals.map(&:saved_word)
-
     best_scene = Scene.nearest_to_words(selected_words)
 
     @adventure.scene = best_scene
@@ -53,7 +52,10 @@ class AdventuresController < ApplicationController
     else
       existing = @adventure.word_goals.map(&:saved_word_id)
       (@upload.saved_words.pluck(:id) - existing).each do |id|
-        @adventure.word_goals.build(saved_word_id: id, target: WordGoal::DEFAULT_TARGET)
+        @adventure.word_goals.build(
+          saved_word_id: id,
+          target: WordGoal::DEFAULT_TARGET
+        )
       end
       render :new, status: :unprocessable_entity
     end
