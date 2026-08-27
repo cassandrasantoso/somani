@@ -25,7 +25,7 @@ class AdventuresController < ApplicationController
       @adventure.word_goals.build(saved_word: word, target: WordGoal::DEFAULT_TARGET)
     end
 
-    @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
+    @scenes = Scene.includes(:character).order_by_relevance_to(@upload).uniq { |s| [ s.setting, s.character_id, s.level ] }
   end
 
   # Adventure has no user_id — build it through the upload, which is what the policy checks.
@@ -39,7 +39,7 @@ class AdventuresController < ApplicationController
       OpeningLineJob.perform_later(@adventure)
       redirect_to @adventure
     else
-      @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
+      @scenes = Scene.includes(:character).order_by_relevance_to(@upload).uniq { |s| [ s.setting, s.character_id. s.level ] }
       existing = @adventure.word_goals.map(&:saved_word_id)
       (@upload.saved_words.pluck(:id) - existing).each do |id|
         @adventure.word_goals.build(saved_word_id: id, target: WordGoal::DEFAULT_TARGET)

@@ -8,10 +8,10 @@ class Scene < ApplicationRecord
   # Prefers the level of words saved from this specific upload; falls back
   # to the user's overall saved_words history, then to N2 (the app's target level).
   def self.order_by_relevance_to(upload)
-    level = upload.saved_words.pick_most_common_level ||
+    level = upload.highest_word_level ||
             upload.user.saved_words.pick_most_common_level ||
             DEFAULT_LEVEL
 
-    order(Arel.sql("CASE WHEN level = #{connection.quote(level)} THEN 0 ELSE 1 END"))
+    Scene.where(level: SavedWord::LEVEL_ENUM.key(level))
   end
 end

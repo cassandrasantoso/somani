@@ -30,12 +30,15 @@
         <%= f.fields_for :word_goals do |g| %>
           <div class="adventure-goals__row">
             <%= g.hidden_field :saved_word_id %>
-            <span class="adventure-goals__surface"><%= g.object.saved_word.surface %></span>
-            <span class="adventure-goals__level"><%= g.object.saved_word.level %></span>
-            <span class="adventure-goals__meaning"><%= g.object.saved_word.meaning %></span>
+            <div class="adventure-goals__word">
+              <span class="adventure-goals__surface"><%= g.object.saved_word.surface %></span>
+              <span class="badge level-badge level-badge--<%= g.object.saved_word.level.to_s.downcase %>"><%= g.object.saved_word.level %></span>
+              <span class="adventure-goals__meaning"><%= g.object.saved_word.meaning %></span>
+            </div>
             <%= g.select :target,
                          WordGoal::RANGE.map { |n| ["#{n}×", n] },
-                         { include_blank: "1× (default)" } %>
+                         { include_blank: "1× (default)" },
+                         { class: "adventure-goals__select" } %>
           </div>
         <% end %>
       </fieldset>

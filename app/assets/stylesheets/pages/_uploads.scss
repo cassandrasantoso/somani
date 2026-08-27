@@ -332,6 +332,8 @@
   margin: 1rem 0;
   padding: 1.1rem 1.2rem;
   overflow: hidden;
+  margin: 0 16px;
+  margin: 12px;
 
   background: linear-gradient(
     135deg,
@@ -411,6 +413,12 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+}
+
+.saved-word__surface-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .saved-word__surface {
@@ -521,6 +529,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  padding: 0 1rem;
+  margin-bottom: 1rem;
 }
 
 .upload-show__btn {
