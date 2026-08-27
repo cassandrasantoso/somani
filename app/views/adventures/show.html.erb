@@ -50,7 +50,7 @@
             usage_counts: @usage_counts,
             goal_targets: @goal_targets %>
 
-  <% if @adventure.status == "active" %>
+  <% if @adventure.active? %>
     <div id="message-form" class="adventure-show__composer">
       <%= render "messages/form", adventure: @adventure, message: @message %>
 
