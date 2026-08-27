@@ -46,19 +46,21 @@ hina.image.attach(
 ) unless hina.image.attached?
 
 puts "Creating scenes..."
-Scene.find_or_create_by!(setting: "Tokyo Newsroom", character: yuki) do |s|
-  s.description = "You are visiting a Tokyo newsroom. Yuki, a news reporter, is preparing a story about a recent event in Japan. She asks what you think about the news and explains some difficult vocabulary used in the report."
-  s.level = "N2"
-end
+["N5", "N4", "N3", "N2", "N1"].each do |level|
+  Scene.find_or_create_by!(setting: "Tokyo Newsroom", character: yuki, level: level) do |s|
+    s.description = "You are visiting a Tokyo newsroom. Yuki, a news reporter, is preparing a story about a recent event in Japan. She asks what you think about the news and explains some difficult vocabulary used in the report."
+    s.level = level
+  end
 
-Scene.find_or_create_by!(setting: "Tokyo Office", character: takeshi) do |s|
-  s.description = "It's your first week at a Tokyo trading company. Takeshi, your coworker, shows you around the office and talks with you about your schedule, upcoming meetings, and your daily responsibilities."
-  s.level = "N2"
-end
+  Scene.find_or_create_by!(setting: "Tokyo Office", character: takeshi, level: level) do |s|
+    s.description = "It's your first week at a Tokyo trading company. Takeshi, your coworker, shows you around the office and talks with you about your schedule, upcoming meetings, and your daily responsibilities."
+    s.level = level
+  end
 
-Scene.find_or_create_by!(setting: "Real Estate Agency", character: hina) do |s|
-  s.description = "You are looking for an apartment in Tokyo. Hina, a real estate agent, asks about your budget, preferred neighborhood, and housing requirements. She shows you several apartments and explains the rent, initial fees, and important contract terms."
-  s.level = "N2"
+  Scene.find_or_create_by!(setting: "Real Estate Agency", character: hina, level: level) do |s|
+    s.description = "You are looking for an apartment in Tokyo. Hina, a real estate agent, asks about your budget, preferred neighborhood, and housing requirements. She shows you several apartments and explains the rent, initial fees, and important contract terms."
+    s.level = level
+  end
 end
 
 puts "Creating JLPT entries..."

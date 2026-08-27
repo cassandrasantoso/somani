@@ -6,7 +6,12 @@
       <% saved_words.each do |word| %>
         <li class="saved-word">
           <div class="saved-word__info">
-            <span class="saved-word__surface"><%= word.surface %></span>
+            <div class="saved-word__surface-row">
+              <span class="saved-word__surface"><%= word.surface %></span>
+              <% if word.level.present? %>
+                <span class="badge level-badge level-badge--<%= word.level.to_s.downcase %>"><%= word.level %></span>
+              <% end %>
+            </div>
             <span class="saved-word__meaning"><%= word.meaning %></span>
           </div>
           <% link = word.uploaded_words.find_by(upload: upload) %>

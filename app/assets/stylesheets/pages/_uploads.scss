@@ -415,6 +415,12 @@
   min-width: 0;
 }
 
+.saved-word__surface-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .saved-word__surface {
   font-weight: 700;
   color: var(--text);
