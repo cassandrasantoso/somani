@@ -348,8 +348,16 @@
   background: var(--sage);
 }
 
-.adventure-card__icon {
-  color: var(--navy);
+.adventure-card__level {
+  flex-shrink: 0;
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--pink-dark);
+  background: var(--pink-light);
+  border-radius: 999px;
 }
 
 .home-actions {

@@ -104,7 +104,7 @@
                       <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
                       <span class="adventure-card__badge">Active Chat</span>
                     </div>
-                    <i class="fa-solid fa-paper-plane adventure-card__icon"></i>
+                    <span class="adventure-card__level"><%= adventure.scene.level %></span>
                   <% end %>
                 </div>
               <% end %>
