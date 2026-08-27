@@ -3,7 +3,8 @@
   <head>
     <%= render 'shared/ios_pwa_links' %>
     <link rel="manifest" href="<%= asset_path 'manifest.json' %>">
-    <title><%= content_for(:title) || "Somani" %></title>
+    <title><%= meta_title %></title>
+    <meta name="description" content="<%= meta_description %>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Somani">
@@ -11,11 +12,30 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Facebook Open Graph data -->
+    <meta property="og:title" content="<%= meta_title %>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<%= request.original_url %>" />
+    <meta property="og:image" content="<%= meta_image %>" />
+    <meta property="og:description" content="<%= meta_description %>" />
+    <meta property="og:site_name" content="<%= DEFAULT_META["meta_product_name"] %>" />
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= meta_title %>">
+    <meta name="twitter:description" content="<%= meta_description %>">
+    <meta name="twitter:image:src" content="<%= meta_image %>">
+    <% if DEFAULT_META["twitter_account"].present? %>
+      <meta name="twitter:site" content="<%= DEFAULT_META["twitter_account"] %>">
+      <meta name="twitter:creator" content="<%= DEFAULT_META["twitter_account"] %>">
+    <% end %>
+
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
