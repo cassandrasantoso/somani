@@ -1,3 +1,5 @@
+require "gemini-ai"
+
 class Adventure < ApplicationRecord
   STATUSES = %w[active completed].freeze
   PROMPT_FOCUS_LIMIT = 4
@@ -93,9 +95,76 @@ class Adventure < ApplicationRecord
     words.map { |w| "・#{w.surface}（#{w.reading}）— #{w.meaning}" }.join("\n")
   end
 
+  def generate_title
+    words = word_goals
+            .includes(:saved_word)
+            .map { |goal| goal.saved_word.surface }
+            .join(", ")
+
+    prompt = <<~PROMPT
+      Create a short Japanese and 3 to 4 English title for a Japanese-learning roleplay adventure.
+
+      Character:
+      #{scene.character.name}
+
+      Scene:
+      #{scene.setting}
+
+      Scene description:
+      #{scene.description}
+
+      Vocabulary to practice:
+      #{words}
+
+      Requirements:
+      - Short and natural
+      - Around 3 to 8 Japanese words and 3 to 4 English words
+      - Relevant to the scene and vocabulary
+      - Return only the title
+      - Do not use quotation marks
+      - Do not explain anything
+    PROMPT
+
+    generated_title = generate_title_with_gemini(prompt)
+
+    update!(title: generated_title)
+  end
+
   def active? = status == "active"
 
   def past_goal?
     goal_reached_at.present?
+  end
+
+  private
+
+  def generate_title_with_gemini(prompt)
+    client = Gemini.new(
+      credentials: {
+        service: "generative-language-api",
+        api_key: ENV.fetch("GEMINI_API_KEY")
+      },
+      options: {
+        model: "gemini-3.5-flash"
+      }
+    )
+
+    response = client.generate_content(
+      {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: prompt }
+            ]
+          }
+        ]
+      }
+    )
+
+    response
+      .dig("candidates", 0, "content", "parts", 0, "text")
+      .to_s
+      .strip
   end
 end

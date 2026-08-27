@@ -16,35 +16,39 @@ class AdventuresController < ApplicationController
     @goal_targets = @adventure.goal_targets
   end
 
-  def new
-    @upload = current_user.uploads.find(params[:upload_id])
-    authorize @upload, :start_adventure?
-
-    @adventure = @upload.adventures.new
-    @upload.saved_words.each do |word|
-      @adventure.word_goals.build(saved_word: word, target: WordGoal::DEFAULT_TARGET)
-    end
-
-    @scenes = Scene.includes(:character).order_by_relevance_to(@upload).uniq { |s| [ s.setting, s.character_id, s.level ] }
-  end
-
   # Adventure has no user_id — build it through the upload, which is what the policy checks.
   def create
     @upload = current_user.uploads.find(params[:upload_id])
-    @adventure = @upload.adventures.new(adventure_params)
-    @adventure.status = "active"
+
+    # Stop here if there are no saved words
+    if @upload.saved_words.empty?
+      redirect_to @upload, alert: "Save at least one word before starting an adventure."
+      return
+    end
+
+    @adventure = @upload.adventures.new(status: "active")
+
+    @upload.saved_words.each do |word|
+      @adventure.word_goals.build(
+        saved_word: word,
+        target: WordGoal::DEFAULT_TARGET
+      )
+    end
+
+    selected_words = @adventure.word_goals.map(&:saved_word)
+    best_scene = Scene.nearest_to_words(selected_words)
+
+    @adventure.scene = best_scene
+
     authorize @adventure
 
     if @adventure.save
+      @adventure.generate_title
       OpeningLineJob.perform_later(@adventure)
+
       redirect_to @adventure
     else
-      @scenes = Scene.includes(:character).order_by_relevance_to(@upload).uniq { |s| [ s.setting, s.character_id. s.level ] }
-      existing = @adventure.word_goals.map(&:saved_word_id)
-      (@upload.saved_words.pluck(:id) - existing).each do |id|
-        @adventure.word_goals.build(saved_word_id: id, target: WordGoal::DEFAULT_TARGET)
-      end
-      render :new, status: :unprocessable_entity
+      redirect_to @upload, alert: "Could not start adventure."
     end
   end
 
