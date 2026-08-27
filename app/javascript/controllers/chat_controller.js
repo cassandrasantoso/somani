@@ -10,6 +10,17 @@ export default class extends Controller {
   handleStream(event) {
     const stream = event.target
 
+    // The goal banner was just replaced (goal reached, or dismissed via
+    // "Keep going") — scroll it into view since the user may be mid-scroll
+    // reading earlier messages and would otherwise miss it entirely.
+    if (stream.getAttribute("target") === "goal-banner") {
+      requestAnimationFrame(() => {
+        const bar = document.querySelector("#goal-banner .goal-bar")
+        if (bar) bar.scrollIntoView({ behavior: "smooth", block: "nearest" })
+      })
+      return
+    }
+
     // Only care about Turbo streams adding messages
     if (stream.getAttribute("target") !== "messages") return
 
