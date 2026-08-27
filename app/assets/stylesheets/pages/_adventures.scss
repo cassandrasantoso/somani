@@ -117,26 +117,17 @@
 }
 
 .adventure-show__hero-overlay {
-  position: absolute;
-  inset: 0;
+  position: static;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding: 0.85rem 1rem;
-  background: linear-gradient(to top, rgba(22, 40, 61, 0.95) 25%, rgba(22, 40, 61, 0.55) 70%, rgba(22, 40, 61, 0) 100%);
+  background: var(--navy-2);
 }
 
 .adventure-show__hero--no-image .adventure-show__hero-overlay {
-  position: static;
   background: none;
   padding: 0.75rem 1rem;
-}
-
-.adventure-show__hero h1 {
-  margin: 0 0 0.25rem;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--cream);
 }
 
 .adventure-show__hero p {
@@ -144,10 +135,6 @@
   color: var(--gold-light);
   font-size: 0.8rem;
   line-height: 1.35;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
 }
 
 .message-row {
@@ -810,10 +797,6 @@
   .adventure-show__hero-img {
     min-height: 13rem;
     height: 13rem;
-  }
-
-  .adventure-show__hero p {
-    -webkit-line-clamp: 3;
   }
 
   #messages {

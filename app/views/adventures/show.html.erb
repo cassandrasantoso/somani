@@ -21,7 +21,6 @@
         <%= image_tag @adventure.character.image, class: "adventure-show__hero-img", alt: @adventure.character.name %>
       <% end %>
       <div class="adventure-show__hero-overlay">
-        <h1><%= @adventure.title.presence || @adventure.scene.setting %></h1>
         <p><%= @adventure.scene.description %></p>
       </div>
     </div>

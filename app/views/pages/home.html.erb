@@ -35,6 +35,10 @@
           <div class="progress-card__header">
             <h2><i class="fa-solid fa-gauge-high"></i> Progress card</h2>
 
+            <%= link_to friends_path, class: "progress-card__share", aria: { label: "Share progress with friends" }, title: "Share progress with friends" do %>
+              <i class="fa-solid fa-arrow-up-from-bracket"></i>
+              <span>Share</span>
+            <% end %>
           </div>
 
           <div class="progress-card__body">
@@ -100,7 +104,7 @@
                       <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
                       <span class="adventure-card__badge">Active Chat</span>
                     </div>
-                    <i class="fa-solid fa-paper-plane adventure-card__icon"></i>
+                    <span class="adventure-card__level"><%= adventure.scene.level %></span>
                   <% end %>
                 </div>
               <% end %>

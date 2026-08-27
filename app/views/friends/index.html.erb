@@ -1,0 +1,48 @@
+<div class="friends-page">
+  <div class="friends-page__header">
+    <h1><i class="fa-solid fa-user-group"></i> Friends</h1>
+    <p class="friends-page__subtitle"><%= @followers_count %> people follow your progress</p>
+  </div>
+
+  <div class="upload-card friends-add-card">
+    <h2 class="upload-card__title">Add a friend</h2>
+    <%= form_with url: friendships_path, method: :post, local: true, class: "friends-add-form" do |f| %>
+      <%= f.text_field :username, placeholder: "Their username", class: "form-control" %>
+      <%= f.submit "Follow", class: "upload-form__submit friends-add-form__submit" %>
+    <% end %>
+  </div>
+
+  <div class="friends-list">
+    <% if @friendships.any? %>
+      <% @friendships.each do |friendship| %>
+        <% friend = friendship.followed %>
+        <div class="friend-card">
+          <div class="friend-card__info">
+            <p class="friend-card__name"><%= friend.username %></p>
+            <div class="progress-stat">
+              <div class="progress-stat__labels">
+                <span>JLPT <%= friend.vocabulary_level %> Vocabulary</span>
+                <span><%= friend.vocabulary_progress %>%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--gold" style="width: <%= friend.vocabulary_progress %>%"></div>
+              </div>
+            </div>
+            <div class="progress-stat">
+              <div class="progress-stat__labels">
+                <span>Adventures completed</span>
+                <span><%= friend.adventures_completed_pct %>%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--navy" style="width: <%= friend.adventures_completed_pct %>%"></div>
+              </div>
+            </div>
+          </div>
+          <%= button_to "Unfollow", friendship_path(friendship), method: :delete, class: "friend-card__unfollow", form: { data: { turbo_confirm: "Unfollow #{friend.username}?" } } %>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="friends-page__empty">You're not following anyone yet. Add a username above to see their progress.</p>
+    <% end %>
+  </div>
+</div>

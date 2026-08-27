@@ -1,39 +1,89 @@
 <%# story 2 - can select words/phrases from the scanned content %>
-<div class="upload-show">
-  <div class="upload-show__header">
-    <h1><%= @upload.media_type.capitalize %></h1>
-  </div>
+<details class="upload-preview">
+  <summary class="upload-show__header">
+      <div>
+        <p class="upload-show__eyebrow">Reading practice</p></>
+      </div>
 
-  <% if @upload.media_type == "photo"%>
-    <div class="upload-card">
-      <%= image_tag @upload.file_location, class: "upload-card__image" %>
-    </div>
-  <% end %>
+
+    <span class="upload-preview__toggle">
+      <span class="upload-preview__toggle-text">View uploaded photo</span>
+
+      <i
+        class="fa-solid fa-chevron-down upload-preview__chevron"
+        aria-hidden="true"
+      ></i>
+    </span>
+  </summary>
+
+  <div class="upload-preview__content">
+    <% if @upload.media_type == "photo" %>
+      <div class="upload-card">
+        <%= image_tag @upload.file_location,
+                      class: "upload-card__image",
+                      alt: "Uploaded Japanese text" %>
+      </div>
+    <% end %>
+  </div>
+</details>
 
   <%# AI-generated summary %>
   <% if @upload.summary.present? %>
-    <section class="upload-summary">
-      <h2 class="upload-summary__title">要約 / Summary</h2>
-
-      <div class="upload-summary__content">
-        <%= simple_format(@upload.summary) %>
+    <section class="upload-insight">
+      <div class="upload-insight__icon" aria-hidden="true">
+         <%= image_tag "somani_bird.png",
+                    class: "upload-insight__bird",
+                    alt: "Somani bird" %>
       </div>
+
+      <p class="upload-insight__text">
+        <%= @upload.summary %>
+      </p>
     </section>
   <% end %>
-  <!-- JLPT Level Legend -->
-  <div class="jlpt-legend">
-    <span class="jlpt-legend__title">JLPT Levels:</span>
-    <div class="jlpt-legend__items">
-      <span class="jlpt-legend__item" data-level="N5">N5</span>
-      <span class="jlpt-legend__item" data-level="N4">N4</span>
-      <span class="jlpt-legend__item" data-level="N3">N3</span>
-      <span class="jlpt-legend__item" data-level="N2">N2</span>
-      <span class="jlpt-legend__item" data-level="N1">N1</span>
-    </div>
-  </div>
-  <%= render "word_picker", upload: @upload, matched_entries: @matched_entries, already_saved_surfaces: @already_saved_surfaces %>
 
-  <%= render "saved_words/list", upload: @upload, saved_words: @saved_words %>
+  <section class="upload-section upload-section--words">
+      <div class="upload-section__heading">
+        <div>
+          <p class="upload-section__eyebrow">Vocabulary finder</p>
+          <h2>Select words to study</h2>
+          <p class="upload-section__description">
+            Tap a highlighted word to add it to your study list.
+          </p>
+        </div>
+      </div>
+
+      <div class="jlpt-legend">
+        <span class="jlpt-legend__item" data-level="N5">N5</span>
+        <span class="jlpt-legend__item" data-level="N4">N4</span>
+        <span class="jlpt-legend__item" data-level="N3">N3</span>
+        <span class="jlpt-legend__item" data-level="N2">N2</span>
+        <span class="jlpt-legend__item" data-level="N1">N1</span>
+      </div>
+
+      <%= render "word_picker",
+                upload: @upload,
+                matched_entries: @matched_entries,
+                already_saved_surfaces: @already_saved_surfaces %>
+  </section>
+
+
+    <section class="upload-section upload-section--saved">
+      <div class="upload-section__heading">
+        <div>
+          <p class="upload-section__eyebrow">Your collection</p>
+          <h2>Saved words</h2>
+        </div>
+
+        <span class="upload-section__count">
+          <%= pluralize(@saved_words.size, "word") %>
+        </span>
+      </div>
+
+      <%= render "saved_words/list",
+                upload: @upload,
+                saved_words: @saved_words %>
+    </section>
 
   <div class="upload-show__actions mt-3">
     <% if policy(@upload).start_adventure? %>
