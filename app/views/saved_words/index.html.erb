@@ -23,6 +23,9 @@
               <span class="word-card__surface"><%= word.surface %></span>
               <% if word.reading.present? %>
                 <span class="word-card__reading"><%= word.reading %></span>
+                <span data-controller="audio-player" data-audio-player-url-value="<%= pronunciation_path(text: word.reading) %>">
+                  <button type="button" class="word-card__pronounce" data-action="audio-player#play">▶</button>
+                </span>
               <% end %>
               <% if word.level.present? %>
                 <span class="word-card__level"><%= word.level %></span>
