@@ -28,6 +28,11 @@ Rails.application.routes.draw do
 
   resources :uploaded_words, only: %i[destroy]           # unlink a word
 
+  get "pronunciation" => "pronunciations#show", as: :pronunciation # hear a word's reading
+
+  resources :friends, only: %i[index]                     # see friends' shared progress
+  resources :friendships, only: %i[create destroy]        # follow/unfollow a friend
+
   resources :saved_words, only: %i[index show edit update destroy] do
     collection { get :due }
     member     { patch :review }

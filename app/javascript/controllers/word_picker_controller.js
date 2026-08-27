@@ -23,6 +23,13 @@ export default class extends Controller {
     this.checkDuplicate(params.surface)
   }
 
+  playPronunciation() {
+    const text = this.readingTarget.value.trim()
+    if (!text) return
+
+    new Audio(`/pronunciation?text=${encodeURIComponent(text)}`).play()
+  }
+
   checkDuplicate(surface) {
     if (this.alreadySavedValue.includes(surface)) {
       this.surfaceTarget.setCustomValidity("You've already saved this word.")

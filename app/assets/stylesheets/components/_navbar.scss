@@ -32,6 +32,7 @@
   border: none;
   color: var(--cream);
   font-size: 1.1rem;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .app-navbar__brand {
@@ -137,6 +138,7 @@
   color: var(--text-soft);
   font-size: 1.2rem;
   transition: background-color 0.15s ease, color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 
