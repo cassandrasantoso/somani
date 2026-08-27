@@ -10,6 +10,8 @@ class SavedWord < ApplicationRecord
 
   scope :due, -> { where(next_review_at: ..Time.current) }
 
+  LEVEL_ENUM = { N1: 1, N2: 2, N3: 3, N4: 4, N5: 5 }.freeze
+
   # e.g. current_user.saved_words.pick_most_common_level => "N3"
   def self.pick_most_common_level
     group(:level).count.max_by { |_level, count| count }&.first

@@ -32,4 +32,12 @@ class Scene < ApplicationRecord
       embedding: EmbeddingService.generate(text)
     )
   end
+
+  def self.order_by_relevance_to(upload)
+    level = upload.highest_word_level ||
+            upload.user.saved_words.pick_most_common_level ||
+            DEFAULT_LEVEL
+
+    Scene.where(level: SavedWord::LEVEL_ENUM.key(level))
+  end
 end

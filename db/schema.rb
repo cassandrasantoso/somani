@@ -75,6 +75,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_073126) do
     t.index ["message_id"], name: "index_feedbacks_on_message_id"
   end
 
+  create_table "friendships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "followed_id", null: false
+    t.bigint "follower_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_friendships_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_friendships_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_friendships_on_follower_id"
+  end
+
   create_table "jlpt_entries", force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", null: false
@@ -188,6 +198,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_27_073126) do
   add_foreign_key "adventures", "scenes"
   add_foreign_key "adventures", "uploads"
   add_foreign_key "feedbacks", "messages"
+  add_foreign_key "friendships", "users", column: "followed_id"
+  add_foreign_key "friendships", "users", column: "follower_id"
   add_foreign_key "messages", "adventures"
   add_foreign_key "saved_words", "jlpt_entries"
   add_foreign_key "saved_words", "users"

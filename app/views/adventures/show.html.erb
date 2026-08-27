@@ -28,10 +28,6 @@
 
   <%= turbo_stream_from @adventure %>
 
-  <div id="goal-banner">
-    <%= render "adventures/goal_banner", adventure: @adventure %>
-  </div>
-
   <div id="messages" data-controller="blur">
     <%= render @messages %>
   </div>
@@ -49,13 +45,11 @@
             usage_counts: @usage_counts,
             goal_targets: @goal_targets %>
 
-    <% next_word = @target_words.min_by { |w|
-      @usage_counts.fetch(w.id, 0) - @goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
-    } %>
-    <% if next_word &&
-          @usage_counts.fetch(next_word.id, 0) <
-            @goal_targets.fetch(next_word.id, WordGoal::DEFAULT_TARGET) %>
+  <div id="goal-banner">
+    <%= render "adventures/goal_banner", adventure: @adventure %>
+  </div>
 
+  <% if @adventure.active? %>
     <div id="message-form" class="adventure-show__composer">
       <%= render "messages/form", adventure: @adventure, message: @message %>
 
@@ -93,11 +87,15 @@
         <p class="adventure-show__complete-subtitle"><%= pluralize(mastered, "word") %> mastered</p>
       </div>
 
-      <% if policy(@adventure).destroy? %>
-        <%= button_to "Delete adventure", @adventure, method: :delete,
-                      data: { turbo_confirm: "Delete this adventure?" },
-                      class: "adventure-show__complete-delete" %>
-      <% end %>
+      <div class="adventure-show__complete-actions">
+        <%= link_to "Back to home", root_path, class: "adventure-show__complete-home" %>
+
+        <% if policy(@adventure).destroy? %>
+          <%= button_to "Delete adventure", @adventure, method: :delete,
+                        data: { turbo_confirm: "Delete this adventure?" },
+                        class: "adventure-show__complete-delete" %>
+        <% end %>
+      </div>
     </div>
   <% end %>
 </div>
