@@ -94,4 +94,8 @@ class Adventure < ApplicationRecord
   end
 
   def active? = status == "active"
+
+  def past_goal?
+    goal_reached_at.present?
+  end
 end
