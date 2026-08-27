@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  prepend_before_action :redirect_to_www
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   include Pundit::Authorization
@@ -12,6 +13,13 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, with: :route_not_found
 
   private
+
+  def redirect_to_www
+    return unless request.host == "somani.me"
+
+    redirect_to "https://www.somani.me#{request.fullpath}",
+                status: :moved_permanently, allow_other_host: true
+  end
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
