@@ -1,13 +1,12 @@
 <% if adventure.prompt_goal? %>
-  <div class="goal-banner">
-    <h2>You've reached the target for every word.</h2>
-    <p>That's the goal for this adventure. Finish here, or keep the story going.</p>
+  <div class="goal-bar">
+    <span class="goal-bar__text">Goal reached — every word used.</span>
 
-    <%= button_to "Finish this adventure",
-                adventure_path(adventure, adventure: { status: "completed" }),
-                method: :patch, class: "btn btn--primary" %>
-
-    <%= button_to "Keep going", continue_adventure_path(adventure),
-                method: :patch, class: "btn btn--ghost" %>
+    <span class="goal-bar__actions">
+      <%= button_to "Finish", adventure_path(adventure, adventure: { status: "completed" }),
+                    method: :patch, class: "goal-bar__btn goal-bar__btn--primary" %>
+      <%= button_to "Keep going", continue_adventure_path(adventure),
+                    method: :patch, class: "goal-bar__btn" %>
+    </span>
   </div>
 <% end %>

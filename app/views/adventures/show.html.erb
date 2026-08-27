@@ -29,10 +29,6 @@
 
   <%= turbo_stream_from @adventure %>
 
-  <div id="goal-banner">
-    <%= render "adventures/goal_banner", adventure: @adventure %>
-  </div>
-
   <div id="messages" data-controller="blur">
     <%= render @messages %>
   </div>
@@ -49,6 +45,10 @@
             target_words: @target_words,
             usage_counts: @usage_counts,
             goal_targets: @goal_targets %>
+
+  <div id="goal-banner">
+    <%= render "adventures/goal_banner", adventure: @adventure %>
+  </div>
 
   <% if @adventure.active? %>
     <div id="message-form" class="adventure-show__composer">
