@@ -440,6 +440,48 @@
   font-size: 0.8rem;
 }
 
+.goal-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  padding: 0.55rem 0.85rem;
+  margin: 0;
+  border-radius: 0.85rem;
+  background: var(--sage-light);
+  border: 2px solid var(--sage);
+  font-size: 0.8rem;
+  color: var(--navy);
+}
+
+.goal-bar__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.goal-bar__actions form { margin: 0; }
+
+.goal-bar__btn {
+  display: inline-block;
+  width: auto;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-align: center;
+  border: 2px solid var(--navy);
+  background: var(--app-bg);
+  color: var(--navy);
+}
+
+.goal-bar__btn--primary {
+  background: var(--navy);
+  color: var(--cream);
+}
+
 #message-form {
   flex-shrink: 0;
 }
@@ -588,6 +630,59 @@
   transform: translateY(-2px);
 }
 
+// .adventure-show .completed {
+//   flex-shrink: 0;
+//   text-align: center;
+//   color: var(--text-soft);
+//   font-style: italic;
+//   padding: 0.5rem;
+//   margin: 0;
+// }
+
+// .adventure-show__actions {
+//   flex-shrink: 0;
+//   display: flex;
+//   flex-direction: row;
+//   gap: 0.5rem;
+// }
+
+// .adventure-show__actions > form {
+//   flex: 1 1 0;
+// }
+
+// .adventure-show__btn {
+//   display: block;
+//   width: 100%;
+//   text-align: center;
+//   padding: 0.55rem;
+//   border-radius: 999px;
+//   font-weight: 600;
+//   font-size: 0.8rem;
+//   transition: transform 0.15s ease, background 0.15s ease;
+// }
+
+// .adventure-show__btn--ghost {
+//   background: transparent;
+//   color: var(--navy);
+//   border: 1px solid var(--hairline);
+// }
+
+// .adventure-show__btn--ghost:hover {
+//   background: var(--card);
+//   color: var(--navy);
+// }
+
+// .adventure-show__btn--danger {
+//   background: transparent;
+//   color: var(--pink-dark);
+//   border: 1px solid var(--pink);
+// }
+
+// .adventure-show__btn--danger:hover {
+//   background: var(--pink-light);
+//   color: var(--pink-dark);
+// }
+
 .adventure-show__complete-card {
   flex-shrink: 0;
   display: flex;
@@ -629,10 +724,42 @@
   opacity: 0.9;
 }
 
+.adventure-show__complete-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0 1rem 1rem;
+}
+
+.adventure-show__complete-actions > a,
+.adventure-show__complete-actions > form {
+  flex: 1 1 0;
+  margin: 0;
+}
+
+.adventure-show__complete-home {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 0.75rem;
+  border: 2px solid var(--cream);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cream);
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.adventure-show__complete-home:hover {
+  background: rgba(246, 238, 220, 0.15);
+  color: var(--cream);
+  transform: translateY(-1px);
+}
+
 .adventure-show__complete-delete {
   display: block;
-  width: calc(100% - 2rem);
-  margin: 0 1rem 1rem;
+  width: 100%;
+  margin: 0;
   text-align: center;
   padding: 0.75rem;
   border: 2px solid var(--red-dark);

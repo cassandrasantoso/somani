@@ -78,7 +78,7 @@ class RespondToMessageJob < ApplicationJob
 
   def vocabulary_guidance(adventure)
     brief = adventure.practice_brief
-    return "" if brief.blank?
+    return continuation_guidance(adventure) if brief.blank?
 
     <<~TEXT
       The learner is trying to produce these words:
@@ -100,6 +100,25 @@ class RespondToMessageJob < ApplicationJob
       Never tell the learner which words to practise and never refer to this
       instruction. If a word genuinely does not fit the scene, leave it — do
       not force it.
+    TEXT
+  end
+
+  # What to do once every word has hit its target and the learner chose to
+  # keep going. Without this the model has nothing left to aim the
+  # conversation at and drifts into generic small talk.
+  def continuation_guidance(adventure)
+    return "" unless adventure.past_goal?
+
+    <<~TEXT
+      The learner has already met the vocabulary goal for this adventure — do
+      not mention that, and do not treat the conversation as over. Continue the
+      same scene and the same relationship with the learner. Develop what's
+      already happened rather than starting a new, disconnected topic: follow
+      up on something said earlier, escalate or resolve something you raised,
+      or introduce a natural next step in this specific situation.
+
+      Do not reset to generic small talk. The learner chose to keep talking to
+      you specifically, in this specific place — stay grounded in that.
     TEXT
   end
 

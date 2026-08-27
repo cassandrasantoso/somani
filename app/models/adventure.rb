@@ -65,7 +65,7 @@ class Adventure < ApplicationRecord
 
   # show the banner
   def prompt_goal?
-    goal_reached_at? && goal_dismissed_at.nil? && status == "active"
+    goal_reached_at? && goal_dismissed_at.nil? && active?
   end
 
   # Words that still need credit, the ones furthest from their goal first.
@@ -91,5 +91,11 @@ class Adventure < ApplicationRecord
     return "" if words.empty?
 
     words.map { |w| "・#{w.surface}（#{w.reading}）— #{w.meaning}" }.join("\n")
+  end
+
+  def active? = status == "active"
+
+  def past_goal?
+    goal_reached_at.present?
   end
 end
