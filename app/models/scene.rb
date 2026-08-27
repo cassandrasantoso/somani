@@ -1,5 +1,6 @@
 class Scene < ApplicationRecord
   belongs_to :character
+  has_neighbors :embedding
   has_many :adventures, dependent: :restrict_with_error
 
   DEFAULT_LEVEL = "N2".freeze
@@ -7,11 +8,28 @@ class Scene < ApplicationRecord
   # Orders scenes so ones matching the relevant JLPT level come first.
   # Prefers the level of words saved from this specific upload; falls back
   # to the user's overall saved_words history, then to N2 (the app's target level).
-  def self.order_by_relevance_to(upload)
-    level = upload.saved_words.pick_most_common_level ||
-            upload.user.saved_words.pick_most_common_level ||
-            DEFAULT_LEVEL
+  def self.nearest_to_words(words)
+    text = words.map(&:surface).join(" ")
 
-    order(Arel.sql("CASE WHEN level = #{connection.quote(level)} THEN 0 ELSE 1 END"))
+    query_embedding = EmbeddingService.generate(text)
+
+    where.not(embedding: nil)
+         .nearest_neighbors(
+           :embedding,
+           query_embedding,
+           distance: "cosine"
+         )
+         .first
+  end
+
+  def generate_embedding!
+    text = [
+      setting,
+      description
+    ].compact.join(" ")
+
+    update!(
+      embedding: EmbeddingService.generate(text)
+    )
   end
 end

@@ -21,25 +21,36 @@ class AdventuresController < ApplicationController
     authorize @upload, :start_adventure?
 
     @adventure = @upload.adventures.new
-    @upload.saved_words.each do |word|
-      @adventure.word_goals.build(saved_word: word, target: WordGoal::DEFAULT_TARGET)
-    end
 
-    @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
+    @upload.saved_words.each do |word|
+      @adventure.word_goals.build(
+        saved_word: word,
+        target: WordGoal::DEFAULT_TARGET
+      )
+    end
   end
 
   # Adventure has no user_id — build it through the upload, which is what the policy checks.
   def create
     @upload = current_user.uploads.find(params[:upload_id])
+
     @adventure = @upload.adventures.new(adventure_params)
     @adventure.status = "active"
+
+    selected_words = @adventure.word_goals.map(&:saved_word)
+
+    best_scene = Scene.nearest_to_words(selected_words)
+
+    @adventure.scene = best_scene
+
     authorize @adventure
 
     if @adventure.save
+      @adventure.generate_title
       OpeningLineJob.perform_later(@adventure)
+
       redirect_to @adventure
     else
-      @scenes = Scene.includes(:character).order_by_relevance_to(@upload)
       existing = @adventure.word_goals.map(&:saved_word_id)
       (@upload.saved_words.pluck(:id) - existing).each do |id|
         @adventure.word_goals.build(saved_word_id: id, target: WordGoal::DEFAULT_TARGET)
