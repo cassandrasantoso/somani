@@ -286,6 +286,24 @@
   font-size: 0.8rem;
 }
 
+.pronunciation-field__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: var(--app-bg);
+  color: var(--pink-dark);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.pronunciation-field__btn:hover {
+  background: var(--pink-light);
+}
+
 .upload-form__submit {
   display: block;
   width: 100%;
