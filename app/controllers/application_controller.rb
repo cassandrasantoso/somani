@@ -12,6 +12,12 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :route_not_found
 
+  def after_sign_in_path_for(resource)
+    days_since_joined = (Date.current - resource.created_at.to_date).to_i + 1
+    flash[:notice] = "Welcome back! Today is day #{days_since_joined} since you first logged in."
+    super
+  end
+
   private
 
   def redirect_to_www

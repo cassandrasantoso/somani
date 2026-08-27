@@ -27,60 +27,39 @@ class UploadsController < ApplicationController
     @upload = Upload.new(upload_params)
     @upload.user = current_user
     authorize @upload
-    cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media", resource_type: "auto")
 
-    @upload.file_location = cloudinary_value["url"]
     if @upload.save
-      text = extract_text(@upload)
-      summary = generate_summary(text)
+      # The Cloudinary upload doesn't depend on extract_text (it reads straight
+      # from the tempfile), so it runs on its own thread and persists
+      # file_location itself as soon as it's done - if extract_text blows up
+      # below, the row still ends up with an image instead of a permanent nil.
+      cloudinary_thread = Thread.new do
+        cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media", resource_type: "auto")
+        @upload.update_column(:file_location, cloudinary_value["url"])
+      end
 
-      @upload.update!(
-        extracted_text: text,
-        summary: summary
-      )
+      begin
+        text = extract_text(@upload)
+      rescue Faraday::TooManyRequestsError
+        @upload.destroy
+        @upload = Upload.new(upload_params.except(:file))
+        @upload.errors.add(:base, "Too many uploads right now - please wait a moment and try again.")
+        return render :new, status: :too_many_requests
+      end
+
+      @upload.update!(extracted_text: text)
+      cloudinary_thread.join
+
+      # The summary is just a decorative "you're reading about X" blurb on the
+      # show page (guarded by `if @upload.summary.present?`), not something the
+      # user is blocked on - so it's generated after the redirect instead of
+      # costing them a second synchronous Gemini round trip here.
+      GenerateUploadSummaryJob.perform_later(@upload)
 
       redirect_to @upload, notice: "Upload successful."
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def generate_summary(text)
-    return nil if text.blank?
-
-    prompt = <<~PROMPT
-      Identify the main topic of the following Japanese text.
-
-      Return exactly one English sentence using this format:
-      Oh, it looks like you are reading about [topic]!
-
-      Requirements:
-      - Replace [topic] with a natural 3-to-6-word English topic
-      - Keep the entire response on one line
-      - Do not include brackets
-      - Do not include quotation marks
-      - Do not add explanations
-      - Use only information found in the original text
-
-      Japanese text:
-      #{text}
-    PROMPT
-
-    response = gemini_client.generate_content({
-                                                contents: [
-                                                  {
-                                                    role: "user",
-                                                    parts: [
-                                                      { text: prompt }
-                                                    ]
-                                                  }
-                                                ]
-                                              })
-
-    response
-      .dig("candidates", 0, "content", "parts", 0, "text")
-      .to_s
-      .strip
   end
 
   def destroy
