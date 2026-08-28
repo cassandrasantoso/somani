@@ -1,4 +1,4 @@
-<% if adventure.prompt_goal? %>
+<div id="goal-banner"><% if adventure.prompt_goal? %>
   <div class="goal-bar">
     <span class="goal-bar__text">Goal reached — every word used.</span>
 
@@ -9,4 +9,4 @@
                     method: :patch, class: "goal-bar__btn" %>
     </span>
   </div>
-<% end %>
+<% end %></div>
