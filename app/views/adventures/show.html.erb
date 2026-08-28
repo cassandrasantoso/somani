@@ -32,12 +32,11 @@
     <%= render @messages %>
   </div>
 
-       <%# Loading animation before AI response %>
-    <div class="ai-loading"
-         data-chat-target="loader"
-         hidden>
-      <div class="loader"></div>
-    </div>
+  <% awaiting_reply = @messages.empty? || @messages.last.role != "assistant" %>
+
+  <%= tag.div class: "ai-loading", data: { chat_target: "loader" }, hidden: !awaiting_reply do %>
+    <div class="loader"></div>
+  <% end %>
 
   <%= render "adventures/tracker",
             adventure: @adventure,
