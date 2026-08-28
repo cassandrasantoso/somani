@@ -502,6 +502,27 @@
   gap: 0.4rem;
 }
 
+.saved-word__surface-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.4rem;
+  transition: opacity 0.15s ease;
+}
+
+.saved-word__surface-btn:hover {
+  opacity: 0.75;
+}
+
+.saved-word__surface-btn:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
 .saved-word__surface {
   font-weight: 700;
   color: var(--text);
@@ -524,6 +545,43 @@
 
 .saved-word__remove:hover {
   text-decoration: underline;
+}
+
+.saved-word__edit {
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.65rem;
+  background: var(--pink-light);
+  border: none;
+  border-radius: 999px;
+  color: var(--pink-dark);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.saved-word__edit:hover {
+  background: var(--pink);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.upload-card .word-target-field__label {
+  color: var(--red);
+  font-weight: 700;
+  font-size: clamp(0.72rem, 3.6vw, 0.95rem);
+  white-space: nowrap;
+}
+
+.word-target-field__hint {
+  margin: 0 0 0.5rem;
+  color: var(--red);
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .upload-section--words {
@@ -566,7 +624,7 @@
 .upload-section__eyebrow {
   margin: 0 0 0.2rem;
   color: var(--pink-dark);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -575,7 +633,7 @@
 .upload-section__heading h2 {
   margin: 0;
   color: var(--text);
-  font-size: 0.72rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -583,7 +641,7 @@
   max-width: 28rem;
   margin: 0.35rem 0 0;
   color: var(--text-soft);
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   line-height: 1.5;
 }
 

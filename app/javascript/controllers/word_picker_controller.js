@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["surface", "reading", "meaning", "level"]
+  static targets = ["surface", "reading", "meaning", "level", "times"]
   static values = { alreadySaved: Array }
 
   capture() {
@@ -19,8 +19,27 @@ export default class extends Controller {
     this.readingTarget.value = params.reading
     this.meaningTarget.value = params.meaning
     this.levelTarget.value = params.level
+    this.timesTarget.value = "1"
 
     this.checkDuplicate(params.surface)
+  }
+
+  // Triggered by the modal itself (see the data-action on #exampleModal),
+  // so it works for any trigger button anywhere on the page — including the
+  // "Edit" button on an already-saved word, which lives outside this
+  // controller's own markup. Ignores triggers (like the JLPT <mark> matches)
+  // that don't carry this data, since those already fill the form themselves
+  // via selectMatch on click, before this event fires.
+  prefill(event) {
+    const button = event.relatedTarget
+    if (!button || !button.dataset.surface) return
+
+    this.surfaceTarget.value = button.dataset.surface
+    this.readingTarget.value = button.dataset.reading || ""
+    this.meaningTarget.value = button.dataset.meaning || ""
+    this.levelTarget.value = button.dataset.level || ""
+    this.timesTarget.value = button.dataset.times || "1"
+    this.surfaceTarget.setCustomValidity("")
   }
 
   playPronunciation() {

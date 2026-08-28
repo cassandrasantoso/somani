@@ -7,7 +7,7 @@
 @include media-breakpoint-down(lg) {
   .home-container,
   .scene-container {
-    height: calc(100dvh - 120px);
+    min-height: calc(100dvh - 120px);
   }
 }
 

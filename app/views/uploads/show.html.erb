@@ -1,5 +1,5 @@
 <%# story 2 - can select words/phrases from the scanned content %>
-<details class="upload-preview">
+<details class="upload-preview mt-2">
   <summary class="upload-show__header">
       <div>
         <p class="upload-show__eyebrow">Reading practice</p>
@@ -82,17 +82,36 @@
 
       <%= render "saved_words/list",
                 upload: @upload,
-                saved_words: @saved_words %>
+                saved_words: @saved_words,
+                word_targets: @word_targets %>
     </section>
 
-  <div class="upload-show__actions mt-3">
-    <% if policy(@upload).start_adventure? %>
-      <%= button_to "Start an adventure! 🗺️",
-                  upload_adventures_path(@upload),
-                  method: :post,
-                  class: "upload-show__btn upload-show__btn--primary" %>
-    <% end %>
+  <% if policy(@upload).start_adventure? %>
+    <div data-controller="upload-form" data-action="turbo:submit-end@document->upload-form#hideLoading">
+      <div class="upload-show__actions mt-3">
+        <%= button_to "Start an adventure! 🗺️",
+                    upload_adventures_path(@upload),
+                    method: :post,
+                    class: "upload-show__btn upload-show__btn--primary",
+                    form: { data: { action: "submit->upload-form#showLoading" } } %>
+      </div>
 
+      <div class="upload-loading" data-upload-form-target="overlay" hidden>
+        <div class="upload-loading__card">
+          <%= image_tag "uploading.jpeg", class: "upload-loading__bird", alt: "" %>
+          <p class="upload-loading__text">
+            Starting your adventure...
+            <span class="upload-loading__percent" data-upload-form-target="percent">0%</span>
+          </p>
+          <div class="upload-loading__bar">
+            <div class="upload-loading__bar-fill" data-upload-form-target="barFill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="upload-show__actions mt-3">
     <% if policy(@upload).destroy? %>
       <%= button_to "Delete upload", @upload, method: :delete, class: "upload-show__btn upload-show__btn--danger" %>
     <% end %>

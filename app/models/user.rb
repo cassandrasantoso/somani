@@ -38,8 +38,9 @@ class User < ApplicationRecord
   end
 
   def adventures_completed_pct
-    return 0 if adventures.none?
+    started = adventures.started
+    return 0 if started.none?
 
-    (adventures.where(status: "completed").count * 100.0 / adventures.count).round
+    (started.where(status: "completed").count * 100.0 / started.count).round
   end
 end

@@ -37,10 +37,12 @@ class SavedWordsController < ApplicationController
 
     if @saved_word.save
       UploadedWord.find_or_create_by!(upload: @upload, saved_word: @saved_word)
+      apply_word_target(@saved_word)
       notice = "「#{@saved_word.surface}」 saved."
       @saved_words = @upload.saved_words
       @matched_entries = @upload.matched_jlpt_entries
       @already_saved_surfaces = current_user.saved_words.pluck(:surface)
+      @word_targets = @upload.word_targets
 
       respond_to do |format|
         format.turbo_stream { flash.now[:notice] = notice }
@@ -96,5 +98,16 @@ class SavedWordsController < ApplicationController
 
     JlptEntry.find_by(content: surface, entry_type: "word") ||
       JlptEntry.find_by(reading: surface, entry_type: "word")
+  end
+
+  # The word's practice target for this upload's (not yet started) adventure —
+  # set here, at save time, instead of in a separate step before the adventure starts.
+  def apply_word_target(saved_word)
+    target = params[:target].to_i
+    return unless target.positive?
+
+    adventure = @upload.draft_adventure || @upload.adventures.create!(status: "active")
+    adventure.word_goals.find_or_initialize_by(saved_word: saved_word)
+             .update!(target: target.clamp(WordGoal::RANGE))
   end
 end

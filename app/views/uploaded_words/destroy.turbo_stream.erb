@@ -3,5 +3,5 @@
 <% end %>
 
 <%= turbo_stream.replace "saved-word-list" do %>
-  <%= render "saved_words/list", upload: @upload, saved_words: @saved_words %>
+  <%= render "saved_words/list", upload: @upload, saved_words: @saved_words, word_targets: @word_targets %>
 <% end %>

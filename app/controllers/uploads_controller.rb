@@ -15,6 +15,7 @@ class UploadsController < ApplicationController
     @saved_words = @upload.saved_words
     @matched_entries = @upload.matched_jlpt_entries
     @already_saved_surfaces = current_user.saved_words.pluck(:surface)
+    @word_targets = @upload.word_targets
   end
 
   def new
@@ -29,6 +30,11 @@ class UploadsController < ApplicationController
     authorize @upload
 
     if @upload.save
+      # Created scene-less (see Adventure#draft?) so the show page has an
+      # adventure id to attach the word-target form to before the learner
+      # has picked words and an AI scene gets chosen.
+      @upload.adventures.create!(status: "active")
+
       # The Cloudinary upload doesn't depend on extract_text (it reads straight
       # from the tempfile), so it runs on its own thread and persists
       # file_location itself as soon as it's done - if extract_text blows up

@@ -19,4 +19,19 @@ class Upload < ApplicationRecord
              .where.not(content: [nil, ""])
              .where("? LIKE '%' || content || '%'", extracted_text)
   end
+
+  def highest_word_level
+    saved_words.map { |word| SavedWord::LEVEL_ENUM[word.level.to_sym] }.min
+  end
+
+  # The scene-less adventure created at upload time (see UploadsController#create)
+  # that word targets accumulate on before the adventure actually starts.
+  def draft_adventure
+    adventures.find_by(scene_id: nil)
+  end
+
+  # { saved_word_id => target } for the draft adventure, or {} before one exists.
+  def word_targets
+    draft_adventure&.goal_targets || {}
+  end
 end

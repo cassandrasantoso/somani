@@ -1,8 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Uploads take a while server-side (Cloudinary + AI text extraction), so the
-// percentage here is a smooth simulated climb rather than real byte progress -
-// it eases up to 90% and only jumps to 100% once the response actually comes back.
+
 const MAX_SIMULATED_PERCENT = 90
 const TICK_MS = 200
 

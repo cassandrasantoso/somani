@@ -132,6 +132,11 @@
   gap: 0.5rem;
 }
 
+.word-card__actions-right {
+  display: flex;
+  gap: 0.5rem;
+}
+
 .word-card__btn {
   display: inline-flex;
   align-items: center;
@@ -168,6 +173,17 @@
 .word-card__btn--edit:hover {
   color: var(--text);
   background: var(--app-bg);
+}
+
+.word-card__btn--remove {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+.word-card__btn--remove:hover {
+  color: var(--cream);
+  background: var(--red);
 }
 
 .word-card__btn--adventures {
