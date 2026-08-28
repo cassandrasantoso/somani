@@ -16,5 +16,5 @@ class UploadPolicy < ApplicationPolicy
 
   # named aliases so controllers read clearly
   def add_words?       = update?
-  def start_adventure? = update?
+  def start_adventure? = update? && record.saved_words.any?
 end
