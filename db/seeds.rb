@@ -63,6 +63,15 @@ puts "Creating scenes..."
   end
 end
 
+puts "Generating scene embeddings..."
+Scene.where(embedding: nil).find_each do |scene|
+  scene.generate_embedding!
+  print "."
+rescue StandardError => e
+  puts "\n  ! Scene ##{scene.id}: #{e.message}"
+end
+puts "\n#{Scene.where.not(embedding: nil).count}/#{Scene.count} scenes embedded."
+
 puts "Creating JLPT entries..."
 [
     # N2 Vocabulary
