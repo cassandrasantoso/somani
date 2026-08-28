@@ -4,6 +4,8 @@ require "gemini-ai"
 class OpeningLineJob < ApplicationJob
   queue_as :default
 
+  retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+
   GEMINI_MODEL = "gemini-3.5-flash"
 
   def perform(adventure)
