@@ -456,6 +456,10 @@
   color: var(--navy);
 }
 
+#goal-banner:empty {
+  display: none;
+}
+
 .goal-bar__actions {
   display: flex;
   gap: 0.5rem;
