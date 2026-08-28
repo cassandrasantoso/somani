@@ -19,8 +19,4 @@ class Upload < ApplicationRecord
              .where.not(content: [nil, ""])
              .where("? LIKE '%' || content || '%'", extracted_text)
   end
-
-  def highest_word_level
-    saved_words.map { |word| SavedWord::LEVEL_ENUM[word.level.to_sym] }.min
-  end
 end

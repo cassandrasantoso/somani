@@ -63,6 +63,18 @@ puts "Creating scenes..."
   end
 end
 
+# Scene.destroy_all above wipes every embedding, and an unembedded scene is
+# invisible to Scene.nearest_to_words - which makes adventures unstartable.
+# Done inline so seeding works even where no worker is running.
+puts "Generating scene embeddings..."
+Scene.where(embedding: nil).find_each do |scene|
+  scene.generate_embedding!
+  print "."
+rescue StandardError => e
+  puts "\n  ! Scene ##{scene.id}: #{e.class}: #{e.message}"
+end
+puts "\n#{Scene.where.not(embedding: nil).count}/#{Scene.count} scenes embedded."
+
 puts "Creating JLPT entries..."
 [
     # N2 Vocabulary

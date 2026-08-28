@@ -43,11 +43,15 @@ class AdventuresController < ApplicationController
     authorize @adventure
 
     if @adventure.save
-      @adventure.generate_title
+      GenerateTitleJob.perform_later(@adventure)
       OpeningLineJob.perform_later(@adventure)
 
       redirect_to @adventure
     else
+      Rails.logger.error(
+        "Adventure create failed (upload=#{@upload.id} user=#{current_user.id}): " \
+        "#{@adventure.errors.full_messages.inspect}"
+      )
       redirect_to @upload, alert: "Could not start adventure."
     end
   end
