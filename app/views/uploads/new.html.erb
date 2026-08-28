@@ -1,14 +1,37 @@
 <%# story 1 - can upload media& AI maps %>
-<section class="d-flex flex-column align-items-center justify-content-start upload-container">
+<section
+  class="d-flex flex-column align-items-center justify-content-start upload-container"
+  data-controller="upload-form"
+  data-action="turbo:submit-end@document->upload-form#hideLoading"
+>
   <div class="m-3 text-center upload-container__heading">
     <h1>📝Upload media</h1>
   </div>
 
-  <%= simple_form_for @upload, html:{class:"upload-form-card p-4 m-3 w-70", style: "max-width: 750px;"} do |f| %>
+  <%= simple_form_for @upload,
+                       html: {
+                         class: "upload-form-card p-4 m-3 w-70",
+                         style: "max-width: 750px;",
+                         data: { action: "submit->upload-form#showLoading" }
+                       } do |f| %>
+    <%= f.error_notification %>
     <%= f.input :media_type, collection: Upload::MEDIA_TYPES %>
     <%= f.input :file, as: :file %>
     <div class="w-100 d-flex justify-content-center">
     <%= f.submit "Upload", class: "btn btn-primary m-1 w-50" %>
     </div>
   <% end %>
+
+  <div class="upload-loading" data-upload-form-target="overlay" hidden>
+    <div class="upload-loading__card">
+      <%= image_tag "uploading.jpeg", class: "upload-loading__bird", alt: "" %>
+      <p class="upload-loading__text">
+        Uploading your media...
+        <span class="upload-loading__percent" data-upload-form-target="percent">0%</span>
+      </p>
+      <div class="upload-loading__bar">
+        <div class="upload-loading__bar-fill" data-upload-form-target="barFill"></div>
+      </div>
+    </div>
+  </div>
 </section>
