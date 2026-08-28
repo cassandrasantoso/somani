@@ -3,11 +3,15 @@ class Scene < ApplicationRecord
   has_neighbors :embedding
   has_many :adventures, dependent: :restrict_with_error
 
+  after_create_commit :enqueue_embedding
+
   DEFAULT_LEVEL = "N2".freeze
 
-  # Orders scenes so ones matching the relevant JLPT level come first.
-  # Prefers the level of words saved from this specific upload; falls back
-  # to the user's overall saved_words history, then to N2 (the app's target level).
+  # Picks the scene whose description sits closest to the words being
+  # practised, by cosine distance over the embeddings. Scenes without an
+  # embedding are invisible to this search, so if none are embedded it
+  # returns nil - and the caller assigns the result straight to a required
+  # belongs_to.
   def self.nearest_to_words(words)
     text = words.map(&:surface).join(" ")
 
@@ -20,24 +24,24 @@ class Scene < ApplicationRecord
            distance: "cosine"
          )
          .first
+  rescue Faraday::TooManyRequestsError => e
+    Rails.logger.error("Scene.nearest_to_words: rate limited (#{e.message})")
+    where.not(embedding: nil).first
   end
 
   def generate_embedding!
-    text = [
-      setting,
-      description
-    ].compact.join(" ")
+    text = [setting, description].compact_blank.join(" ")
+    raise ArgumentError, "Scene ##{id} has no text to embed" if text.blank?
 
-    update!(
-      embedding: EmbeddingService.generate(text)
-    )
+    vector = EmbeddingService.generate(text)
+    raise "EmbeddingService returned no vector for Scene ##{id}" if vector.blank?
+
+    update!(embedding: vector)
   end
 
-  def self.order_by_relevance_to(upload)
-    level = upload.highest_word_level ||
-            upload.user.saved_words.pick_most_common_level ||
-            DEFAULT_LEVEL
+  private
 
-    Scene.where(level: SavedWord::LEVEL_ENUM.key(level))
+  def enqueue_embedding
+    GenerateSceneEmbeddingJob.perform_later(self)
   end
 end
