@@ -10,9 +10,12 @@ class RespondToMessageJob < ApplicationJob
 
     adventure.messages.create!(role: "assistant", body: reply_text)
 
-    # after the reply — that's what the user is waiting for. #recheck rescues
+    # after the reply: that's what the user is waiting for. #recheck rescues
     # internally so a failed word check can't take this job down.
     CreditWordUsage.recheck(message)
+    # story 8: grade what the learner wrote, out of band. Queued behind the
+    # reply rather than alongside it, so the two don't race for the same rate-limited key.
+    ReviewMessageJob.perform_later(message)
   end
 
   private
