@@ -4,7 +4,6 @@ require "base64"
 class UploadsController < ApplicationController
   before_action :set_upload, only: %i[show destroy]
 
-  GEMINI_MODEL = "gemini-3.5-flash"
 
   def index
     @uploads = policy_scope(Upload).includes(adventures: :scene).order(created_at: :desc)
@@ -126,7 +125,7 @@ class UploadsController < ApplicationController
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: GEMINI_MODEL }
+      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 end

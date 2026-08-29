@@ -151,7 +151,7 @@ class Adventure < ApplicationRecord
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
       options: {
-        model: "gemini-3.5-flash"
+        model: ENV.fetch("GEMINI_MODEL")
       }
     )
 

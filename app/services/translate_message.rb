@@ -2,8 +2,6 @@
 require "gemini-ai"
 
 class TranslateMessage
-  GEMINI_MODEL = "gemini-3.1-flash-lite"
-
   def self.call(message)
     new(message).call
   end
@@ -46,7 +44,7 @@ class TranslateMessage
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: GEMINI_MODEL }
+      options: { model: ENV.fetch("GEMINI_MODEL_LITE") }
     )
   end
 end
