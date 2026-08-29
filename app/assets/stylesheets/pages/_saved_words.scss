@@ -196,6 +196,35 @@
   opacity: 0.9;
 }
 
+.word-card__explanation {
+  border-top: 1px solid var(--hairline);
+  padding-top: 0.65rem;
+}
+
+.word-card__explanation-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.word-card__explanation-text {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.word-card__explanation-pending {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
 .modal-content {
   border: 1px solid var(--hairline);
   border-radius: 1.25rem;

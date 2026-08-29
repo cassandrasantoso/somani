@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_102437) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -106,6 +106,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_102437) do
 
   create_table "saved_words", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.text "explanation"
     t.bigint "jlpt_entry_id"
     t.datetime "last_reviewed_at"
     t.string "level"

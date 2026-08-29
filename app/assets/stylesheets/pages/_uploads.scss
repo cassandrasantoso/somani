@@ -547,6 +547,19 @@
   text-decoration: underline;
 }
 
+.saved-word__details {
+  flex-shrink: 0;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.saved-word__details:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
 .saved-word__edit {
   flex-shrink: 0;
   margin-left: 0.5rem;

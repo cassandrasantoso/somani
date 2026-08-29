@@ -26,6 +26,7 @@
             </div>
             <span class="saved-word__meaning"><%= word.meaning %></span>
           </div>
+          <%= link_to "Details", saved_word_path(word), class: "saved-word__details" %>
           <% link = word.uploaded_words.find_by(upload: upload) %>
           <% if link && policy(link).destroy? %>
             <%= button_to "Remove", uploaded_word_path(link), method: :delete, class: "saved-word__remove" %>

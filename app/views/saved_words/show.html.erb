@@ -1,2 +1,48 @@
-<h1>SavedWords#show</h1>
-<p>Find me in app/views/saved_words/show.html.erb</p>
+<div class="my-words">
+  <div class="my-words__header">
+    <h1>📕My words・単語帳</h1>
+    <p class="my-words__subtitle"><%= link_to "← Back to all words", saved_words_path %></p>
+  </div>
+
+  <div class="word-card">
+    <div class="word-card__main">
+      <div class="word-card__headword">
+        <span class="word-card__surface"><%= @saved_word.surface %></span>
+        <% if @saved_word.reading.present? %>
+          <span class="word-card__reading"><%= @saved_word.reading %></span>
+          <span data-controller="audio-player" data-audio-player-url-value="<%= pronunciation_path(text: @saved_word.reading) %>">
+            <button type="button" class="word-card__pronounce" data-action="audio-player#play">▶</button>
+          </span>
+        <% end %>
+        <% if @saved_word.level.present? %>
+          <span class="word-card__level"><%= @saved_word.level %></span>
+        <% end %>
+      </div>
+      <% if @saved_word.meaning.present? %>
+        <p class="word-card__meaning"><%= @saved_word.meaning %></p>
+      <% end %>
+    </div>
+
+    <div class="word-card__explanation">
+      <h2 class="word-card__explanation-title">Detailed explanation</h2>
+      <% if @saved_word.explanation.present? %>
+        <p class="word-card__explanation-text"><%= @saved_word.explanation %></p>
+      <% else %>
+        <p class="word-card__explanation-pending">Generating a more detailed explanation for this word — check back in a moment.</p>
+      <% end %>
+    </div>
+
+    <div class="word-card__actions">
+      <% if policy(@saved_word).edit? %>
+        <%= link_to edit_saved_word_path(@saved_word), class: "word-card__btn word-card__btn--edit" do %>
+          <i class="fa-solid fa-pen"></i> Edit
+        <% end %>
+      <% end %>
+      <% if policy(@saved_word).destroy? %>
+        <%= button_to saved_word_path(@saved_word), method: :delete, class: "word-card__btn word-card__btn--remove", form: { data: { turbo_confirm: "Remove 「#{@saved_word.surface}」 from your words?" } } do %>
+          <i class="fa-solid fa-trash"></i> Remove
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

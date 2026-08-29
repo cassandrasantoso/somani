@@ -41,6 +41,9 @@
               <i class="fa-solid fa-compass"></i> Adventures
             </button>
             <div class="word-card__actions-right">
+              <%= link_to saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
+                <i class="fa-solid fa-circle-info"></i> Details
+              <% end %>
               <% if policy(word).edit? %>
                 <%= link_to edit_saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
                   <i class="fa-solid fa-pen"></i> Edit
