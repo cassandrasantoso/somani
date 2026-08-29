@@ -45,6 +45,17 @@ hina.image.attach(
   content_type: "image/png"
 ) unless hina.image.attached?
 
+kaito = Character.find_or_create_by!(name: "Kaito") do |c|
+  c.persona = "A kind and professional nurse working at a hospital in Tokyo. Speaks clear, natural Japanese and helps patients understand symptoms, treatments, medications, hospital procedures, and everyday health concerns. Uses polite but approachable Japanese, explains difficult medical vocabulary in simple terms, asks appropriate follow-up questions about how the patient is feeling, and is patient with language mistakes."
+  c.voice = "ja-JP-KeitaNeural"
+end
+
+kaito.image.attach(
+  io: File.open(Rails.root.join("db", "character_avatars", "hospital.png")),
+  filename: "hospital.png",
+  content_type: "image/png"
+) unless kaito.image.attached?
+
 puts "Creating scenes..."
 ["N5", "N4", "N3", "N2", "N1"].each do |level|
   Scene.find_or_create_by!(setting: "Tokyo Newsroom", character: yuki, level: level) do |s|
@@ -60,6 +71,16 @@ puts "Creating scenes..."
   Scene.find_or_create_by!(setting: "Real Estate Agency", character: hina, level: level) do |s|
     s.description = "You are looking for an apartment in Tokyo. Hina, a real estate agent, asks about your budget, preferred neighborhood, and housing requirements. She shows you several apartments and explains the rent, initial fees, and important contract terms."
     s.level = level
+  end
+
+  Scene.find_or_create_by!(
+  setting: "Hospital",
+  character: kaito,
+  level: level
+  ) do |s|
+  s.description = "You are visiting a hospital in Tokyo because you are not feeling well. Kaito, a nurse, asks about your symptoms, when they started, and how severe they are. He explains basic hospital procedures, gives you instructions before seeing the doctor, and helps you understand common medical and health-related vocabulary."
+
+  s.level = level
   end
 end
 
