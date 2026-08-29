@@ -44,7 +44,7 @@ class AdventuresController < ApplicationController
     end
 
     if @adventure.save
-      GenerateTitleJob.perform_later(@adventure)
+      @adventure.generate_title
       OpeningLineJob.perform_later(@adventure)
 
       redirect_to @adventure
