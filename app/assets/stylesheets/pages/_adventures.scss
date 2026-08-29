@@ -178,7 +178,7 @@
 }
 
 .message--assistant {
-  background: var(--card);
+  background: #e3f5ec;
   border: 2px solid var(--border);
   box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
 }
@@ -303,7 +303,7 @@
   flex-shrink: 0;
   border: 2px solid var(--sage);
   border-radius: 0.85rem;
-  background: var(--tracker-bg);
+  background: var(--dark-cream);
   padding: 0.5rem 0.85rem;
   box-shadow: 0 4px 12px rgba(31, 50, 72, 0.12);
 }
