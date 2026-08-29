@@ -106,7 +106,7 @@ class Adventure < ApplicationRecord
             .join(", ")
 
     prompt = <<~PROMPT
-      Create a short Japanese and 3 to 4 English title for a Japanese-learning roleplay adventure.
+      Create a short Japanese and English title for a Japanese-learning roleplay adventure.
 
       Character:
       #{scene.character.name}
@@ -122,7 +122,7 @@ class Adventure < ApplicationRecord
 
       Requirements:
       - Short and natural
-      - Around 3 to 8 Japanese words and 3 to 4 English words
+      - Around 3 to 6 Japanese characters and 3 to 4 English words
       - Relevant to the scene and vocabulary
       - Return only the title
       - Do not use quotation marks
