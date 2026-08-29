@@ -21,11 +21,7 @@
     <p><%= message.body %></p>
 
     <%# story 8 — feedback on what I typed %>
-    <% if message.feedback %>
-      <%= link_to "See feedback", message_feedback_path(message),
-                  data: { turbo_frame: dom_id(message, :feedback) } %>
-      <turbo-frame id="<%= dom_id(message, :feedback) %>"></turbo-frame>
-    <% end %>
+    <%= render "feedbacks/feedback", message: message %>
   <% end %>
 
     <%# story 16 - click and translate %>
