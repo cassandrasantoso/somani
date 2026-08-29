@@ -15,7 +15,8 @@
                          data: { action: "submit->upload-form#showLoading" }
                        } do |f| %>
     <%= f.error_notification %>
-    <%= f.input :media_type, collection: Upload::MEDIA_TYPES %>
+    <%= f.input :file, as: :file,
+            input_html: { accept: "image/*,audio/*,.pdf,.txt,.doc,.docx" } %>
     <%= f.input :file, as: :file %>
     <div class="w-100 d-flex justify-content-center">
     <%= f.submit "Upload", class: "btn btn-primary m-1 w-50" %>
