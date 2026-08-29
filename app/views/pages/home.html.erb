@@ -86,32 +86,74 @@
 
       <div class="col-12 col-lg-8 order-lg-1 g-3">
         <section class="continue-adventures">
-          <h2><i class="fa-solid fa-khanda"></i> Continue adventures</h2>
+
+          <div class="continue-adventures__header">
+            <div>
+              <h2><i class="fa-solid fa-khanda"></i> Continue adventures</h2>
+              <p>Jump back into one of your active storylines.</p>
+            </div>
+          </div>
 
           <% if @active_adventures.present? %>
-            <div class="row row-cols-1 row-cols-lg-2 g-3">
+
+            <div class="adventure-index__list continue-adventures__list">
               <% @active_adventures.each do |adventure| %>
-                <div class="col">
-                  <%= link_to adventure_path(adventure), class: "adventure-card" do %>
-                    <span class="adventure-card__avatar">
-                      <% if adventure.character.image.attached? %>
-                        <%= image_tag adventure.character.image, alt: adventure.character.name %>
-                      <% else %>
-                        <%= adventure.character.name.first %>
-                      <% end %>
+
+                <%= link_to adventure_path(adventure),
+                            class: "adventure-card adventure-card--#{adventure.status}" do %>
+
+                  <span class="adventure-card__avatar">
+                    <% if adventure.character.image.attached? %>
+                      <%= image_tag adventure.character.image,
+                                    alt: adventure.character.name %>
+                    <% else %>
+                      <%= adventure.character.name.first %>
+                    <% end %>
+                  </span>
+
+                  <div class="adventure-card__info">
+
+                    <p class="adventure-card__name">
+                      <%= adventure.title.presence || adventure.character.name %>
+                      <span>(<%= adventure.scene.setting %>)</span>
+                    </p>
+
+                    <% if adventure.target_words.any? %>
+                      <div class="adventure-card__words">
+                        <% adventure.target_words.each do |word| %>
+                          <span class="adventure-card__word adventure-card__word--<%= word.level.downcase %>">
+                            <%= word.surface %>
+                          </span>
+                        <% end %>
+                      </div>
+                    <% end %>
+
+                    <span class="adventure-card__badge adventure-card__badge--<%= adventure.status %>">
+                      Active
                     </span>
-                    <div class="adventure-card__info">
-                      <p class="adventure-card__name"><%= adventure.character.name %> <span>(<%= adventure.scene.setting %>)</span></p>
-                      <span class="adventure-card__badge">Active Chat</span>
-                    </div>
-                    <span class="adventure-card__level"><%= adventure.scene.level %></span>
-                  <% end %>
-                </div>
+
+                  </div>
+
+                  <i class="fa-solid fa-chevron-right adventure-card__icon"></i>
+
+                <% end %>
+
               <% end %>
             </div>
+
           <% else %>
-            <p class="continue-adventures__empty">No active adventures yet — start one below.</p>
+
+            <div class="continue-adventures__empty">
+              <span>🌸</span>
+              <p>No active adventures yet.</p>
+
+              <%= link_to "Start an adventure",
+                          uploads_path,
+                          class: "continue-adventures__empty-btn" %>
+            </div>
+
           <% end %>
+
         </section>
       </div>
 

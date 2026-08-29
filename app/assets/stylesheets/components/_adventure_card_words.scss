@@ -1,0 +1,47 @@
+.adventure-card__words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.3rem 0 0.3rem;
+}
+
+.adventure-card__word {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.35rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.3;
+  border: 1px solid transparent;
+}
+
+.adventure-card__word--n5 {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+
+.adventure-card__word--n4 {
+  background: #e3f2fd;
+  color: #1565c0;
+  border-color: #90caf9;
+}
+
+.adventure-card__word--n3 {
+  background: #fff8e1;
+  color: #9a6700;
+  border-color: #ffe082;
+}
+
+.adventure-card__word--n2 {
+  background: #fff0f5;
+  color: #b23a67;
+  border-color: #f4b6cc;
+}
+
+.adventure-card__word--n1 {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border-color: #ce93d8;
+}
