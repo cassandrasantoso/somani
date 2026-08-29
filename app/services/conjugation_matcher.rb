@@ -52,9 +52,15 @@ module ConjugationMatcher
       .uniq
   end
 
-  # The 2+ character strings any inflected form of `form` must start with.
-  # Rules are applied additively, not exclusively — a form that isn't a real
-  # word just never matches, so guessing wrong costs a miss, not a false credit.
+  # Two-character kana bases are minefields: いく (the reading of 行く)
+  # generates いい, which is inside いいです, かわいい and いいえ. A form
+  # carrying kanji doesn't have this problem — the kanji disambiguates.
+  KANA_ONLY = /\A[\p{Hiragana}\p{Katakana}ー]+\z/
+
+  # The 2+ character strings any inflected form of `form` must start with
+  # (3+ when the form is all kana — see KANA_ONLY). Rules are applied
+  # additively, not exclusively — a form that isn't a real word just never
+  # matches, so guessing wrong costs a miss, not a false credit.
   def bases(form)
     return [form] if IRREGULAR.include?(form)
 
@@ -82,7 +88,8 @@ module ConjugationMatcher
     end
 
     # the word itself always counts, whatever its length; only generated
-    # bases need the 2-character floor
-    out.uniq.select { |b| b == form || b.length >= 2 }
+    # bases need the floor
+    floor = form.match?(KANA_ONLY) ? 3 : 2
+    out.uniq.select { |b| b == form || b.length >= floor }
   end
 end
