@@ -44,7 +44,7 @@ class TranslateMessage
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: ENV.fetch("GEMINI_MODEL_LITE") }
+      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 end
