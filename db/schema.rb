@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_120001) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -171,6 +171,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120001) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "word_corrections", force: :cascade do |t|
+    t.text "better", null: false
+    t.datetime "created_at", null: false
+    t.bigint "feedback_id", null: false
+    t.string "kind", null: false
+    t.bigint "saved_word_id"
+    t.string "surface", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.text "why"
+    t.text "wrote", null: false
+    t.index ["feedback_id"], name: "index_word_corrections_on_feedback_id"
+    t.index ["saved_word_id"], name: "index_word_corrections_on_saved_word_id"
+    t.index ["surface", "kind"], name: "index_word_corrections_on_surface_and_kind"
+    t.index ["user_id", "surface"], name: "index_word_corrections_on_user_id_and_surface"
+    t.index ["user_id"], name: "index_word_corrections_on_user_id"
+  end
+
   create_table "word_goals", force: :cascade do |t|
     t.bigint "adventure_id", null: false
     t.datetime "created_at", null: false
@@ -209,6 +227,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120001) do
   add_foreign_key "uploaded_words", "saved_words"
   add_foreign_key "uploaded_words", "uploads"
   add_foreign_key "uploads", "users"
+  add_foreign_key "word_corrections", "feedbacks"
+  add_foreign_key "word_corrections", "saved_words", on_delete: :nullify
+  add_foreign_key "word_corrections", "users"
   add_foreign_key "word_goals", "adventures"
   add_foreign_key "word_goals", "saved_words"
   add_foreign_key "word_usages", "adventures"
