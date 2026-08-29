@@ -34,6 +34,11 @@ module ConjugationMatcher
   # Compound する-verbs: 出席する → 出席し, 出席す, 出席さ, 出席せ
   SURU_BASES = %w[する し す さ せ].freeze
 
+  # Two-character kana bases are minefields: いく (the reading of 行く)
+  # generates いい, which is inside いいです, かわいい and いいえ. A form
+  # carrying kanji doesn't have this problem — the kanji disambiguates.
+  KANA_ONLY = /\A[\p{Hiragana}\p{Katakana}ー]+\z/
+
   module_function
 
   def match?(text, word)
@@ -51,11 +56,6 @@ module ConjugationMatcher
       .flat_map { |f| bases(f) }
       .uniq
   end
-
-  # Two-character kana bases are minefields: いく (the reading of 行く)
-  # generates いい, which is inside いいです, かわいい and いいえ. A form
-  # carrying kanji doesn't have this problem — the kanji disambiguates.
-  KANA_ONLY = /\A[\p{Hiragana}\p{Katakana}ー]+\z/
 
   # The 2+ character strings any inflected form of `form` must start with
   # (3+ when the form is all kana — see KANA_ONLY). Rules are applied
