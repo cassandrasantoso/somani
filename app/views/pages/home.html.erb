@@ -99,8 +99,7 @@
             <div class="adventure-index__list continue-adventures__list">
               <% @active_adventures.each do |adventure| %>
 
-                <%= link_to adventure_path(adventure),
-                            class: "adventure-card adventure-card--#{adventure.status}" do %>
+                <div class="adventure-card adventure-card--<%= adventure.status %>">
 
                   <span class="adventure-card__avatar">
                     <% if adventure.character.image.attached? %>
@@ -136,7 +135,22 @@
 
                   <i class="fa-solid fa-chevron-right adventure-card__icon"></i>
 
-                <% end %>
+                  <%= link_to "", adventure_path(adventure),
+                              class: "stretched-link",
+                              aria: { label: "Open #{adventure.title.presence || adventure.character.name}" } %>
+
+                  <% if policy(adventure).destroy? %>
+                    <%= button_to adventure_path(adventure),
+                                  method: :delete,
+                                  class: "adventure-card__delete",
+                                  form: { class: "adventure-card__delete-form",
+                                          data: { turbo_confirm: "Delete this adventure? Its messages and word targets go with it." } },
+                                  aria: { label: "Delete adventure" } do %>
+                      <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    <% end %>
+                  <% end %>
+
+                </div>
 
               <% end %>
             </div>
