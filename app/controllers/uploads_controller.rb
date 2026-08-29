@@ -4,7 +4,6 @@ require "base64"
 class UploadsController < ApplicationController
   before_action :set_upload, only: %i[show destroy]
 
-
   def index
     @uploads = policy_scope(Upload).includes(adventures: :scene).order(created_at: :desc)
   end
@@ -55,11 +54,7 @@ class UploadsController < ApplicationController
       @upload.update!(extracted_text: text)
       cloudinary_thread.join
 
-      # The summary is just a decorative "you're reading about X" blurb on the
-      # show page (guarded by `if @upload.summary.present?`), not something the
-      # user is blocked on - so it's generated after the redirect instead of
-      # costing them a second synchronous Gemini round trip here.
-      GenerateUploadSummaryJob.perform_later(@upload)
+      GenerateUploadSummaryJob.perform_now(@upload)
 
       redirect_to @upload, notice: "Upload successful."
     else
