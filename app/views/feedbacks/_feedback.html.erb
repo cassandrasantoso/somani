@@ -1,0 +1,33 @@
+<div id="<%= dom_id(message, :feedback) %>" class="msg-feedback">
+  <% fb = message.feedback %>
+
+  <% if fb.nil? %>
+    <%# Nothing yet. The container still renders so the broadcast has a target. %>
+
+  <% elsif fb.clean? %>
+    <p class="msg-feedback__clean">✓ <%= fb.assessment %></p>
+
+  <% else %>
+    <details class="msg-feedback__details">
+      <summary class="msg-feedback__summary">
+        <%= pluralize(fb.corrections.size, "suggestion") %>
+      </summary>
+
+      <p class="msg-feedback__assessment"><%= fb.assessment %></p>
+
+      <ul class="msg-feedback__list">
+        <% fb.corrections.each do |c| %>
+          <li class="msg-feedback__item">
+            <span class="msg-feedback__kind msg-feedback__kind--<%= c["kind"] %>">
+              <%= c["kind"] %>
+            </span>
+            <span class="msg-feedback__wrote"><%= c["wrote"] %></span>
+            <span class="msg-feedback__arrow" aria-hidden="true">→</span>
+            <span class="msg-feedback__better"><%= c["better"] %></span>
+            <p class="msg-feedback__why"><%= c["why"] %></p>
+          </li>
+        <% end %>
+      </ul>
+    </details>
+  <% end %>
+</div>

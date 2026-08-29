@@ -1,0 +1,156 @@
+require "gemini-ai"
+
+class ReviewMessageJob < ApplicationJob
+  queue_as :default
+
+  # Same pattern as GenerateUploadSummaryJob — a rate-limited feedback pass is
+  # worth retrying later, not worth failing loudly.
+  retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  discard_on ActiveJob::DeserializationError
+
+  # Short acknowledgements have nothing to correct. Grading 「はい」 to say
+  # "looks good" teaches the learner that the marker means nothing.
+  MIN_LENGTH = 10
+
+  def perform(message)
+    return unless message.role == "user"
+    return if message.adventure.draft? # no scene yet — see note below
+    return if message.feedback.present?
+    return if message.body.to_s.strip.length < MIN_LENGTH
+
+    data = parse(raw_response(message))
+    return if data.blank?
+
+    message.create_feedback!(
+      assessment: data["assessment"].to_s.strip.presence,
+      level_estimate: data["level_estimate"].to_s.strip.presence,
+      corrections: sanitize(data["corrections"])
+    )
+
+    broadcast(message)
+  rescue Faraday::TooManyRequestsError
+    raise # let retry_on handle it
+  rescue StandardError => e
+    Rails.logger.warn("ReviewMessageJob #{message.id}: #{e.class}: #{e.message}")
+  end
+
+  private
+
+  # Everything off a model is untrusted: cap at 3 even if the prompt is
+  # ignored, drop malformed rows, and never let an unknown kind reach a CSS
+  # class name.
+  def sanitize(raw)
+    Array(raw).first(3).filter_map do |c|
+      next unless c.is_a?(Hash) && c["wrote"].present? && c["better"].present?
+
+      { "kind" => Feedback::KINDS.include?(c["kind"]) ? c["kind"] : "grammar",
+        "wrote" => c["wrote"].to_s,
+        "better" => c["better"].to_s,
+        "why" => c["why"].to_s }
+    end
+  end
+
+  def raw_response(message)
+    response = gemini_client.generate_content(
+      { contents: [{ role: "user", parts: [{ text: prompt(message) }] }] }
+    )
+    response.dig("candidates", 0, "content", "parts", 0, "text").to_s
+  end
+
+  def parse(text)
+    cleaned = text.gsub(/```(?:json)?/, "").strip
+    match   = cleaned[/\{.*\}/m]
+    match ? JSON.parse(match) : nil
+  rescue JSON::ParserError
+    Rails.logger.warn("ReviewMessageJob unparseable: #{text.truncate(200)}")
+    nil
+  end
+
+  def broadcast(message)
+    message.broadcast_replace_to(
+      message.adventure,
+      target: ActionView::RecordIdentifier.dom_id(message, :feedback),
+      partial: "feedbacks/feedback",
+      locals: { message: message }
+    )
+  end
+
+  def gemini_client
+    Gemini.new(
+      credentials: { service: "generative-language-api",
+                     api_key: ENV.fetch("GEMINI_API_KEY") },
+      options: { model: ENV.fetch("GEMINI_MODEL") }
+    )
+  end
+
+  def prompt(message)
+    adventure = message.adventure
+    scene     = adventure.scene
+    character = scene.character
+
+    <<~PROMPT
+      A Japanese learner is having a role-play conversation for practice.
+      You are reviewing ONE line they wrote. You are not part of the conversation.
+
+      Situation: #{scene.setting} — #{scene.description}
+      They are speaking to: #{character.name} — #{character.persona}
+      Their target level: JLPT #{scene.level}
+
+      #{previous_turn(message)}
+      The learner wrote:
+      #{message.body}
+
+      #{target_word_note(adventure)}
+
+      Review the Japanese on three things:
+        grammar    — particles, conjugation, sentence structure
+        vocabulary — wrong word for the meaning they intended, or a word that
+                     does not fit this situation
+        nuance     — politeness level and naturalness for the specific person
+                     they are speaking to here
+
+      Rules:
+      - At most 3 corrections, most important first.
+      - Correct at or near their level. Do not rewrite their sentence into
+        advanced native prose — a correction they could not have produced
+        themselves teaches them nothing.
+      - If the line is acceptable, return an empty corrections array. Do not
+        invent faults to seem useful. Slightly awkward but valid Japanese is
+        acceptable Japanese.
+      - Judge only the Japanese, never the content of what they said.
+
+      Return only JSON, no other text:
+      {"assessment": "one short warm, specific sentence about this line",
+       "level_estimate": "N5, N4, N3, N2 or N1",
+       "corrections": [
+         {"kind": "grammar, vocabulary or nuance",
+          "wrote": "the exact fragment they wrote",
+          "better": "the corrected fragment",
+          "why": "one short sentence, in English"}
+       ]}
+    PROMPT
+  end
+
+  # A reply is only correct relative to what was asked — particles, ellipsis
+  # and register all depend on the previous turn.
+  def previous_turn(message)
+    prior = message.adventure.messages
+                   .where(role: "assistant")
+                   .where(created_at: ...message.created_at)
+                   .order(:created_at)
+                   .last
+    return "" if prior.blank?
+
+    "They were replying to:\n#{prior.body}\n"
+  end
+
+  # If they reached for a practice word and fumbled it, fix the usage — don't
+  # suggest a cleaner sentence that drops the word. Producing it is the point.
+  def target_word_note(adventure)
+    words = adventure.target_words.map(&:surface)
+    return "" if words.empty?
+
+    "They are deliberately practising these words: #{words.join('、')}. " \
+      "If one is used imperfectly, correct how it is used but keep the word."
+  end
+end
