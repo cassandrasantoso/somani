@@ -162,8 +162,8 @@
 }
 
 .message-row__avatar {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -354,10 +354,10 @@
 .msg-feedback__item {
   padding: 0.7rem 0.85rem;
   border-radius: 0.75rem;
-  background: rgba(22, 40, 61, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 8px rgba(22, 40, 61, 0.15);
-  color: var(--cream);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(31, 50, 72, 0.1);
+  box-shadow: 0 2px 8px rgba(22, 40, 61, 0.08);
+  color: var(--text);
   font-size: 0.82rem;
   line-height: 1.5;
 }
@@ -382,8 +382,8 @@
 .msg-feedback__wrote {
   font-family: var(--font-ja);
   text-decoration: line-through;
-  color: var(--cream);
-  opacity: 0.65;
+  color: var(--text-soft);
+  opacity: 0.85;
 }
 
 .msg-feedback__arrow { margin: 0 0.35rem; opacity: 0.7; }
@@ -398,11 +398,11 @@
 .msg-feedback__why {
   margin: 0.5rem 0 0;
   padding-top: 0.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(31, 50, 72, 0.1);
   font-size: 0.78rem;
   line-height: 1.55;
-  color: var(--cream);
-  opacity: 0.9;
+  color: var(--text);
+  opacity: 0.85;
 }
 
 .tracker {
