@@ -76,8 +76,8 @@ class AdventuresController < ApplicationController
   def destroy
     authorize @adventure
     @adventure.destroy
-    redirect_to adventures_path, notice: "Adventure deleted.", status: :see_other
-  end
+    redirect_back fallback_location: adventures_path,
+                  notice: "Adventure deleted.", status: :see_other
 
   def continue
     authorize @adventure, :update?
