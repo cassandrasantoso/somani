@@ -9,6 +9,7 @@ class UploadedWordsController < ApplicationController
     @saved_words = @upload.saved_words
     @matched_entries = @upload.matched_jlpt_entries
     @already_saved_surfaces = current_user.saved_words.pluck(:surface)
+    @word_targets = @upload.word_targets
 
     respond_to do |format|
       format.turbo_stream

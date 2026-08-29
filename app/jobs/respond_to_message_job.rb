@@ -4,8 +4,6 @@ require "gemini-ai"
 class RespondToMessageJob < ApplicationJob
   queue_as :default
 
-  GEMINI_MODEL = "gemini-3.5-flash"
-
   def perform(message, mode: nil)
     adventure = message.adventure
     reply_text = generate_reply(adventure, mode)
@@ -150,7 +148,7 @@ class RespondToMessageJob < ApplicationJob
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: GEMINI_MODEL }
+      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 end

@@ -23,9 +23,10 @@
 
               <p class="card-text upload-tile__text"><%= upload.extracted_text %></p>
 
-              <% if upload.adventures.any? %>
+              <% started_adventures = upload.adventures.reject(&:draft?) %>
+              <% if started_adventures.any? %>
                 <div class="mt-auto pt-2 d-flex flex-wrap gap-1">
-                  <% upload.adventures.each do |adventure| %>
+                  <% started_adventures.each do |adventure| %>
                     <span class="badge <%= adventure.status == "active" ? "text-bg-success" : "text-bg-secondary" %>">
                       <%= adventure.title.presence || adventure.scene.setting %>
                     </span>

@@ -6,8 +6,6 @@ class GenerateUploadSummaryJob < ApplicationJob
 
   retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
 
-  GEMINI_MODEL = "gemini-3.5-flash"
-
   def perform(upload)
     return if upload.extracted_text.blank?
 
@@ -58,7 +56,7 @@ class GenerateUploadSummaryJob < ApplicationJob
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: GEMINI_MODEL }
+      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 end

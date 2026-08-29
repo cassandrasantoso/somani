@@ -4,7 +4,6 @@ require "base64"
 class UploadsController < ApplicationController
   before_action :set_upload, only: %i[show destroy]
 
-  GEMINI_MODEL = "gemini-3.5-flash"
 
   def index
     @uploads = policy_scope(Upload).includes(adventures: :scene).order(created_at: :desc)
@@ -15,6 +14,7 @@ class UploadsController < ApplicationController
     @saved_words = @upload.saved_words
     @matched_entries = @upload.matched_jlpt_entries
     @already_saved_surfaces = current_user.saved_words.pluck(:surface)
+    @word_targets = @upload.word_targets
   end
 
   def new
@@ -29,6 +29,11 @@ class UploadsController < ApplicationController
     authorize @upload
 
     if @upload.save
+      # Created scene-less (see Adventure#draft?) so the show page has an
+      # adventure id to attach the word-target form to before the learner
+      # has picked words and an AI scene gets chosen.
+      @upload.adventures.create!(status: "active")
+
       # The Cloudinary upload doesn't depend on extract_text (it reads straight
       # from the tempfile), so it runs on its own thread and persists
       # file_location itself as soon as it's done - if extract_text blows up
@@ -120,7 +125,7 @@ class UploadsController < ApplicationController
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: GEMINI_MODEL }
+      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 end

@@ -4,11 +4,15 @@ class Adventure < ApplicationRecord
   STATUSES = %w[active completed].freeze
   PROMPT_FOCUS_LIMIT = 4
 
-  belongs_to :scene
+  belongs_to :scene, optional: true
   belongs_to :upload
   has_many :messages, dependent: :destroy
   has_many :word_usages, dependent: :destroy
   has_many :word_goals, dependent: :destroy
+
+  # created without a scene at upload time; a scene gets picked once the
+  # learner submits word targets and the adventure actually starts
+  scope :started, -> { where.not(scene_id: nil) }
 
   # Blank target means "leave it at the default" — reject if skips the row
   # instead of storing a duplicate of WordGoal::DEFAULT_TARGET.
@@ -132,6 +136,8 @@ class Adventure < ApplicationRecord
 
   def active? = status == "active"
 
+  def draft? = scene_id.nil?
+
   def past_goal?
     goal_reached_at.present?
   end
@@ -145,7 +151,7 @@ class Adventure < ApplicationRecord
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
       options: {
-        model: "gemini-3.5-flash"
+        model: ENV.fetch("GEMINI_MODEL")
       }
     )
 

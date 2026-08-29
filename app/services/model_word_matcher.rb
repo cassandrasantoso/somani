@@ -1,8 +1,6 @@
 require "gemini-ai"
 
 class ModelWordMatcher
-  GEMINI_MODEL = "gemini-3.5-flash"
-
   def self.call(body, words)
     new(body, words).call
   end
@@ -69,7 +67,7 @@ class ModelWordMatcher
         service: "generative-language-api",
         api_key: ENV.fetch("GEMINI_API_KEY")
       },
-      options: { model: GEMINI_MODEL }
+      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 end

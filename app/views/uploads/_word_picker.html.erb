@@ -8,7 +8,8 @@
       </p>
       <p class="upload-card__hint">Tap a highlighted word to view and add it to your study list.</p>
     </div>
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    data-action="show.bs.modal->word-picker#prefill">
       <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -21,6 +22,14 @@
         <%= f.input :reading, input_html: { data: { word_picker_target: "reading" } } %>
         <%= f.input :meaning, input_html: { data: { word_picker_target: "meaning" } } %>
         <%= f.input :level, collection: %w[N5 N4 N3 N2 N1], input_html: { data: { word_picker_target: "level" } } %>
+        <div class="mb-3">
+          <label class="form-label word-target-field__label" for="target">How many times do you want to use this word?</label>
+          <p class="word-target-field__hint">Pick how many times you want to use each word.</p>
+          <%= select_tag :target,
+                        options_for_select(WordGoal::RANGE, WordGoal::DEFAULT_TARGET),
+                        class: "form-select",
+                        data: { word_picker_target: "times" } %>
+        </div>
         <div class="">
           <label class="form-label">Pronunciation</label>
           <button type="button" class="pronunciation-field__btn" data-action="word-picker#playPronunciation">

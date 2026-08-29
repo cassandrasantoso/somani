@@ -5,7 +5,14 @@
   padding: 0.75rem;
 
   // Important
-  height: calc(100dvh - 90px); // leave room for bottom navbar
+  // svh (not dvh) on purpose: this shell locks the page itself from
+  // scrolling (only #messages scrolls), so the browser chrome never
+  // collapses via a page-scroll gesture — dvh can then settle at its
+  // taller, chrome-collapsed value while the chrome is still on screen
+  // (notably iOS Safari), pushing the fixed bottom nav below the fold.
+  // svh is always the worst-case (chrome-visible) height, so this box
+  // never overshoots the actually-visible viewport.
+  height: calc(100svh - 90px); // leave room for bottom navbar
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -36,13 +43,19 @@
   body:has(.adventure-show) {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
+    height: 100svh; // see the .adventure-show height comment above
     overflow: hidden;
   }
 
   .adventure-show {
     flex: 1 1 auto;
     min-height: 0;
+    // The base rule's min-width: 380px is wider than several real phones
+    // (iPhone SE at 375px, many Androids at 360px or narrower), pushing the
+    // box past the right edge — drop it so the box only ever fills the
+    // actual viewport width here.
+    min-width: 0;
+    width: 100%;
   }
 }
 
@@ -792,7 +805,6 @@
     margin-top: 2rem;
     margin-bottom: 2rem;
     padding: 1.5rem 2rem 2rem;
-    background: var(--app-bg);
     border: 1px solid var(--hairline);
     border-radius: 1.25rem;
     box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);

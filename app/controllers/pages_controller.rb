@@ -8,7 +8,7 @@ class PagesController < ApplicationController
     return unless user_signed_in?
 
     @uploads = current_user.uploads.order(created_at: :desc).limit(5)
-    @active_adventures = current_user.adventures.where(status: "active")
+    @active_adventures = current_user.adventures.started.where(status: "active")
      .includes(scene: :character).order(updated_at: :desc)
 
     @vocabulary_level = current_user.vocabulary_level

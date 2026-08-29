@@ -4,13 +4,25 @@
   <% if saved_words.any? %>
     <ul class="saved-word-list">
       <% saved_words.each do |word| %>
+        <% edit_data = {
+             bs_toggle: "modal",
+             bs_target: "#exampleModal",
+             surface: word.surface,
+             reading: word.reading,
+             meaning: word.meaning,
+             level: word.level,
+             times: word_targets.fetch(word.id, WordGoal::DEFAULT_TARGET)
+           } %>
         <li class="saved-word">
           <div class="saved-word__info">
             <div class="saved-word__surface-row">
-              <span class="saved-word__surface"><%= word.surface %></span>
-              <% if word.level.present? %>
-                <span class="badge level-badge level-badge--<%= word.level.to_s.downcase %>"><%= word.level %></span>
+              <%= tag.button type: "button", class: "saved-word__surface-btn", data: edit_data do %>
+                <span class="saved-word__surface"><%= word.surface %></span>
+                <% if word.level.present? %>
+                  <span class="badge level-badge level-badge--<%= word.level.to_s.downcase %>"><%= word.level %></span>
+                <% end %>
               <% end %>
+              <%= tag.button "Edit", type: "button", class: "saved-word__edit", data: edit_data %>
             </div>
             <span class="saved-word__meaning"><%= word.meaning %></span>
           </div>
