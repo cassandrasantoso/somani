@@ -66,7 +66,7 @@ class OpeningLineJob < ApplicationJob
 
       Write the character's OPENING line to start this scene — the very first
       thing they say to the learner, setting the scene and inviting a reply.
-      Reply only in natural Japanese dialogue. Keep it concise (1-3 sentences).
+      Reply only in natural Japanese dialogue. Keep it concise (1-2 sentences MAX).
       Do not break character, do not include English translations, and do not
       add stage directions or narration outside dialogue.
     PROMPT

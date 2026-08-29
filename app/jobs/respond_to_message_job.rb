@@ -71,7 +71,7 @@ class RespondToMessageJob < ApplicationJob
 
       Stay fully in character. Reply only in natural Japanese dialogue, continuing
       the scene based on what the user just said. Keep responses concise
-      (1-3 sentences). Do not break character, do not include English
+      (1-2 sentences MAX). Do not break character, do not include English
       translations, and do not add stage directions or narration outside dialogue.
     PROMPT
   end
