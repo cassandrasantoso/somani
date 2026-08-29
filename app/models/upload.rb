@@ -11,13 +11,17 @@ class Upload < ApplicationRecord
   validates :media_type, inclusion: { in: MEDIA_TYPES }
   validates :file, presence: true
 
+  UNSAFE_SINGLE_CHAR = /\A[\p{Hiragana}\p{Katakana}ー]\z/
+
   # Seeded words that appear in this upload's text, found in one query
   def matched_jlpt_entries
     return JlptEntry.none if extracted_text.blank?
 
-    JlptEntry.words
-             .where.not(content: [nil, ""])
-             .where("? LIKE '%' || content || '%'", extracted_text)
+    candidates = JlptEntry.words
+                          .where.not(content: [nil, ""])
+                          .where("? LIKE '%' || content || '%'", extracted_text)
+
+    candidates.reject { |entry| entry.content.length == 1 && entry.content.match?(UNSAFE_SINGLE_CHAR) }
   end
 
   def highest_word_level
