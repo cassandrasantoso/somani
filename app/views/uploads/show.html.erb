@@ -7,7 +7,9 @@
 
 
     <span class="upload-preview__toggle">
-      <span class="upload-preview__toggle-text">View uploaded photo</span>
+      <span class="upload-preview__toggle-text">
+        View uploaded <%= @upload.media_type == "photo" ? "photo" : @upload.media_type %>
+      </span>
 
       <i
         class="fa-solid fa-chevron-down upload-preview__chevron"
@@ -17,11 +19,27 @@
   </summary>
 
   <div class="upload-preview__content">
-    <% if @upload.media_type == "photo" %>
+    <% if @upload.file_location.blank? %>
+      <p class="upload-show__empty">Still uploading…</p>
+
+    <% elsif @upload.media_type == "photo" %>
       <div class="upload-card">
         <%= image_tag @upload.file_location,
                       class: "upload-card__image",
                       alt: "Uploaded Japanese text" %>
+      </div>
+
+    <% elsif @upload.media_type == "audio" %>
+      <div class="upload-card">
+        <audio controls src="<%= @upload.file_location %>" class="upload-card__audio">
+          Your browser can't play this audio.
+        </audio>
+      </div>
+
+    <% else %>
+      <div class="upload-card">
+        <%= link_to "Open the original document", @upload.file_location,
+                    target: "_blank", rel: "noopener" %>
       </div>
     <% end %>
   </div>

@@ -75,7 +75,7 @@ class UploadsController < ApplicationController
   end
 
   def upload_params
-    params.require(:upload).permit(:media_type, :file) # no :user_id
+    params.require(:upload).permit(:file)
   end
 
   # ↓ new — moved from ExtractContentJob
@@ -88,7 +88,7 @@ class UploadsController < ApplicationController
                                                   {
                                                     role: "user",
                                                     parts: [
-                                                      { text: prompt_for(upload.media_type) },
+                                                      { text: extraction_prompt(upload) },
                                                       {
                                                         inline_data: {
                                                           mime_type: file.content_type,
@@ -103,14 +103,22 @@ class UploadsController < ApplicationController
     response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
   end
 
-  def prompt_for(media_type)
+  def extraction_prompt(upload)
+    <<~PROMPT
+      #{extraction_task(upload.media_type)}
+
+      Return only the Japanese text itself, exactly as it appears, with no
+      commentary, labels, headings, or explanation. Do not translate anything.
+      If there is no Japanese in the file, return nothing at all.
+    PROMPT
+  end
+
+  def extraction_task(media_type)
     case media_type
-    when "photo"
-      "Extract and transcribe any Japanese text visible in this image, exactly as written. Return only the extracted text, no commentary."
-    when "document"
-      "Extract the Japanese text content of this document, exactly as written. Return only the extracted text, no commentary."
-    when "audio"
-      "Transcribe the Japanese speech in this audio accurately. Return only the transcript, no commentary."
+    when "photo"    then "Transcribe all Japanese text visible in this image."
+    when "document" then "Extract all Japanese text content from this document."
+    when "audio"    then "Transcribe the Japanese speech in this audio recording."
+    else                 "Extract or transcribe any Japanese text or speech in this file."
     end
   end
 
