@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_29_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -66,13 +66,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120000) do
 
   create_table "feedbacks", force: :cascade do |t|
     t.text "assessment"
+    t.jsonb "corrections", default: []
     t.datetime "created_at", null: false
     t.text "encouragement"
     t.string "level_estimate"
     t.bigint "message_id", null: false
     t.datetime "updated_at", null: false
     t.text "used_learned_words"
-    t.index ["message_id"], name: "index_feedbacks_on_message_id"
+    t.index ["message_id"], name: "index_feedbacks_on_message_id", unique: true
   end
 
   create_table "friendships", force: :cascade do |t|
