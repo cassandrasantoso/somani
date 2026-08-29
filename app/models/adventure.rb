@@ -154,23 +154,26 @@ class Adventure < ApplicationRecord
         model: ENV.fetch("GEMINI_MODEL")
       }
     )
+    begin
+      response = client.generate_content(
+        {
+          contents: [
+            {
+              role: "user",
+              parts: [
+                { text: prompt }
+              ]
+            }
+          ]
+        }
+      )
 
-    response = client.generate_content(
-      {
-        contents: [
-          {
-            role: "user",
-            parts: [
-              { text: prompt }
-            ]
-          }
-        ]
-      }
-    )
-
-    response
-      .dig("candidates", 0, "content", "parts", 0, "text")
-      .to_s
-      .strip
+      response
+        .dig("candidates", 0, "content", "parts", 0, "text")
+        .to_s
+        .strip
+    rescue StandardError => _
+      "Unable to generate title!"
+    end
   end
 end
