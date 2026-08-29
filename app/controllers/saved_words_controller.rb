@@ -38,6 +38,7 @@ class SavedWordsController < ApplicationController
     if @saved_word.save
       UploadedWord.find_or_create_by!(upload: @upload, saved_word: @saved_word)
       apply_word_target(@saved_word)
+      GenerateWordExplanationJob.perform_later(@saved_word) if @saved_word.explanation.blank?
       notice = "「#{@saved_word.surface}」 saved."
       @saved_words = @upload.saved_words
       @matched_entries = @upload.matched_jlpt_entries
@@ -53,7 +54,11 @@ class SavedWordsController < ApplicationController
     end
   end
 
-  def show   = authorize(@saved_word)
+  def show
+    authorize(@saved_word)
+    GenerateWordExplanationJob.perform_later(@saved_word) if @saved_word.explanation.blank?
+  end
+
   def edit   = authorize(@saved_word)
 
   def update
