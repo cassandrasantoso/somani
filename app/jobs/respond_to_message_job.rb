@@ -1,4 +1,3 @@
-# app/jobs/respond_to_message_job.rb
 require "gemini-ai"
 
 class RespondToMessageJob < ApplicationJob
