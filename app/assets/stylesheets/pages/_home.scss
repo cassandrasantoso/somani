@@ -277,6 +277,7 @@
 }
 
 .adventure-card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -358,6 +359,32 @@
   color: var(--navy);
   background: rgba(31, 50, 72, 0.15);
   border-radius: 999px;
+}
+
+.adventure-card__delete-form {
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.adventure-card__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--pink-dark);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.adventure-card__delete:hover {
+  background: var(--pink-light);
 }
 
 .home-actions {
