@@ -61,6 +61,6 @@ Rails.application.routes.draw do
       get :audio                                         # story 5 - hear the character speaking
       get :translate                                     # story 16 - translate a message to English
     end
-    resource :feedback, only: %i[show]                   # story 8 - feedback on what you typed
+    # resource :feedback, only: %i[show]                   # story 8 - feedback on what you typed
   end
 end
