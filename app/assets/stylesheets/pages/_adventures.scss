@@ -195,28 +195,28 @@
   content: "";
   position: absolute;
 
-  left: 1rem;
-  bottom: -0.6rem;
+  left: -0.6rem;
+  top: 1rem;
 
   width: 0;
   height: 0;
 
-  border-left: 0.55rem solid transparent;
-  border-right: 0.55rem solid transparent;
-  border-top: 0.6rem solid var(--border);
+  border-top: 0.55rem solid transparent;
+  border-bottom: 0.55rem solid transparent;
+  border-right: 0.6rem solid var(--border);
 }
 
 .message--assistant::after {
   content: "";
   position: absolute;
-  left: 1.1rem;
-  bottom: -0.43rem;
+  left: -0.45rem;
+  top: 1.1rem;
   width: 0;
   height: 0;
-  border-left: 0.45rem solid transparent;
-  border-right: 0.45rem solid transparent;
-  border-top: 0.45rem solid var(--card);
-  filter: drop-shadow(0 2px 1px rgba(31, 50, 72, 0.12));
+  border-top: 0.45rem solid transparent;
+  border-bottom: 0.45rem solid transparent;
+  border-right: 0.45rem solid var(--card);
+  filter: drop-shadow(-2px 1px 1px rgba(31, 50, 72, 0.12));
 }
 
 .message--user {
@@ -311,7 +311,7 @@
   cursor: pointer;
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--gold-light);
+  color: var(--navy);
   list-style: none;
 }
 
