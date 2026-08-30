@@ -11,6 +11,10 @@ class Message < ApplicationRecord
 
   scope :chronological, -> { order(:created_at) }
 
+  def too_short_for_feedback?
+    body.to_s.strip.length < ReviewMessageJob::MIN_LENGTH
+  end
+
   after_create_commit lambda {
     broadcast_append_to adventure, target: "messages", partial: "messages/message", locals: { message: self }
   }

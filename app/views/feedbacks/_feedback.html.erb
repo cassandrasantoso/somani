@@ -2,7 +2,10 @@
   <% fb = message.feedback %>
 
   <% if fb.nil? %>
-    <%# Nothing yet. The container still renders so the broadcast has a target. %>
+    <% if message.too_short_for_feedback? %>
+      <p class="msg-feedback__hint">No suggestions for short replies (under 10 characters).</p>
+    <% end %>
+    <%# Otherwise nothing yet. The container still renders so the broadcast has a target. %>
 
   <% elsif fb.clean? %>
     <p class="msg-feedback__clean">✓ <%= fb.assessment %></p>
