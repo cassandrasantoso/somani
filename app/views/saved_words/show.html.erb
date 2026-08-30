@@ -32,6 +32,39 @@
       <% end %>
     </div>
 
+    <% if @corrections.any? %>
+      <div class="word-card__corrections">
+        <h2 class="word-card__explanation-title">
+          Corrections · <%= pluralize(@corrections.size, "time") %>
+        </h2>
+
+        <ul class="correction-list">
+          <% @corrections.each do |c| %>
+            <li class="correction">
+              <div class="correction__head">
+                <span class="correction__kind correction__kind--<%= c.kind %>">
+                  <%= c.kind %>
+                </span>
+                <span class="correction__date">
+                  <%= c.created_at.strftime("%b %-d") %>
+                </span>
+              </div>
+
+              <p class="correction__diff">
+                <span class="correction__wrote"><%= c.wrote %></span>
+                <span class="correction__arrow" aria-hidden="true">→</span>
+                <span class="correction__better"><%= c.better %></span>
+              </p>
+
+              <% if c.why.present? %>
+                <p class="correction__why"><%= c.why %></p>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <div class="word-card__actions">
       <% if policy(@saved_word).edit? %>
         <%= link_to edit_saved_word_path(@saved_word), class: "word-card__btn word-card__btn--edit" do %>
