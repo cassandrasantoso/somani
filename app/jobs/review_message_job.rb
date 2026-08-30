@@ -21,11 +21,13 @@ class ReviewMessageJob < ApplicationJob
     data = parse(raw_response(message))
     return if data.blank?
 
-    message.create_feedback!(
+    feedback = message.create_feedback!(
       assessment: data["assessment"].to_s.strip.presence,
       level_estimate: data["level_estimate"].to_s.strip.presence,
       corrections: sanitize(data["corrections"])
     )
+
+    index_corrections(feedback)
 
     broadcast(message)
   rescue Faraday::TooManyRequestsError
@@ -152,5 +154,14 @@ class ReviewMessageJob < ApplicationJob
 
     "They are deliberately practising these words: #{words.join('、')}. " \
       "If one is used imperfectly, correct how it is used but keep the word."
+  end
+
+  # Isolated so a bug in the indexer can't be mistaken for a feedback-
+  # generation failure in the logs, and can't stop feedback from reaching
+  # the learner either.
+  def index_corrections(feedback)
+    IndexWordCorrections.call(feedback)
+  rescue StandardError => e
+    Rails.logger.warn("IndexWordCorrections feedback=#{feedback.id}: #{e.class}: #{e.message}")
   end
 end

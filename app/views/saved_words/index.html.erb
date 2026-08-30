@@ -59,9 +59,10 @@
         </li>
 
         <%= render layout: "shared/modal", locals: { id: "word-adventures-#{word.id}", header: word.surface } do %>
-          <% if word.adventures.any? %>
+          <% started = word.adventures.reject(&:draft?) %>
+          <% if started.any? %>
             <div class="adventure-list">
-              <% word.adventures.each do |adventure| %>
+              <% started.each do |adventure| %>
                 <%= render "shared/adventure_card", adventure: adventure %>
               <% end %>
             </div>
