@@ -5,4 +5,10 @@ class WordCorrection < ApplicationRecord
 
   validates :surface, :kind, :wrote, :better, presence: true
   validates :kind, inclusion: { in: Feedback::KINDS }
+
+  scope :for_word, lambda { |word|
+    where(user_id: word.user_id, surface: word.surface)
+  }
+
+  scope :newest_first, -> { order(created_at: :desc) }
 end
