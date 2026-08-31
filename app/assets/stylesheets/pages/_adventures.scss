@@ -321,6 +321,14 @@
   color: var(--sage);
 }
 
+.msg-feedback__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  opacity: 0.85;
+  font-style: italic;
+}
+
 .msg-feedback__summary {
   cursor: pointer;
   font-size: 0.9rem;

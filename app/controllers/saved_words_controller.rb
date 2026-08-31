@@ -57,9 +57,10 @@ class SavedWordsController < ApplicationController
   def show
     authorize(@saved_word)
     GenerateWordExplanationJob.perform_later(@saved_word) if @saved_word.explanation.blank?
+    @corrections = WordCorrection.for_word(@saved_word).newest_first
   end
 
-  def edit   = authorize(@saved_word)
+  def edit = authorize(@saved_word)
 
   def update
     authorize @saved_word
