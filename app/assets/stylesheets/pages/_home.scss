@@ -103,8 +103,8 @@
 
 .welcome-card {
   background: linear-gradient(135deg, var(--pink-light), var(--card) 65%);
-  border: 2px solid #f5c0d3;
-  box-shadow: 0 10px 20px -4px rgba(245, 120, 160, 0.2);
+  border: 3px solid var(--pink-dark);
+  box-shadow: 0 10px 20px -4px rgba(245, 120, 160, 0.2), 3px 3px 0 rgba(168, 48, 95, 0.25);
   display: flex;
   align-items: center;
   gap: 0.85rem;
@@ -117,10 +117,11 @@
   background-size: cover, cover;
   background-position: center, center 0%;
   background-repeat: no-repeat, no-repeat;
-  border: 2px solid #62707F;
+  border: 3px solid var(--navy);
   box-shadow:
     0 10px 24px -16px rgba(31, 50, 72, 0.3),
-    0 0 22px 4px rgba(245, 120, 160, 0.1);
+    0 0 22px 4px rgba(245, 120, 160, 0.1),
+    3px 3px 0 rgba(31, 50, 72, 0.25);
 }
 
 .welcome-card__avatar {
@@ -134,6 +135,8 @@
   color: var(--pink-dark);
   font-size: 1.2rem;
   flex-shrink: 0;
+  border: 2px solid var(--pink-dark);
+  box-sizing: border-box;
 }
 
 .welcome-card__avatar img,
@@ -201,7 +204,8 @@
   justify-content: center;
   font-weight: 700;
   color: var(--navy);
-  background: conic-gradient(#62707F calc(var(--progress) * 1%), rgba(31, 50, 72, 0.12) 0);
+  background: conic-gradient(var(--gold) calc(var(--progress) * 1%), rgba(31, 50, 72, 0.12) 0);
+  box-shadow: 0 0 10px 1px rgba(212, 175, 55, 0.35);
 }
 
 .progress-ring span {
@@ -212,6 +216,7 @@
   height: calc(var(--size) - 0.9rem);
   border-radius: 50%;
   background: #F6F8FA;
+  border: 2px solid var(--gold-light);
 }
 
 .progress-card__stats {
@@ -243,7 +248,7 @@
 }
 
 .progress-bar__fill--gold {
-  background: #62707F;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
 }
 
 .progress-bar__fill--navy {
@@ -349,6 +354,25 @@
   background: var(--sage);
 }
 
+.home .adventure-card {
+  border: 2px solid var(--pink-dark);
+  box-shadow: 0 10px 20px -4px rgba(245, 120, 160, 0.45), 3px 3px 0 rgba(168, 48, 95, 0.2);
+}
+
+.home .adventure-card__badge::before {
+  animation: home-status-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes home-status-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(72, 139, 114, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 0 4px rgba(72, 139, 114, 0);
+  }
+}
+
 .adventure-card__level {
   flex-shrink: 0;
   display: inline-block;
@@ -436,6 +460,8 @@
 .home-action--secondary {
   background: var(--sage);
   color: var(--cream);
+  border: 2px solid #2f5c49;
+  box-shadow: 0 4px 0 #2f5c49, 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: home-action-pulse 2.4s ease-out 2;
 }
 
@@ -444,17 +470,22 @@
   animation-play-state: paused;
 }
 
+.home-action--secondary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #2f5c49, 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
 @keyframes home-action-pulse {
   0% {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(72, 139, 114, 0.55);
+    box-shadow: 0 4px 0 #2f5c49, 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(72, 139, 114, 0.55);
   }
 
   70% {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 14px rgba(72, 139, 114, 0);
+    box-shadow: 0 4px 0 #2f5c49, 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 14px rgba(72, 139, 114, 0);
   }
 
   100% {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(72, 139, 114, 0);
+    box-shadow: 0 4px 0 #2f5c49, 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(72, 139, 114, 0);
   }
 }
 
