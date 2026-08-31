@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_29_120002) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_31_091144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -66,6 +66,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120002) do
 
   create_table "feedbacks", force: :cascade do |t|
     t.text "assessment"
+    t.string "coherence"
+    t.text "coherence_note"
     t.jsonb "corrections", default: []
     t.datetime "created_at", null: false
     t.text "encouragement"
@@ -73,6 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_29_120002) do
     t.bigint "message_id", null: false
     t.datetime "updated_at", null: false
     t.text "used_learned_words"
+    t.index ["coherence"], name: "index_feedbacks_on_coherence"
     t.index ["message_id"], name: "index_feedbacks_on_message_id", unique: true
   end
 
