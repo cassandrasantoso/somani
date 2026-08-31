@@ -7,11 +7,20 @@
     <% end %>
     <%# Otherwise nothing yet. The container still renders so the broadcast has a target. %>
 
-  <% elsif fb.clean? %>
-    <p class="msg-feedback__clean">✓ <%= fb.assessment %></p>
-
   <% else %>
-    <details class="msg-feedback__details">
+    <% if fb.disconnected? %>
+      <p class="msg-feedback__coherence msg-feedback__coherence--<%= fb.coherence %>">
+        <i class="fa-solid fa-comment-slash" aria-hidden="true"></i>
+        <%= fb.coherence_note.presence || "This doesn't quite answer what was asked." %>
+      </p>
+    <% end %>
+
+    <% if fb.clean? %>
+      <% unless fb.disconnected? %>
+        <p class="msg-feedback__clean">✓ <%= fb.assessment %></p>
+      <% end %>
+    <% else %>
+      <details class="msg-feedback__details">
       <summary class="msg-feedback__summary">
         <%= pluralize(fb.corrections.size, "suggestion") %>
       </summary>
@@ -31,6 +40,7 @@
           </li>
         <% end %>
       </ul>
-    </details>
+      </details>
+    <% end %>
   <% end %>
 </div>

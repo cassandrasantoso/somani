@@ -413,6 +413,26 @@
   opacity: 0.85;
 }
 
+p.msg-feedback__coherence {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin: 0 0 0.4rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 0.6rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(31, 50, 72, 0.1);
+  color: var(--text);
+}
+
+p.msg-feedback__coherence--off_topic {
+  background: var(--pink-light);
+  border-color: var(--pink);
+  color: var(--pink-dark);
+}
+
 .tracker {
   flex-shrink: 0;
   border: 2px solid var(--sage);
