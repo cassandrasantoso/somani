@@ -24,6 +24,8 @@ class ReviewMessageJob < ApplicationJob
     feedback = message.create_feedback!(
       assessment: data["assessment"].to_s.strip.presence,
       level_estimate: data["level_estimate"].to_s.strip.presence,
+      coherence: coherence_for(message, data),
+      coherence_note: data["coherence_note"].to_s.strip.presence,
       corrections: sanitize(data["corrections"])
     )
 
@@ -119,11 +121,33 @@ class ReviewMessageJob < ApplicationJob
       - If the line is acceptable, return an empty corrections array. Do not
         invent faults to seem useful. Slightly awkward but valid Japanese is
         acceptable Japanese.
-      - Judge only the Japanese, never the content of what they said.
+      - Never judge their opinions, their choices, or what they decided to talk
+        about. Do judge whether their reply connects to what was said to them.
+
+      Separately from the Japanese itself, judge whether their reply engages
+      with what was just said to them:
+
+        responsive — it engages with what was said, including indirectly
+        partial    — it engages with only part of what was asked
+        off_topic  — it reads as though they misunderstood or ignored it
+
+      Judging this, be careful:
+      - Japanese replies are often indirect, and indirect is not off-topic.
+        「行きませんか」 answered with 「ちょっと…」 is a complete and correct
+        refusal. 「どうですか」 answered with 「そうですね…」 is engaged.
+        Implication, hedging and omitted subjects are normal Japanese — never
+        treat them as evasion or as a failure to answer.
+      - Deliberately changing the subject is a normal conversational move, not
+        a mistake. Only flag a reply when it reads as a misunderstanding of
+        what was said, not as a choice about where to take the conversation.
+      - If there was no previous line to respond to, return null.
 
       Return only JSON, no other text:
       {"assessment": "one short warm, specific sentence about this line",
        "level_estimate": "N5, N4, N3, N2 or N1",
+       "coherence": "responsive, partial, off_topic, or null",
+       "coherence_note": "one short sentence naming what was asked and what
+                          they answered — only when not responsive, otherwise null",
        "corrections": [
          {"kind": "grammar, vocabulary or nuance",
           "wrote": "the exact fragment they wrote",
@@ -163,5 +187,15 @@ class ReviewMessageJob < ApplicationJob
     IndexWordCorrections.call(feedback)
   rescue StandardError => e
     Rails.logger.warn("IndexWordCorrections feedback=#{feedback.id}: #{e.class}: #{e.message}")
+  end
+
+  # Whitelisted, and only meaningful when there was something to respond to.
+  # previous_turn returns "" for the first user line, and coherence against
+  # nothing is not a judgement worth storing.
+  def coherence_for(message, data)
+    return nil if previous_turn(message).blank?
+
+    value = data["coherence"].to_s.strip
+    Feedback::COHERENCE.include?(value) ? value : nil
   end
 end
