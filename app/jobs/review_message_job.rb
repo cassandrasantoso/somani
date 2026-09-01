@@ -9,14 +9,16 @@ class ReviewMessageJob < ApplicationJob
   discard_on ActiveJob::DeserializationError
 
   # Short acknowledgements have nothing to correct. Grading 「はい」 to say
-  # "looks good" teaches the learner that the marker means nothing.
+  # "looks good" teaches the learner that the marker means nothing. But a
+  # message that credited a practice word is never a trivial acknowledgement,
+  # whatever its length - see the word_usages.none? exception below.
   MIN_LENGTH = 10
 
   def perform(message)
     return unless message.role == "user"
     return if message.adventure.draft? # no scene yet — see note below
     return if message.feedback.present?
-    return if message.body.to_s.strip.length < MIN_LENGTH
+    return if message.body.to_s.strip.length < MIN_LENGTH && message.word_usages.none?
 
     data = parse(raw_response(message))
     return if data.blank?
@@ -30,6 +32,7 @@ class ReviewMessageJob < ApplicationJob
     )
 
     index_corrections(feedback)
+    revoke_for_disconnection(feedback)
 
     broadcast(message)
   rescue Faraday::TooManyRequestsError
@@ -112,11 +115,11 @@ class ReviewMessageJob < ApplicationJob
       #{target_word_note(adventure)}
 
       Review the Japanese on three things:
-        grammar    — particles, conjugation, sentence structure
-        vocabulary — wrong word for the meaning they intended, or a word that
-                     does not fit this situation
-        nuance     — politeness level and naturalness for the specific person
-                     they are speaking to here
+      grammar    — particles, conjugation, sentence structure
+      vocabulary — wrong word for the meaning they intended, or a word that
+                  does not fit this situation
+      nuance     — politeness level and naturalness for the specific person
+                  they are speaking to here
 
       Rules:
       - At most 3 corrections, most important first.
@@ -132,35 +135,35 @@ class ReviewMessageJob < ApplicationJob
       Separately from the Japanese itself, judge whether their reply engages
       with what was just said to them:
 
-        responsive — it engages with what was said, including indirectly
-        partial    — it engages with only part of what was asked
-        off_topic  — it reads as though they misunderstood or ignored it
+      responsive — it engages with what was said, including indirectly
+      partial    — it engages with only part of what was asked
+      off_topic  — it reads as though they misunderstood or ignored it
 
       Judging this, be careful:
       - Japanese replies are often indirect, and indirect is not off-topic.
-        「行きませんか」 answered with 「ちょっと…」 is a complete and correct
-        refusal. 「どうですか」 answered with 「そうですね…」 is engaged.
-        Implication, hedging and omitted subjects are normal Japanese — never
-        treat them as evasion or as a failure to answer.
+      「行きませんか」 answered with 「ちょっと…」 is a complete and correct
+      refusal. 「どうですか」 answered with 「そうですね…」 is engaged.
+      Implication, hedging and omitted subjects are normal Japanese — never
+      treat them as evasion or as a failure to answer.
       - Deliberately changing the subject is a normal conversational move, not
-        a mistake. Only flag a reply when it reads as a misunderstanding of
-        what was said, not as a choice about where to take the conversation.
+      a mistake. Only flag a reply when it reads as a misunderstanding of
+      what was said, not as a choice about where to take the conversation.
       - If there was no previous line to respond to, return null.
 
       Return only JSON, no other text:
       {"assessment": "one short warm, specific sentence about this line",
-       "level_estimate": "N5, N4, N3, N2 or N1",
-       "coherence": "responsive, partial, off_topic, or null",
-       "coherence_note": "one short sentence naming what was asked and what
-                          they answered — only when not responsive, otherwise null",
-       "corrections": [
-         {"kind": "grammar, vocabulary or nuance",
-          "wrote": "the exact fragment they wrote",
-          "better": "the corrected fragment",
-          "why": "one short sentence, in English",
-          "on_practice_word": true or false,
-          "practice_word": "the exact practiced word, or null"}
-       ]}
+      "level_estimate": "N5, N4, N3, N2 or N1",
+      "coherence": "responsive, partial, off_topic, or null",
+      "coherence_note": "one short sentence naming what was asked and what
+        they answered — only when not responsive, otherwise null",
+      "corrections": [
+        {"kind": "grammar, vocabulary or nuance",
+        "wrote": "the exact fragment they wrote",
+        "better": "the corrected fragment",
+        "why": "one short sentence, in English",
+        "on_practice_word": true or false,
+        "practice_word": "the exact practiced word, or null"}
+        ]}
     PROMPT
   end
 
@@ -202,9 +205,9 @@ class ReviewMessageJob < ApplicationJob
       inside a fragment whose real problem is elsewhere.
 
       Examples, if 方法 and 食べる were being practised:
-        "仕事の方法するのが" → "仕事の方法が"        on_practice_word: true
-        "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
-        "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
+      "仕事の方法するのが" → "仕事の方法が"        on_practice_word: true
+      "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
+      "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
     TEXT
   end
 
@@ -225,5 +228,11 @@ class ReviewMessageJob < ApplicationJob
 
     value = data["coherence"].to_s.strip
     Feedback::COHERENCE.include?(value) ? value : nil
+  end
+
+  def revoke_for_disconnection(feedback)
+    RevokeForDisconnection.call(feedback)
+  rescue StandardError => e
+    Rails.logger.warn("RevokeForDisconnection feedback=#{feedback.id}: #{e.class}: #{e.message}")
   end
 end
