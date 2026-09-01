@@ -60,7 +60,10 @@ class AdventuresController < ApplicationController
   # story 9 — the storyline ends
   def update
     authorize @adventure
+    was_active = @adventure.active?
+
     if @adventure.update(adventure_params)
+      ScheduleReview.call(@adventure) if was_active && !@adventure.active?
       redirect_to @adventure, notice: "Adventure complete."
     else
       @messages     = @adventure.messages.chronological.includes(:feedback)
