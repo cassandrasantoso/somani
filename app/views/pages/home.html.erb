@@ -42,21 +42,11 @@
           </div>
 
           <div class="progress-card__body">
-            <div class="progress-ring" style="--progress: <%= @vocabulary_progress %>">
-              <span><%= @vocabulary_progress %>%</span>
+            <div class="progress-ring" style="--progress: <%= @adventures_completed_pct %>">
+              <span><%= @adventures_completed_pct %>%</span>
             </div>
 
             <div class="progress-card__stats">
-              <div class="progress-stat">
-                <div class="progress-stat__labels">
-                  <span>JLPT <%= @vocabulary_level %> Vocabulary</span>
-                  <span><%= @vocabulary_progress %>%</span>
-                </div>
-                <div class="progress-bar">
-                  <div class="progress-bar__fill progress-bar__fill--gold" style="width: <%= @vocabulary_progress %>%"></div>
-                </div>
-              </div>
-
               <div class="progress-stat">
                 <div class="progress-stat__labels">
                   <span>Adventures completed</span>

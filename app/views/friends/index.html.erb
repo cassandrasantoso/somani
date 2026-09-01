@@ -21,15 +21,6 @@
             <p class="friend-card__name"><%= friend.username %></p>
             <div class="progress-stat">
               <div class="progress-stat__labels">
-                <span>JLPT <%= friend.vocabulary_level %> Vocabulary</span>
-                <span><%= friend.vocabulary_progress %>%</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-bar__fill progress-bar__fill--gold" style="width: <%= friend.vocabulary_progress %>%"></div>
-              </div>
-            </div>
-            <div class="progress-stat">
-              <div class="progress-stat__labels">
                 <span>Adventures completed</span>
                 <span><%= friend.adventures_completed_pct %>%</span>
               </div>

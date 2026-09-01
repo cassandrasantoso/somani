@@ -11,8 +11,6 @@ class PagesController < ApplicationController
     @active_adventures = current_user.adventures.started.where(status: "active")
      .includes(scene: :character).order(updated_at: :desc)
 
-    @vocabulary_level = current_user.vocabulary_level
-    @vocabulary_progress = current_user.vocabulary_progress
     @adventures_completed_pct = current_user.adventures_completed_pct
   end
 end
