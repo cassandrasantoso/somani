@@ -3,10 +3,34 @@ class SavedWordsController < ApplicationController
 
   def index
     @saved_words = policy_scope(SavedWord).includes(adventures: { scene: :character })
-    return unless params[:upload_id]
 
-    @saved_words = @saved_words.joins(:uploads)
-                               .where(uploads: { id: params[:upload_id] })
+    if params[:adventure_id]
+      # authorize, not just filter
+      @adventure = Adventure.find(params[:adventure_id])
+      authorize @adventure, :show?
+
+      @saved_words = @saved_words.joins(:uploads)
+                                 .where(uploads: { id: @adventure.upload_id })
+
+      # Hoisted: each of these is a query, and the view reads them once per word.
+      # Calling @adventure.usage_counts inside the loop would be an N+1.
+      @usage_counts  = @adventure.usage_counts
+      @goal_targets  = @adventure.goal_targets
+      @revoked_counts = @adventure.revoked_counts
+
+      # saved_word_id: corrections from THIS adventure, newest first.
+      # Named apart from #show's @corrections, which is a relation for one word
+      # same name, different shape, in one controller is a trap.
+      @adventure_corrections =
+        WordCorrection.joins(feedback: :message)
+                      .where(messages: { adventure_id: @adventure.id })
+                      .order(created_at: :desc)
+                      .group_by(&:saved_word_id)
+
+    elsif params[:upload_id]
+      @saved_words = @saved_words.joins(:uploads)
+                                 .where(uploads: { id: params[:upload_id] })
+    end
   end
 
   def new

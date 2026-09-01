@@ -1,18 +1,36 @@
 <% due_page = action_name == "due" %>
+<% recap = @adventure.present? %>
 
-<div class="my-words">
   <div class="my-words__header">
-    <h1><%= due_page ? "Due for review" : "📕My words・単語帳" %></h1>
+    <h1>
+      <% if recap %>
+        Words from this adventure
+      <% else %>
+        <%= due_page ? "Due for review" : "📕My words・単語帳" %>
+      <% end %>
+    </h1>
+
     <p class="my-words__subtitle">
-      <%= due_page ? "Words ready for another look" : pluralize(@saved_words.size, "word") %>
+      <% if recap %>
+        <% mastered = @saved_words.count { |w|
+             @usage_counts.fetch(w.id, 0) >= @goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
+           } %>
+        <%= mastered %> of <%= @saved_words.size %> mastered in
+        <%= @adventure.title.presence || @adventure.scene.setting %>
+      <% else %>
+        <%= due_page ? "Words ready for another look" : pluralize(@saved_words.size, "word") %>
+      <% end %>
     </p>
+
+    <% if recap %>
+      <% soon = @saved_words.count { |w| w.next_review_at.present? && w.next_review_at < 2.days.from_now } %>
+      <% if soon.positive? %>
+        <p class="my-words__recap-note">
+          <%= pluralize(soon, "word") %> scheduled to come back tomorrow.
+        </p>
+      <% end %>
+    <% end %>
   </div>
- <!--!
-  <div class="my-words__tabs">
-    <%= link_to "All words", saved_words_path, class: "my-words__tab#{" is-active" unless due_page}" %>
-    <%= link_to "Due for review", due_saved_words_path, class: "my-words__tab#{" is-active" if due_page}" %>
-  </div>
-   -->
 
   <% if @saved_words.any? %>
     <ul class="word-card-list">
@@ -36,42 +54,94 @@
             <% end %>
           </div>
 
+          <% if recap %>
+            <% used = @usage_counts.fetch(word.id, 0) %>
+            <% goal = @goal_targets.fetch(word.id, WordGoal::DEFAULT_TARGET) %>
+            <% near = @revoked_counts.fetch(word.id, 0) %>
+
+            <div class="saved-word__recap">
+              <p class="saved-word__status <%= used >= goal ? "is-mastered" : "is-practicing" %>">
+                <%= used >= goal ? "✓ Mastered" : "Still practicing — #{used}/#{goal}" %>
+              </p>
+
+              <% if near.positive? %>
+                <p class="saved-word__nearmiss">
+                  Corrected <%= near %> time<%= "s" if near > 1 %> — you got it back.
+                </p>
+
+                <% if (c = @adventure_corrections[word.id]&.first) %>
+                  <p class="saved-word__fix">
+                    <span class="saved-word__fix-wrote"><%= c.wrote %></span>
+                    <span aria-hidden="true">→</span>
+                    <span class="saved-word__fix-better"><%= c.better %></span>
+                  </p>
+                <% end %>
+              <% end %>
+
+              <% if word.next_review_at.present? %>
+                <% days = ((word.next_review_at - Time.current) / 1.day).ceil %>
+                <p class="saved-word__due">
+                  <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                  Back <%= days <= 1 ? "tomorrow" : "in #{days} days" %>
+                </p>
+              <% end %>
+            </div>
+          <% end %>
+
           <div class="word-card__actions">
-            <button type="button" class="word-card__btn word-card__btn--adventures" data-bs-toggle="modal" data-bs-target="#word-adventures-<%= word.id %>">
-              <i class="fa-solid fa-compass"></i> Adventures
-            </button>
+            <% unless recap %>
+              <button type="button" class="word-card__btn word-card__btn--adventures" data-bs-toggle="modal" data-bs-target="#word-adventures-<%= word.id %>">
+                <i class="fa-solid fa-compass"></i> Adventures
+              </button>
+            <% end %>
             <div class="word-card__actions-right">
               <%= link_to saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
                 <i class="fa-solid fa-circle-info"></i> Details
               <% end %>
-              <% if policy(word).edit? %>
-                <%= link_to edit_saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
-                  <i class="fa-solid fa-pen"></i> Edit
+              <% unless recap %>
+                <% if policy(word).edit? %>
+                  <%= link_to edit_saved_word_path(word), class: "word-card__btn word-card__btn--edit" do %>
+                    <i class="fa-solid fa-pen"></i> Edit
+                  <% end %>
                 <% end %>
-              <% end %>
-              <% if policy(word).destroy? %>
-                <%= button_to saved_word_path(word), method: :delete, class: "word-card__btn word-card__btn--remove", form: { data: { turbo_confirm: "Remove 「#{word.surface}」 from your words?" } } do %>
-                  <i class="fa-solid fa-trash"></i> Remove
+                <% if policy(word).destroy? %>
+                  <%= button_to saved_word_path(word), method: :delete, class: "word-card__btn word-card__btn--remove", form: { data: { turbo_confirm: "Remove 「#{word.surface}」 from your words?" } } do %>
+                    <i class="fa-solid fa-trash"></i> Remove
+                  <% end %>
                 <% end %>
               <% end %>
             </div>
           </div>
         </li>
 
-        <%= render layout: "shared/modal", locals: { id: "word-adventures-#{word.id}", header: word.surface } do %>
-          <% started = word.adventures.reject(&:draft?) %>
-          <% if started.any? %>
-            <div class="adventure-list">
-              <% started.each do |adventure| %>
-                <%= render "shared/adventure_card", adventure: adventure %>
-              <% end %>
-            </div>
-          <% else %>
-            <p class="adventure-list__empty">No adventures are using this word yet.</p>
+        <% unless recap %>
+          <%= render layout: "shared/modal", locals: { id: "word-adventures-#{word.id}", header: word.surface } do %>
+            <% started = word.adventures.reject(&:draft?) %>
+            <% if started.any? %>
+              <div class="adventure-list">
+                <% started.each do |adventure| %>
+                  <%= render "shared/adventure_card", adventure: adventure %>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="adventure-list__empty">No adventures are using this word yet.</p>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
     </ul>
+        <% if recap %>
+      <% if !current_user.reminder_enabled %>
+        <div class="my-words__recap-nudge">
+          <p>Want a nudge when these come back around?</p>
+          <%= link_to "Turn on reminders", edit_settings_path %>
+        </div>
+      <% end %>
+
+      <div class="my-words__recap-cta">
+        <%= link_to "Start another adventure", uploads_path, class: "continue-adventures__empty-btn" %>
+      </div>
+    <% end %>
   <% else %>
     <div class="my-words__empty">
       <i class="fa-solid fa-book-open"></i>
