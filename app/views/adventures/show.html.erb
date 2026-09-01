@@ -85,6 +85,8 @@
       </div>
 
       <div class="adventure-show__complete-actions">
+        <%= link_to "See what you learned", saved_words_path(adventure_id: @adventure.id),
+                    class: "adventure-show__complete-home" %>
         <%= link_to "Back to home", root_path, class: "adventure-show__complete-home" %>
 
         <% if policy(@adventure).destroy? %>
