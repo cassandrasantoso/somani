@@ -2,6 +2,7 @@
   <% done = target_words.count { |w|
        usage_counts.fetch(w.id, 0) >= goal_targets.fetch(w.id, WordGoal::DEFAULT_TARGET)
      } %>
+  <% revoked = adventure.revoked_counts %>
 
   <summary class="tracker__summary">
     <span><%= done %> of <%= target_words.size %> words mastered</span>
@@ -15,6 +16,7 @@
        }.each do |word| %>
       <% used = usage_counts.fetch(word.id, 0) %>
       <% goal = goal_targets.fetch(word.id, WordGoal::DEFAULT_TARGET) %>
+      <% near = revoked.fetch(word.id, 0) %>
       <li class="tracker__word <%= used >= goal ? 'is-done' : (used.zero? ? 'is-untouched' : 'is-partial') %>">
         <span class="tracker__surface"><%= word.surface %> (<%= word.reading %>) </span>
         <span class="tracker__level"><%= word.level %></span>
@@ -25,6 +27,12 @@
           <% end %>
           <%= used %>/<%= goal %>
         </span>
+        <% if near.positive? %>
+          <span class="tracker__nearmiss"
+                title="Credited, then corrected — see the feedback on that message.">
+            <%= near %> near miss<%= "es" if near > 1 %>
+          </span>
+        <% end %>
       </li>
     <% end %>
   </ul>
