@@ -185,11 +185,20 @@ class ReviewMessageJob < ApplicationJob
       They are deliberately practising these words: #{words.join('、')}.
       If one is used imperfectly, correct how it is used but keep the word.
 
-      For each correction, set on_practice_word to true only when one of those
-      words is itself what went wrong — wrong conjugation, wrong form, or the
-      wrong word for the meaning they intended. Set it to false when the word
-      was produced correctly and the problem is elsewhere in the sentence, even
-      if the fragment you quote happens to contain the word.
+      For each correction, set on_practice_word to true when your correction
+      changes one of those words or the grammar attached to it — its
+      conjugation or form, a する or auxiliary wrongly added to it or missing
+      from it, the particle immediately governing it, or a different word
+      substituted for it.
+
+      Set it to false only when the practice word and the grammar attached to
+      it are identical in "wrote" and "better" — the word merely appears
+      inside a fragment whose real problem is elsewhere.
+
+      Examples, if 方法 and 食べる were being practised:
+        "仕事の方法するのが" → "仕事の方法が"        on_practice_word: true
+        "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
+        "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
     TEXT
   end
 
