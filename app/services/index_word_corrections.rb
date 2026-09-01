@@ -40,13 +40,30 @@ class IndexWordCorrections
              .to_a
   end
 
-  # [[correction, word], ...] for every pair that matched.
+  # ConjugationMatcher first — it's free, and it's the same definition
+  # CreditWordUsage's deterministic pass uses. Only when it finds nothing for
+  # a correction does the model's own naming get used,
+  # mirroring CreditWordUsage's deterministic-then-AI shape rather than replacing it.
   def match_hits(words)
     @feedback.corrections.flat_map do |c|
-      # Match against `wrote`, not `better` — we're indexing what the learner
-      # actually said, not the model's corrected version.
-      words.filter_map { |w| [c, w] if ConjugationMatcher.match?(c["wrote"], w) }
+      direct = words.select { |w| ConjugationMatcher.match?(c["wrote"], w) }
+      next direct.map { |w| [c, w] } if direct.any?
+
+      named = resolve_named_word(c, words)
+      named ? [[c, named]] : []
     end
+  end
+
+  # Only trusted when the model already said this correction was about a practice word:
+  # an untrusted string that matches nothing here is simply ignored,
+  # same fail-safe shape as on_practice_word's strict equality.
+  def resolve_named_word(correction, words)
+    return unless correction["on_practice_word"]
+
+    name = correction["practice_word"]
+    return if name.blank?
+
+    words.find { |w| w.surface == name || w.reading == name }
   end
 
   def row_for(correction, word)

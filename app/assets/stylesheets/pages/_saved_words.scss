@@ -131,6 +131,77 @@
   line-height: 1.4;
 }
 
+.saved-word__recap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.saved-word__status {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.saved-word__status.is-mastered  { color: var(--sage); }
+.saved-word__status.is-practicing { color: var(--text-soft); }
+
+.saved-word__nearmiss {
+  margin: 0;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--pink-dark);
+  background: var(--pink-light);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.saved-word__fix {
+  margin: 0;
+  font-family: var(--font-ja);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.saved-word__fix-wrote  { text-decoration: line-through; color: var(--text-soft); }
+.saved-word__fix-better { font-weight: 700; color: var(--navy); }
+
+.saved-word__due {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  color: var(--text-soft);
+}
+
+.my-words__recap-note {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--sage);
+}
+
+.my-words__recap-nudge {
+  margin-top: 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--gold);
+  border-radius: 0.85rem;
+  text-align: center;
+}
+
+.my-words__recap-nudge p {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.my-words__recap-cta {
+  margin-top: 1rem;
+  text-align: center;
+}
+
 .word-card__actions {
   display: flex;
   flex-wrap: wrap;

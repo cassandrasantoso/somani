@@ -54,7 +54,8 @@ class ReviewMessageJob < ApplicationJob
         # Strict equality on purpose: anything but a literal true hence missing,
         # null, the string "true" means keep the credit.
         # A confused model must never be able to take a word off a learner.
-        "on_practice_word" => c["on_practice_word"] == true }
+        "on_practice_word" => c["on_practice_word"] == true,
+        "practice_word" => c["practice_word"].to_s.strip.presence }
     end
   end
 
@@ -157,7 +158,8 @@ class ReviewMessageJob < ApplicationJob
           "wrote": "the exact fragment they wrote",
           "better": "the corrected fragment",
           "why": "one short sentence, in English",
-          "on_practice_word": true or false}
+          "on_practice_word": true or false,
+          "practice_word": "the exact practiced word, or null"}
        ]}
     PROMPT
   end
@@ -190,6 +192,10 @@ class ReviewMessageJob < ApplicationJob
       conjugation or form, a する or auxiliary wrongly added to it or missing
       from it, the particle immediately governing it, or a different word
       substituted for it.
+
+      For each correction where on_practice_word is true, also set
+      practice_word to the exact surface of the practiced word it's about,
+      copied exactly from the list above. Set it to null otherwise.
 
       Set it to false only when the practice word and the grammar attached to
       it are identical in "wrote" and "better" — the word merely appears
