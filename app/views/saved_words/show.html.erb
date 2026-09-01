@@ -15,7 +15,7 @@
           </span>
         <% end %>
         <% if @saved_word.level.present? %>
-          <span class="word-card__level"><%= @saved_word.level %></span>
+          <span class="word-card__level" data-level=<%= @saved_word.level.to_s %>><%= @saved_word.level %></span>
         <% end %>
       </div>
       <% if @saved_word.meaning.present? %>

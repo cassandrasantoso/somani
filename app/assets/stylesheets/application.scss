@@ -10,3 +10,10 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+
+/* Base level colors */
+.extracted .jlpt-match[data-level="N5"] { background-color: #a4daa4; } /* Pastel Green */
+.extracted .jlpt-match[data-level="N4"] { background-color: #a1c6e8; } /* Pastel Blue */
+.extracted .jlpt-match[data-level="N3"] { background-color: #efdb9e; } /* Pastel Yellow/Gold */
+.extracted .jlpt-match[data-level="N2"] { background-color: #f9c26f; } /* Pastel Coral/Red */
+.extracted .jlpt-match[data-level="N1"] { background-color: #fb8e8e; } /* Pastel Purple */

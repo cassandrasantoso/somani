@@ -11,11 +11,11 @@
 }
 
 /* Base level colors */
-.extracted .jlpt-match[data-level="N5"] { background-color: #a4daa4; } /* Pastel Green */
-.extracted .jlpt-match[data-level="N4"] { background-color: #a1c6e8; } /* Pastel Blue */
-.extracted .jlpt-match[data-level="N3"] { background-color: #efdb9e; } /* Pastel Yellow/Gold */
-.extracted .jlpt-match[data-level="N2"] { background-color: #f9c26f; } /* Pastel Coral/Red */
-.extracted .jlpt-match[data-level="N1"] { background-color: #fb8e8e; } /* Pastel Purple */
+.extracted .jlpt-match[data-level="N5"] { background-color: var(--n5); } /* Pastel Green */
+.extracted .jlpt-match[data-level="N4"] { background-color: var(--n4); } /* Pastel Blue */
+.extracted .jlpt-match[data-level="N3"] { background-color: var(--n3); } /* Pastel Yellow/Gold */
+.extracted .jlpt-match[data-level="N2"] { background-color: var(--n2); } /* Pastel Coral/Red */
+.extracted .jlpt-match[data-level="N1"] { background-color: var(--n1); } /* Pastel Purple */
 
 /* Hover state: Subtle brightness bump & rise effect */
 .extracted .jlpt-match:hover {
@@ -69,8 +69,8 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.jlpt-legend__item[data-level="N5"] { background-color: #a4daa4; }
-.jlpt-legend__item[data-level="N4"] { background-color: #a1c6e8; }
-.jlpt-legend__item[data-level="N3"] { background-color: #efdb9e; }
-.jlpt-legend__item[data-level="N2"] { background-color: #f9c26f; }
-.jlpt-legend__item[data-level="N1"] { background-color: #fb8e8e; }
+.jlpt-legend__item[data-level="N5"] { background-color: var(--n5); }
+.jlpt-legend__item[data-level="N4"] { background-color: var(--n4); }
+.jlpt-legend__item[data-level="N3"] { background-color: var(--n3); }
+.jlpt-legend__item[data-level="N2"] { background-color: var(--n2); }
+.jlpt-legend__item[data-level="N1"] { background-color: var(--n1); }

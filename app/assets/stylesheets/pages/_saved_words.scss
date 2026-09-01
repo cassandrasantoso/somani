@@ -113,11 +113,16 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--pink-dark);
-  background: var(--pink-light);
+  color: black;
   padding: 0.15rem 0.55rem;
   border-radius: 999px;
 }
+
+.word-card__level[data-level="N5"] { background-color: var(--n5); }
+.word-card__level[data-level="N4"] { background-color: var(--n4); }
+.word-card__level[data-level="N3"] { background-color: var(--n3); }
+.word-card__level[data-level="N2"] { background-color: var(--n2); }
+.word-card__level[data-level="N1"] { background-color: var(--n1); }
 
 .word-card__meaning {
   margin: 0;
