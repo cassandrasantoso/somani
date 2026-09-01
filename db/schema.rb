@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_31_091144) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_01_025602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -208,6 +208,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_31_091144) do
     t.datetime "created_at", null: false
     t.bigint "message_id", null: false
     t.bigint "saved_word_id", null: false
+    t.string "status", default: "credited", null: false
     t.datetime "updated_at", null: false
     t.index ["adventure_id", "saved_word_id"], name: "index_word_usages_on_adventure_id_and_saved_word_id"
     t.index ["adventure_id"], name: "index_word_usages_on_adventure_id"
