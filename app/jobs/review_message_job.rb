@@ -9,14 +9,16 @@ class ReviewMessageJob < ApplicationJob
   discard_on ActiveJob::DeserializationError
 
   # Short acknowledgements have nothing to correct. Grading 「はい」 to say
-  # "looks good" teaches the learner that the marker means nothing.
+  # "looks good" teaches the learner that the marker means nothing. But a
+  # message that credited a practice word is never a trivial acknowledgement,
+  # whatever its length - see the word_usages.none? exception below.
   MIN_LENGTH = 10
 
   def perform(message)
     return unless message.role == "user"
     return if message.adventure.draft? # no scene yet — see note below
     return if message.feedback.present?
-    return if message.body.to_s.strip.length < MIN_LENGTH
+    return if message.body.to_s.strip.length < MIN_LENGTH && message.word_usages.none?
 
     data = parse(raw_response(message))
     return if data.blank?
