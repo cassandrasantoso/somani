@@ -30,9 +30,16 @@ class Adventure < ApplicationRecord
   end
 
   # how many times each word has been used (word_id -> times_used)
-  # counted by the database in one go, not one query per word
+  # Only credited rows. Revoked rows are kept deliberately
+  # see IndexWordCorrections, but they must not count toward the goal.
   def usage_counts
-    word_usages.group(:saved_word_id).count
+    word_usages.credited.group(:saved_word_id).count
+  end
+
+  # { saved_word_id => times credit was taken back }. The near-miss signal:
+  # the learner reached for the word and the shape was wrong.
+  def revoked_counts
+    word_usages.revoked.group(:saved_word_id).count
   end
 
   # { saved_word_id => target } for words with their own goal. Same shape as
@@ -142,6 +149,29 @@ class Adventure < ApplicationRecord
     goal_reached_at.present?
   end
 
+  # Both callers of these i.e. CreditWordUsage on send, IndexWordCorrections on revocation
+  # need identical locals, so are stated here rather than being duplicated in two services.
+  def broadcast_tracker
+    broadcast_replace_to(
+      self,
+      target: "word-tracker",
+      partial: "adventures/tracker",
+      locals: { adventure: self,
+                target_words: target_words,
+                usage_counts: usage_counts,
+                goal_targets: goal_targets }
+    )
+  end
+
+  def broadcast_goal_banner
+    broadcast_replace_to(
+      self,
+      target: "goal-banner",
+      partial: "adventures/goal_banner",
+      locals: { adventure: self }
+    )
+  end
+
   private
 
   def generate_title_with_gemini(prompt)
@@ -172,7 +202,7 @@ class Adventure < ApplicationRecord
         .dig("candidates", 0, "content", "parts", 0, "text")
         .to_s
         .strip
-    rescue StandardError => _
+    rescue StandardError => _e
       "Unable to generate title!"
     end
   end

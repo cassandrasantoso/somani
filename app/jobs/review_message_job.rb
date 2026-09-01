@@ -50,7 +50,11 @@ class ReviewMessageJob < ApplicationJob
       { "kind" => Feedback::KINDS.include?(c["kind"]) ? c["kind"] : "grammar",
         "wrote" => c["wrote"].to_s,
         "better" => c["better"].to_s,
-        "why" => c["why"].to_s }
+        "why" => c["why"].to_s,
+        # Strict equality on purpose: anything but a literal true hence missing,
+        # null, the string "true" means keep the credit.
+        # A confused model must never be able to take a word off a learner.
+        "on_practice_word" => c["on_practice_word"] == true }
     end
   end
 
@@ -152,7 +156,8 @@ class ReviewMessageJob < ApplicationJob
          {"kind": "grammar, vocabulary or nuance",
           "wrote": "the exact fragment they wrote",
           "better": "the corrected fragment",
-          "why": "one short sentence, in English"}
+          "why": "one short sentence, in English",
+          "on_practice_word": true or false}
        ]}
     PROMPT
   end
@@ -176,8 +181,25 @@ class ReviewMessageJob < ApplicationJob
     words = adventure.target_words.map(&:surface)
     return "" if words.empty?
 
-    "They are deliberately practising these words: #{words.join('、')}. " \
-      "If one is used imperfectly, correct how it is used but keep the word."
+    <<~TEXT
+      They are deliberately practising these words: #{words.join('、')}.
+      If one is used imperfectly, correct how it is used but keep the word.
+
+      For each correction, set on_practice_word to true when your correction
+      changes one of those words or the grammar attached to it — its
+      conjugation or form, a する or auxiliary wrongly added to it or missing
+      from it, the particle immediately governing it, or a different word
+      substituted for it.
+
+      Set it to false only when the practice word and the grammar attached to
+      it are identical in "wrote" and "better" — the word merely appears
+      inside a fragment whose real problem is elsewhere.
+
+      Examples, if 方法 and 食べる were being practised:
+        "仕事の方法するのが" → "仕事の方法が"        on_practice_word: true
+        "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
+        "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
+    TEXT
   end
 
   # Isolated so a bug in the indexer can't be mistaken for a feedback-
