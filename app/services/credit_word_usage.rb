@@ -47,39 +47,14 @@ class CreditWordUsage
     WordUsage.insert_all(rows, unique_by: %i[message_id saved_word_id])
 
     @adventure.check_goal!
-    broadcast_tracker
-    broadcast_goal_banner
-  end
-
-  def broadcast_goal_banner
-    @adventure.broadcast_replace_to(
-      @adventure,
-      target: "goal-banner",
-      partial: "adventures/goal_banner",
-      locals: { adventure: @adventure }
-    )
+    @adventure.broadcast_tracker
+    @adventure.broadcast_goal_banner
   end
 
   # words this message hasn't already credited, and that still need credit
   def pending_words
     already = @message.word_usages.pluck(:saved_word_id)
     @adventure.practice_words.reject { |w| already.include?(w.id) }
-  end
-
-  def broadcast_tracker
-    words   = @adventure.target_words
-    counts  = @adventure.usage_counts
-    targets = @adventure.goal_targets
-
-    @adventure.broadcast_replace_to(
-      @adventure,
-      target: "word-tracker",
-      partial: "adventures/tracker",
-      locals: { adventure: @adventure,
-                target_words: words,
-                usage_counts: counts,
-                goal_targets: targets }
-    )
   end
 
   # Deterministic first pass. ModelWordMatcher (in #recheck) is the paid

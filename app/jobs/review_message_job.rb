@@ -50,7 +50,11 @@ class ReviewMessageJob < ApplicationJob
       { "kind" => Feedback::KINDS.include?(c["kind"]) ? c["kind"] : "grammar",
         "wrote" => c["wrote"].to_s,
         "better" => c["better"].to_s,
-        "why" => c["why"].to_s }
+        "why" => c["why"].to_s,
+        # Strict equality on purpose: anything but a literal true hence missing,
+        # null, the string "true" means keep the credit.
+        # A confused model must never be able to take a word off a learner.
+        "on_practice_word" => c["on_practice_word"] == true }
     end
   end
 
@@ -152,7 +156,8 @@ class ReviewMessageJob < ApplicationJob
          {"kind": "grammar, vocabulary or nuance",
           "wrote": "the exact fragment they wrote",
           "better": "the corrected fragment",
-          "why": "one short sentence, in English"}
+          "why": "one short sentence, in English",
+          "on_practice_word": true or false}
        ]}
     PROMPT
   end
@@ -176,8 +181,16 @@ class ReviewMessageJob < ApplicationJob
     words = adventure.target_words.map(&:surface)
     return "" if words.empty?
 
-    "They are deliberately practising these words: #{words.join('、')}. " \
-      "If one is used imperfectly, correct how it is used but keep the word."
+    <<~TEXT
+      They are deliberately practising these words: #{words.join('、')}.
+      If one is used imperfectly, correct how it is used but keep the word.
+
+      For each correction, set on_practice_word to true only when one of those
+      words is itself what went wrong — wrong conjugation, wrong form, or the
+      wrong word for the meaning they intended. Set it to false when the word
+      was produced correctly and the problem is elsewhere in the sentence, even
+      if the fragment you quote happens to contain the word.
+    TEXT
   end
 
   # Isolated so a bug in the indexer can't be mistaken for a feedback-
