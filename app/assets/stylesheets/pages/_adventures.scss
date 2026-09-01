@@ -521,6 +521,18 @@ p.msg-feedback__coherence--off_topic {
   white-space: nowrap;
 }
 
+.tracker__nearmiss {
+  flex-basis: 100%;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--pink-dark);
+  background: var(--pink-light);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  align-self: flex-start;
+  cursor: help;
+}
+
 .word-hint {
   position: relative;
   align-self: center;
