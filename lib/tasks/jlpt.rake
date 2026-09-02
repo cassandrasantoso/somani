@@ -42,13 +42,14 @@ namespace :jlpt do
 
     exact        = 0
     off_by_one   = 0
+    way_off      = 0
     out_of_scope = 0
     unscored     = 0
     errors       = 0
     rows = []
 
     sample.each_with_index do |entry, i|
-      sleep 1 # throttle; this is ~100 calls
+      sleep 5
       print "." if (i + 1) % 10 == 0 # progress every 10 words, so silence doesn't look like a hang
 
       guess =
@@ -70,13 +71,19 @@ namespace :jlpt do
       elsif (SavedWord::LEVEL_ENUM[guess[:level].to_sym].to_i -
             SavedWord::LEVEL_ENUM[entry.level.to_sym].to_i).abs == 1
         off_by_one += 1
+      else
+        way_off += 1
       end
 
       rows << [entry.content, entry.level, guess&.dig(:level), guess&.dig(:in_scope)]
     end
 
+    tallied = [exact, off_by_one, way_off, out_of_scope, unscored, errors].sum
+    raise "counts sum to #{tallied}, expected #{sample.size}" unless tallied == sample.size
+
     puts "exact:        #{exact}/#{sample.size}"
     puts "off-by-one:   #{off_by_one}/#{sample.size}"
+    puts "way off (2+ levels): #{way_off}/#{sample.size}"
     puts "out of scope (false negatives — every sampled word IS JLPT vocabulary): #{out_of_scope}/#{sample.size}"
     puts "in scope but no level returned: #{unscored}/#{sample.size}"
     puts "errors (unparseable response or API failure): #{errors}/#{sample.size}"
