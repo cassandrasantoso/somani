@@ -645,14 +645,11 @@ p.msg-feedback__coherence--off_topic {
   color: var(--cream);
 }
 
-#message-form {
-  flex-shrink: 0;
-}
-
 .adventure-show__composer {
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .adventure-show__composer form {
