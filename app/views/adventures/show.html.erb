@@ -47,7 +47,7 @@
     <%= render "adventures/goal_banner", adventure: @adventure %>
 
   <% if @adventure.active? %>
-    <div id="message-form" class="adventure-show__composer">
+    <div class="adventure-show__composer">
       <%= render "messages/form", adventure: @adventure, message: @message %>
 
       <%# story 9 — end the storyline / story 15 — delete an adventure %>
