@@ -1,5 +1,6 @@
 <%= simple_form_for [adventure, message],
       html: {
+        id: "message-form",
         class: "chat-form",
         data: {
           action: "submit->chat#showLoader"
