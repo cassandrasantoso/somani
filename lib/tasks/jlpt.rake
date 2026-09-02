@@ -47,8 +47,9 @@ namespace :jlpt do
     errors       = 0
     rows = []
 
-    sample.each do |entry|
+    sample.each_with_index do |entry, i|
       sleep 1 # throttle; this is ~100 calls
+      print "." if (i + 1) % 10 == 0 # progress every 10 words, so silence doesn't look like a hang
 
       guess =
         begin
