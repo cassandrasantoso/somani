@@ -49,7 +49,7 @@ namespace :jlpt do
     rows = []
 
     sample.each_with_index do |entry, i|
-      sleep 5
+      sleep 5 # throttle — Flash Lite is ~15 RPM; sleep 1 produced 40%+ 429s
       print "." if (i + 1) % 10 == 0 # progress every 10 words, so silence doesn't look like a hang
 
       guess =
@@ -89,5 +89,59 @@ namespace :jlpt do
     puts "errors (unparseable response or API failure): #{errors}/#{sample.size}"
     puts "\nmisses:"
     rows.reject { |_c, actual, guess, _s| actual == guess }.each { |r| puts "  #{r.inspect}" }
+  end
+
+  desc "Audit the seed JSONs for internal inconsistencies (read-only, no API calls)"
+  task audit: :environment do
+    entries = []
+
+    (1..5).each do |n|
+      path = Rails.root.join("db/data/jlpt/n#{n}.json")
+      next unless path.exist?
+
+      data  = JSON.parse(path.read)
+      words = data.is_a?(Hash) ? data["words"] : data
+      words.each do |w|
+        entries << { word: w["word"].to_s, furigana: w["furigana"].to_s,
+                     file_level: n, field_level: w["level"] }
+      end
+    end
+
+    puts "total entries across files: #{entries.size}"
+
+    mismatched = entries.reject { |e| e[:field_level] == e[:file_level] }
+    puts "\n[1] level field != filename: #{mismatched.size}"
+    mismatched.first(20).each { |e| puts "  #{e[:word]} in n#{e[:file_level]}.json says level #{e[:field_level]}" }
+
+    by_word = entries.group_by { |e| e[:word].presence || e[:furigana] }
+
+    cross = by_word.select { |_w, es| es.map { |e| e[:file_level] }.uniq.size > 1 }
+    puts "\n[2] words at more than one level (import keeps the easiest): #{cross.size}"
+    cross.first(20).each { |w, es| puts "  #{w}: levels #{es.map { |e| e[:file_level] }.sort.inspect}" }
+
+    dupes = by_word.select { |_w, es| es.size > es.map { |e| e[:file_level] }.uniq.size }
+    puts "\n[3] words duplicated within a single level: #{dupes.size}"
+
+    multi = by_word.select { |_w, es| es.map { |e| e[:furigana] }.uniq.size > 1 }
+    puts "\n[4] same written form, different readings (import keys on content — one silently wins): #{multi.size}"
+    multi.first(20).each do |w, es|
+      puts "  #{w}: " + es.map { |e| "#{e[:furigana]}(n#{e[:file_level]})" }.uniq.join(" / ")
+    end
+
+    variants = by_word.filter_map do |w, es|
+      fur = es.first[:furigana]
+      next if fur.blank? || fur == w || !by_word.key?(fur)
+
+      [w, es.first[:file_level], fur, by_word[fur].first[:file_level]]
+    end
+    puts "\n[5] kanji form AND kana form both listed separately: #{variants.size}"
+    variants.first(20).each { |kanji, kl, kana, kal| puts "  #{kanji}(n#{kl}) / #{kana}(n#{kal})" }
+
+    puts "\n[6] blank word field: #{entries.count { |e| e[:word].blank? }}; " \
+         "blank furigana: #{entries.count { |e| e[:furigana].blank? }}"
+
+    singles = entries.select { |e| (e[:word].presence || e[:furigana]).length == 1 }
+    puts "[7] single-character entries by level: " \
+         "#{singles.group_by { |e| e[:file_level] }.transform_values(&:size).sort.to_h}"
   end
 end
