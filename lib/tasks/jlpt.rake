@@ -199,8 +199,7 @@ namespace :jlpt do
     sample.each_with_index do |entry, i|
       uri = URI("https://jisho.org/api/v1/search/words?keyword=#{URI.encode_www_form_component(entry.content)}")
       req = Net::HTTP::Get.new(uri)
-      # PUT A REAL CONTACT ADDRESS HERE before running.
-      req["User-Agent"] = "Somani/1.0 (JLPT level audit; contact: you@example.com)"
+      req["User-Agent"] = JishoLevelVerifier::USER_AGENT
 
       body = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }.body
       data = JSON.parse(body)["data"] || []
@@ -239,8 +238,7 @@ namespace :jlpt do
     sample.each_with_index do |entry, i|
       uri = URI("https://jisho.org/api/v1/search/words?keyword=#{URI.encode_www_form_component(entry.content)}")
       req = Net::HTTP::Get.new(uri)
-      # PUT A REAL CONTACT ADDRESS HERE before running.
-      req["User-Agent"] = "Somani/1.0 (JLPT level audit; contact: you@example.com)"
+      req["User-Agent"] = JishoLevelVerifier::USER_AGENT
 
       body = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }.body
       data = JSON.parse(body)["data"] || []

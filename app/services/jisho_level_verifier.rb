@@ -4,8 +4,7 @@ require "uri"
 class JishoLevelVerifier
   TAG      = /\Ajlpt-n([1-5])\z/
   ENDPOINT = "https://jisho.org/api/v1/search/words".freeze
-  # PUT A REAL CONTACT ADDRESS HERE.
-  USER_AGENT = "Somani/1.0 (JLPT level verification; contact: you@example.com)".freeze
+  USER_AGENT = "Somani/1.0 (JLPT level verification; +https://github.com/cassandrasantoso/somani)".freeze
 
   Result = Struct.new(:status, :from, :to, :tags, keyword_init: true)
 
