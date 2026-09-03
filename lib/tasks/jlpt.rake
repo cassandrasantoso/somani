@@ -34,6 +34,21 @@ namespace :jlpt do
 
     puts "backfilled #{filled} kana-only readings"
     puts "jlpt_entries: #{JlptEntry.count} total"
+
+    overrides_path = Rails.root.join("db/data/jlpt/overrides.json")
+    if overrides_path.exist?
+      applied = 0
+      missed  = []
+      JSON.parse(overrides_path.read).each do |o|
+        entry = JlptEntry.find_by(content: o["content"], entry_type: "word")
+        next missed << o["content"] unless entry
+
+        entry.update!(level: o["level"])
+        applied += 1
+      end
+      puts "applied #{applied} overrides"
+      puts "  ! no matching entry for: #{missed.inspect}" if missed.any?
+    end
   end
 
   desc "Score the level estimator against seeded words (read-only)"
@@ -54,7 +69,7 @@ namespace :jlpt do
 
       guess =
         begin
-          WordLevelEstimator.call(entry.content) # => { level:, in_scope:, category: } or nil
+          WordLevelEstimator.call(entry.content, reading: entry.reading, meaning: entry.meaning)
         rescue StandardError => e
           Rails.logger.warn("jlpt:eval_levels #{entry.content}: #{e.class}: #{e.message}")
           nil
