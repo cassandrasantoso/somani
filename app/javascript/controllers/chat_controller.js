@@ -1,10 +1,16 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["loader"]
+  static targets = ["loader", "input"]
 
   showLoader() {
     this.loaderTarget.hidden = false
+  }
+
+  autoResize() {
+    const input = this.inputTarget
+    input.style.height = "auto"
+    input.style.height = `${input.scrollHeight}px`
   }
 
   handleStream(event) {

@@ -14,7 +14,12 @@
           placeholder: "ここに返事を入力",
           input_html: {
             class: "chat-form__input",
-            autocomplete: "off"
+            autocomplete: "off",
+            rows: 1,
+            data: {
+              chat_target: "input",
+              action: "input->chat#autoResize"
+            }
           },
           wrapper_html: {
             class: "chat-form__field"
