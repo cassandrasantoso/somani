@@ -4,14 +4,14 @@ center.chat-form {
 
 .chat-form__input-wrapper {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 0.5rem;
   width: 100%;
   min-height: 2.75rem;
   padding: 0.25rem 0.3rem 0.25rem 0.9rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 9px;
   box-shadow: 0 4px 15px -8px rgba(31, 50, 72, 0.3);
 }
 
@@ -32,7 +32,6 @@ center.chat-form {
   margin: 0;
   padding: 0.25rem 0;
   border: none;
-  border-radius: 999px;
   background: transparent;
   box-shadow: none;
   resize: none;
