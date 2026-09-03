@@ -5,7 +5,15 @@ class ReviewMessageJob < ApplicationJob
 
   # Same pattern as GenerateUploadSummaryJob — a rate-limited feedback pass is
   # worth retrying later, not worth failing loudly.
-  retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5 do |job, error|
+    message = job.arguments.first
+    Rails.logger.warn(
+      "ReviewMessageJob gave up after 5 attempts, message=#{message.id}, " \
+      "#{message.word_usages.pending.count} usages left pending: #{error.message}"
+    )
+  rescue StandardError => e
+    Rails.logger.warn("ReviewMessageJob retry-exhausted logging failed: #{e.message}")
+  end
   discard_on ActiveJob::DeserializationError
 
   # Short acknowledgements have nothing to correct. Grading 「はい」 to say
@@ -16,12 +24,12 @@ class ReviewMessageJob < ApplicationJob
 
   def perform(message)
     return unless message.role == "user"
-    return if message.adventure.draft? # no scene yet — see note below
+    return if message.adventure.draft?         # no review → stays pending
     return if message.feedback.present?
     return if message.body.to_s.strip.length < MIN_LENGTH && message.word_usages.none?
 
     data = parse(raw_response(message))
-    return if data.blank?
+    return if data.blank?                      # no review → stays pending
 
     feedback = message.create_feedback!(
       assessment: data["assessment"].to_s.strip.presence,
@@ -33,6 +41,7 @@ class ReviewMessageJob < ApplicationJob
 
     index_corrections(feedback)
     revoke_for_disconnection(feedback)
+    confirm_pending(message)
 
     broadcast(message)
   rescue Faraday::TooManyRequestsError
@@ -234,5 +243,18 @@ class ReviewMessageJob < ApplicationJob
     RevokeForDisconnection.call(feedback)
   rescue StandardError => e
     Rails.logger.warn("RevokeForDisconnection feedback=#{feedback.id}: #{e.class}: #{e.message}")
+  end
+
+  # Pending rows that survived both revocation passes are what the review
+  # agreed with. This is the only place credit becomes countable.
+  def confirm_pending(message)
+    changed = message.word_usages.pending
+                     .update_all(status: "credited", updated_at: Time.current)
+    return if changed.zero?
+
+    adventure = message.adventure
+    adventure.check_goal!
+    adventure.broadcast_tracker
+    adventure.broadcast_goal_banner
   end
 end

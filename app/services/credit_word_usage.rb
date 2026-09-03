@@ -12,8 +12,8 @@ class CreditWordUsage
     @adventure = message.adventure
   end
 
-  # first pass, runs in the request so the tracker is right when the page
-  # credits anything the generated bases can match
+  # first pass, runs in the request: records what the deterministic matcher can see straight away, as pending.
+  # Nothing is counted until the review agrees.
   def call
     return unless @message.role == "user"
 
@@ -25,10 +25,10 @@ class CreditWordUsage
   def recheck
     return unless @message.role == "user"
 
-    pending = pending_words
-    return if pending.empty?
+    words = unchecked_words
+    return if words.empty?
 
-    credit(ModelWordMatcher.call(@message.body, pending))
+    credit(ModelWordMatcher.call(@message.body, words))
   rescue StandardError => e
     Rails.logger.error("CreditWordUsage.recheck failed: #{e.message}")
   end
@@ -41,18 +41,19 @@ class CreditWordUsage
     now = Time.current
     rows = words.map do |w|
       { adventure_id: @adventure.id, saved_word_id: w.id,
-        message_id: @message.id, created_at: now, updated_at: now }
+        message_id: @message.id, status: "pending",
+        created_at: now, updated_at: now }
     end
 
     WordUsage.insert_all(rows, unique_by: %i[message_id saved_word_id])
 
-    @adventure.check_goal!
-    @adventure.broadcast_tracker
-    @adventure.broadcast_goal_banner
+    # No check_goal! or broadcasts here any more: pending rows don't count toward usage_counts,
+    # so nothing the learner can see has changed yet.
+    # ReviewMessageJob#confirm_pending does that once the review agrees.
   end
 
-  # words this message hasn't already credited, and that still need credit
-  def pending_words
+  # practice words this message has no usage row for yet, whatever their status
+  def unchecked_words
     already = @message.word_usages.pluck(:saved_word_id)
     @adventure.practice_words.reject { |w| already.include?(w.id) }
   end

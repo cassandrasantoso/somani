@@ -15,7 +15,8 @@ class RevokeForDisconnection
   def call
     return unless @feedback.disconnected?
 
-    changed = @message.word_usages.credited
+    changed = @message.word_usages
+                      .where(status: %w[credited pending])
                       .update_all(status: "revoked", updated_at: Time.current)
     return if changed.zero?
 

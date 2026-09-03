@@ -30,8 +30,7 @@ class Adventure < ApplicationRecord
   end
 
   # how many times each word has been used (word_id -> times_used)
-  # Only credited rows. Revoked rows are kept deliberately
-  # see IndexWordCorrections, but they must not count toward the goal.
+  # Neither revoked nor pending rows count, pending means the review hasn't confirmed it yet.
   def usage_counts
     word_usages.credited.group(:saved_word_id).count
   end
@@ -40,6 +39,12 @@ class Adventure < ApplicationRecord
   # the learner reached for the word and the shape was wrong.
   def revoked_counts
     word_usages.revoked.group(:saved_word_id).count
+  end
+
+  # { saved_word_id => uses awaiting review }. Same shape as usage_counts, so
+  # the view looks all three up the same way.
+  def pending_counts
+    word_usages.pending.group(:saved_word_id).count
   end
 
   # { saved_word_id => target } for words with their own goal. Same shape as
@@ -149,8 +154,9 @@ class Adventure < ApplicationRecord
     goal_reached_at.present?
   end
 
-  # Both callers of these i.e. CreditWordUsage on send, IndexWordCorrections on revocation
-  # need identical locals, so are stated here rather than being duplicated in two services.
+  # Callers need identical locals: ReviewMessageJob#confirm_pending on promotion,
+  # IndexWordCorrections and RevokeForDisconnection on rejection
+  # so they're stated here rather than duplicated across three services.
   def broadcast_tracker
     broadcast_replace_to(
       self,
