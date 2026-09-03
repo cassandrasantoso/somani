@@ -17,9 +17,11 @@ namespace :jlpt do
           content = w["word"].presence || w["furigana"].presence # kana-only words
           next if content.blank?
 
-          JlptEntry.find_or_initialize_by(content: content, entry_type: "word")
-                   .update!(reading: w["furigana"], meaning: w["meaning"],
-                            level: "N#{level}")
+          entry = JlptEntry.find_or_initialize_by(content: content, entry_type: "word")
+          attrs = { reading: w["furigana"], meaning: w["meaning"] }
+          # Don't clobber a level jisho verified — the raw JSON is what was wrong.
+          attrs[:level] = "N#{level}" unless entry.level_source == "jisho"
+          entry.update!(attrs)
           count += 1
         end
       end
@@ -254,5 +256,56 @@ namespace :jlpt do
 
       sleep 40 unless i == sample.size - 1
     end
+  end
+
+  desc "Verify seeded levels against jisho. scope: variants | n1 | all. Resumable."
+  task :verify_levels, %i[scope limit] => :environment do |_t, args|
+    scope = (args[:scope] || "variants").to_s
+
+    base =
+      case scope
+      when "variants"
+        JlptEntry.words
+                 .where(level: "N1")
+                 .where("content <> reading")
+                 .where(reading: JlptEntry.words.where.not(level: "N1").select(:content))
+      when "n1"  then JlptEntry.words.where(level: "N1")
+      when "all" then JlptEntry.words
+      else abort("scope must be variants, n1, or all")
+      end
+
+    pending = base.where(verified_at: nil).order(:id)
+    pending = pending.limit(args[:limit].to_i) if args[:limit].present?
+    pending = pending.to_a
+
+    total = pending.size
+    puts "#{total} entries to verify (~#{(total * 40 / 3600.0).round(1)}h at 40s each)."
+    puts "Ctrl-C is safe — verified_at makes this resumable."
+
+    corrected = unchanged = no_data = failed = 0
+
+    pending.each_with_index do |entry, i|
+      result =
+        begin
+          JishoLevelVerifier.call(entry)
+        rescue StandardError => e
+          failed += 1
+          puts "  ! #{entry.content}: #{e.class}: #{e.message}"
+          nil
+        end
+
+      case result&.status
+      when :corrected
+        corrected += 1
+        puts "  #{entry.content} (#{entry.reading}): #{result.from} -> #{result.to}  #{result.tags.inspect}"
+      when :unchanged then unchanged += 1
+      when :no_data   then no_data += 1
+      end
+
+      puts "  … #{i + 1}/#{total}" if ((i + 1) % 25).zero?
+      sleep 40 unless i == total - 1
+    end
+
+    puts "\ncorrected: #{corrected}  unchanged: #{unchanged}  no jisho data: #{no_data}  failed: #{failed}"
   end
 end
