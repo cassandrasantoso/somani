@@ -1,5 +1,5 @@
 class WordUsage < ApplicationRecord
-  STATUSES = %w[credited revoked].freeze
+  STATUSES = %w[pending credited revoked].freeze
 
   belongs_to :adventure
   belongs_to :saved_word
@@ -9,4 +9,5 @@ class WordUsage < ApplicationRecord
 
   scope :credited, -> { where(status: "credited") }
   scope :revoked,  -> { where(status: "revoked") }
+  scope :pending, -> { where(status: "pending") }
 end

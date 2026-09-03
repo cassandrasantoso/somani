@@ -1,7 +1,8 @@
 # Matches a feedback's corrections against the words this message used, writing one row per hit.
 # Most corrections won't match any word i.e. that's expected, not a bug.
-# Also takes back credit when the model says the practice word itself was what went wrong.
-# Credit is optimistic on send, this is the pass that knows better.
+# Also rejects a word's pending credit when the model says the practice word
+# itself was what went wrong. Credit is withheld on send and only granted once
+# this pass and RevokeForDisconnection have both had their say.
 class IndexWordCorrections
   def self.call(feedback) = new(feedback).call
 
@@ -85,7 +86,8 @@ class IndexWordCorrections
     ids = hits.filter_map { |c, word| word.id if c["on_practice_word"] }.uniq
     return if ids.empty?
 
-    changed = @message.word_usages.credited
+    changed = @message.word_usages
+                      .where(status: %w[credited pending])
                       .where(saved_word_id: ids)
                       .update_all(status: "revoked", updated_at: now)
     return if changed.zero?
