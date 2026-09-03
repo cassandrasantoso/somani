@@ -17,6 +17,11 @@ class VerifyJlptLevelJob < ApplicationJob
     result = JishoLevelVerifier.call(jlpt_entry)
     return unless result.status == :corrected
 
+    # The saved word holds its own copy of level, taken at save time. Update the
+    # ones that got it from the seed — never the ones a learner set themselves.
+    SavedWord.where(jlpt_entry: jlpt_entry, level_source: "jlpt")
+             .update_all(level: result.to)
+
     Rails.logger.info("VerifyJlptLevelJob #{jlpt_entry.content}: #{result.from} -> #{result.to} (jisho #{result.tags.inspect})")
   rescue StandardError => e
     Rails.logger.warn("VerifyJlptLevelJob #{jlpt_entry.id}: #{e.class}: #{e.message}")
