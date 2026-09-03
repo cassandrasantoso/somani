@@ -1,12 +1,14 @@
 class WordLevelEstimator
   VALID_LEVELS = %w[N5 N4 N3 N2 N1].freeze
 
-  def self.call(surface)
-    new(surface).call
+  def self.call(surface, reading: nil, meaning: nil)
+    new(surface, reading: reading, meaning: meaning).call
   end
 
-  def initialize(surface)
+  def initialize(surface, reading: nil, meaning: nil)
     @surface = surface
+    @reading = reading
+    @meaning = meaning
   end
 
   # Returns { in_scope:, level:, category: } or nil if the response couldn't be parsed at all (see #parse).
@@ -44,7 +46,10 @@ class WordLevelEstimator
 
   def prompt
     <<~PROMPT
-      Is "#{@surface}" general-purpose Japanese vocabulary of the kind tested
+      Word: #{@surface}#{" (#{@reading})" if @reading.present?}
+      #{"Meaning: #{@meaning}" if @meaning.present?}
+
+      Is this general-purpose Japanese vocabulary of the kind tested
       by the JLPT — or is it a proper noun, brand, place name, culinary term,
       technical term, or recent loanword?
 

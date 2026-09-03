@@ -103,7 +103,7 @@ namespace :jlpt do
       words = data.is_a?(Hash) ? data["words"] : data
       words.each do |w|
         entries << { word: w["word"].to_s, furigana: w["furigana"].to_s,
-                     file_level: n, field_level: w["level"] }
+                     meaning: w["meaning"].to_s, file_level: n, field_level: w["level"] }
       end
     end
 
@@ -143,5 +143,31 @@ namespace :jlpt do
     singles = entries.select { |e| (e[:word].presence || e[:furigana]).length == 1 }
     puts "[7] single-character entries by level: " \
          "#{singles.group_by { |e| e[:file_level] }.transform_values(&:size).sort.to_h}"
+
+    kana_only = /\A[\p{Hiragana}\p{Katakana}ー[[:space:]]]*\z/
+    dirty = entries.reject { |e| e[:furigana].blank? || e[:furigana].match?(kana_only) }
+    puts "\n[8] furigana containing non-kana characters: #{dirty.size}"
+    dirty.first(20).each { |e| puts "  #{e[:word]}(n#{e[:file_level]}): #{e[:furigana].inspect}" }
+
+    blank_with_kanji = entries.select { |e| e[:furigana].blank? && e[:word].match?(/\p{Han}/) }
+    puts "\n[9] blank furigana but contains kanji (backfill sets reading = kanji): #{blank_with_kanji.size}"
+    blank_with_kanji.first(20).each { |e| puts "  #{e[:word]}(n#{e[:file_level]})" }
+
+    blank_meaning = entries.select { |e| e[:meaning].blank? }
+    puts "\n[10] entries with no meaning (upstream issue #3 claims ~51): #{blank_meaning.size}"
+    blank_meaning.first(20).each { |e| puts "  #{e[:word]}(n#{e[:file_level]})" }
+
+    by_reading = entries.group_by { |e| e[:furigana] }
+    okurigana = by_reading.select do |fur, es|
+      fur.present? &&
+        es.map { |e| e[:word] }.uniq.size > 1 &&
+        es.map { |e| e[:word].gsub(/[\p{Hiragana}\p{Katakana}ー]/, "") }.uniq.size == 1
+    end
+    puts "\n[11] okurigana variants (same reading, same kanji, different kana): #{okurigana.size}"
+    okurigana.first(20).each do |fur, es|
+      puts "  #{fur}: #{es.map do |e|
+        "#{e[:word]}(n#{e[:file_level]})"
+      end.uniq.join(' / ')}"
+    end
   end
 end

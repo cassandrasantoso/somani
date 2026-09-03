@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_02_113938) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_03_033923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -97,6 +97,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_02_113938) do
     t.text "meaning"
     t.string "reading"
     t.datetime "updated_at", null: false
+    t.index ["entry_type", "content"], name: "index_jlpt_entries_on_entry_type_and_content"
   end
 
   create_table "messages", force: :cascade do |t|
