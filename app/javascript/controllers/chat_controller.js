@@ -1,40 +1,89 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["loader"]
+  static targets = ["loader", "messages"]
+
+  connect() {
+    this.observer = new MutationObserver((mutations) => {
+      const assistantWasAdded = mutations.some((mutation) =>
+        [...mutation.addedNodes].some((node) => {
+          if (!(node instanceof HTMLElement)) return false
+
+          return (
+            node.matches?.(".message-row--assistant") ||
+            node.querySelector?.(".message-row--assistant") ||
+            node.matches?.(".message--assistant") ||
+            node.querySelector?.(".message--assistant")
+          )
+        })
+      )
+
+      if (assistantWasAdded) {
+        this.hideLoader()
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.scrollToBottom()
+          })
+        })
+      }
+    })
+
+    this.observer.observe(this.messagesTarget, {
+      childList: true,
+      subtree: true
+    })
+  }
+
+  disconnect() {
+    this.observer?.disconnect()
+  }
 
   showLoader() {
     this.loaderTarget.hidden = false
   }
 
+  hideLoader() {
+    this.loaderTarget.hidden = true
+  }
+
+  scrollToBottom() {
+    const messages = this.messagesTarget.querySelectorAll(".message-row")
+    const lastMessage = messages[messages.length - 1]
+
+    lastMessage?.scrollIntoView({
+      behavior: "smooth",
+      block: "end"
+    })
+  }
+
   handleStream(event) {
     const stream = event.target
 
-    // The goal banner was just replaced (goal reached, or dismissed via
-    // "Keep going") — scroll it into view since the user may be mid-scroll
-    // reading earlier messages and would otherwise miss it entirely.
     if (stream.getAttribute("target") === "goal-banner") {
       requestAnimationFrame(() => {
         const bar = document.querySelector("#goal-banner .goal-bar")
-        if (bar) bar.scrollIntoView({ behavior: "smooth", block: "nearest" })
+
+        if (bar) {
+          bar.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+          })
+        }
       })
-      return
-    }
-
-    // Only care about Turbo streams adding messages
-    if (stream.getAttribute("target") !== "messages") return
-
-    const template = stream.templateElement
-
-    // Check whether the incoming message is an AI message
-    const assistantMessage = template.content.querySelector(".message--assistant")
-
-    if (assistantMessage) {
-      this.hideLoader()
     }
   }
 
   hideLoader() {
     this.loaderTarget.hidden = true
+  }
+
+  scrollToBottom() {
+    const lastMessage = this.messagesTarget.lastElementChild
+
+    lastMessage?.scrollIntoView({
+      behavior: "smooth",
+      block: "end"
+    })
   }
 }
