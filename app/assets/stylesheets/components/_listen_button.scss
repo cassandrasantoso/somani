@@ -1,0 +1,44 @@
+.btn-audio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  padding: 0.5rem 0.85rem;
+
+  border: 1px solid #d9d4cc;
+  border-radius: 999px;
+
+  background: white;
+  color: var(--text);
+
+  font-size: 0.82rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &.is-playing {
+    background: var(--sage);
+    color: white;
+    border-color: var(--sage);
+
+    box-shadow:
+      0 0 0 4px rgba(120, 150, 125, 0.15),
+      0 5px 14px rgba(0, 0, 0, 0.1);
+  }
+
+  &.is-paused {
+    background: #f5f2ec;
+    border-color: var(--sage);
+    color: var(--sage);
+  }
+}

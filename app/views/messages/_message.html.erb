@@ -7,8 +7,19 @@
   <div class="message message--<%= message.role %>" id="<%= dom_id(message) %>">
   <% if message.role == "assistant" %>
     <%# story 5: audio plays; story 6: text starts blurred %>
-    <span data-controller="audio-player" data-audio-player-url-value="<%= audio_message_path(message) %>">
-      <button type="button" data-action="audio-player#play" class="btn-audio">▶ Listen</button>
+    <span
+      data-controller="audio-player"
+      data-audio-player-url-value="<%= audio_message_path(message) %>">
+
+      <button
+        type="button"
+        data-action="audio-player#toggle"
+        data-audio-player-target="button"
+        class="btn-audio">
+
+        <span data-audio-player-target="icon">▶</span>
+        <span data-audio-player-target="label">Listen</span>
+      </button>
     </span>
 
     <p class="blurred" data-blur-target="text">
