@@ -7,11 +7,11 @@ center.chat-form {
   align-items: center;
   gap: 0.5rem;
   width: 100%;
-  height: 2.75rem;
+  min-height: 2.75rem;
   padding: 0.25rem 0.3rem 0.25rem 0.9rem;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 9px;
   box-shadow: 0 4px 15px -8px rgba(31, 50, 72, 0.3);
 }
 
@@ -27,14 +27,15 @@ center.chat-form {
   width: 100%;
   height: 2rem;
   min-height: 2rem;
+  max-height: 3.5rem; // ~2 lines (line-height 1.5rem x 2 + padding)
   line-height: 1.5rem;
   margin: 0;
   padding: 0.25rem 0;
   border: none;
-  border-radius: 999px;
   background: transparent;
   box-shadow: none;
   resize: none;
+  overflow-y: auto;
 }
 
 .chat-form__field .form-control:focus {
