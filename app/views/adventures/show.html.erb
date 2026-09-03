@@ -28,7 +28,7 @@
 
   <%= turbo_stream_from @adventure %>
 
-  <div id="messages" data-controller="blur">
+  <div id="messages" data-controller="blur" data-chat-target="messages">
     <%= render @messages %>
   </div>
 

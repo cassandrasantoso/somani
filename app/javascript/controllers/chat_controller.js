@@ -1,11 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["loader", "input"]
+  static targets = ["loader", "input", "messages"]
 
-  showLoader() {
-    this.loaderTarget.hidden = false
+  connect() {
+    this.scrollToBottom(false)
   }
+
+   showLoader() {
+     this.loaderTarget.hidden = false
+   }
 
   autoResize() {
     const input = this.inputTarget
@@ -27,18 +31,35 @@ export default class extends Controller {
           })
         }
       })
+      return
     }
+
+    // Only care about Turbo streams adding messages
+    if (stream.getAttribute("target") !== "messages") return
+
+    const template = stream.templateElement
+    const assistantMessage = template.content.querySelector(".message--assistant")
+
+    if (assistantMessage) {
+      this.hideLoader()
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.scrollToBottom()
+      })
+    })
   }
 
   hideLoader() {
     this.loaderTarget.hidden = true
   }
 
-  scrollToBottom() {
+  scrollToBottom(smooth = true) {
     const lastMessage = this.messagesTarget.lastElementChild
 
     lastMessage?.scrollIntoView({
-      behavior: "smooth",
+      behavior: smooth ? "smooth" : "auto",
       block: "end"
     })
   }

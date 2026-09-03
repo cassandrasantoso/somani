@@ -187,7 +187,7 @@
   margin: 0.5rem 0;
   color: var(--text);
   font-family: var(--font-ja);
-  font-size: 0.85rem;
+  font-size: 1rem;
   line-height: 1.7;
 }
 
@@ -253,14 +253,7 @@
 .message--user p {
   margin: 0;
   color: var(--text);
-  font-size: 0.85rem;
-  line-height: 1.7;
-}
-
-.message--assistant p {
-  margin: 0.5rem 0;
-  color: var(--text);
-  font-family: var(--font-ja);
+  font-size: 1rem;
   line-height: 1.7;
 }
 
@@ -331,7 +324,7 @@
 
 .msg-feedback__summary {
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--navy);
   list-style: none;
@@ -345,7 +338,7 @@
 
 .msg-feedback__assessment {
   margin: 0.6rem 0 0.5rem;
-  font-size: 0.85rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--text);
 }
@@ -366,7 +359,7 @@
   border: 1px solid rgba(31, 50, 72, 0.1);
   box-shadow: 0 2px 8px rgba(22, 40, 61, 0.08);
   color: var(--text);
-  font-size: 0.82rem;
+  font-size: 1rem;
   line-height: 1.5;
 }
 
@@ -399,7 +392,7 @@
 .msg-feedback__better {
   font-family: var(--font-ja);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--navy);
 }
 
@@ -407,7 +400,7 @@
   margin: 0.5rem 0 0;
   padding-top: 0.5rem;
   border-top: 1px solid rgba(31, 50, 72, 0.1);
-  font-size: 0.78rem;
+  font-size: 1rem;
   line-height: 1.55;
   color: var(--text);
   opacity: 0.85;
@@ -420,7 +413,7 @@ p.msg-feedback__coherence {
   margin: 0 0 0.4rem;
   padding: 0.5rem 0.7rem;
   border-radius: 0.6rem;
-  font-size: 0.75rem;
+  font-size: 1rem;
   line-height: 1.5;
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(31, 50, 72, 0.1);
