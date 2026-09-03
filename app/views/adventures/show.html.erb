@@ -85,15 +85,33 @@
       </div>
 
       <div class="adventure-show__complete-actions">
-        <%= link_to "See what you learned", saved_words_path(adventure_id: @adventure.id),
-                    class: "adventure-show__complete-home" %>
-        <%= link_to "Back to home", root_path, class: "adventure-show__complete-home" %>
 
-        <% if policy(@adventure).destroy? %>
-          <%= button_to "Delete adventure", @adventure, method: :delete,
-                        data: { turbo_confirm: "Delete this adventure?" },
-                        class: "adventure-show__complete-delete" %>
+        <%= link_to saved_words_path(adventure_id: @adventure.id),
+                    class: "adventure-show__complete-review" do %>
+
+          <span class="adventure-show__complete-review-icon">
+            <i class="fa-solid fa-book-open"></i>
+          </span>
+
+          <span class="adventure-show__complete-review-text">
+            <span class="adventure-show__complete-review-label">
+              YOUR RESULTS
+            </span>
+
+            <span class="adventure-show__complete-review-title">
+              Review what you learned
+            </span>
+          </span>
+
+          <i class="fa-solid fa-chevron-right adventure-show__complete-review-arrow"></i>
+
         <% end %>
+
+        <%= link_to root_path, class: "adventure-show__complete-home" do %>
+          <i class="fa-solid fa-house"></i>
+          <span>Back to home</span>
+        <% end %>
+
       </div>
     </div>
   <% end %>

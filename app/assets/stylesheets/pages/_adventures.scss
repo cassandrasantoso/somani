@@ -847,126 +847,277 @@ p.msg-feedback__coherence--off_topic {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+
   margin: 0;
-  background: linear-gradient(160deg, var(--sage) 0%, var(--secondary-accent) 100%);
+
+  background: linear-gradient(
+    160deg,
+    var(--sage) 0%,
+    var(--secondary-accent) 100%
+  );
+
   border: 3px solid var(--gold);
   border-radius: 1rem;
   overflow: hidden;
+
   box-shadow:
     inset 0 0 0 1px rgba(246, 238, 220, 0.35),
     0 4px 12px rgba(31, 50, 72, 0.18);
 }
+
+
+/* COMPLETE HEADER */
 
 .adventure-show__complete-body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   gap: 0.3rem;
+
   text-align: center;
+
   padding: 1.1rem 1.5rem;
 }
 
 .adventure-show__complete-title {
   margin: 0;
+
   color: var(--gold-light);
+
   font-weight: 700;
   font-size: 1.2rem;
   letter-spacing: 0.02em;
+
   text-shadow: 0 1px 1px rgba(22, 40, 61, 0.3);
 }
 
 .adventure-show__complete-subtitle {
   margin: 0;
+
   color: var(--cream);
+
   font-weight: 600;
   font-size: 0.8rem;
+
   opacity: 0.9;
 }
 
+
+/* COMPLETE ACTIONS */
+
 .adventure-show__complete-actions {
   display: flex;
-  gap: 0.6rem;
-  margin: 0 1rem 1rem;
+  flex-direction: column;
+
+  gap: 0.75rem;
+
+  width: 100%;
+
+  margin: 0;
+  padding: 0 1rem 1rem;
+
+  box-sizing: border-box;
 }
 
-.adventure-show__complete-actions > a,
-.adventure-show__complete-actions > form {
-  flex: 1 1 0;
-  margin: 0;
+
+/* REVIEW BUTTON */
+
+.adventure-show__complete-review {
+  display: flex;
+  align-items: center;
+
+  gap: 0.85rem;
+
+  width: 100%;
+
+  padding: 1rem 1.1rem;
+
+  box-sizing: border-box;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 1.25rem;
+
+  color: var(--cream);
+  text-decoration: none;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    border-color 0.15s ease;
 }
+
+.adventure-show__complete-review:hover {
+  color: var(--cream);
+
+  background: rgba(255, 255, 255, 0.22);
+
+  border-color: rgba(255, 255, 255, 0.65);
+
+  transform: translateY(-2px);
+}
+
+.adventure-show__complete-review-icon {
+  width: 3rem;
+  height: 3rem;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  border-radius: 0.9rem;
+
+  color: white;
+
+  font-size: 1.2rem;
+}
+
+.adventure-show__complete-review-text {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.1rem;
+
+  flex: 1;
+  min-width: 0;
+
+  text-align: left;
+}
+
+.adventure-show__complete-review-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+
+  opacity: 0.8;
+}
+
+.adventure-show__complete-review-title {
+  font-size: 1rem;
+  font-weight: 700;
+
+  line-height: 1.25;
+}
+
+.adventure-show__complete-review-arrow {
+  flex-shrink: 0;
+
+  font-size: 0.9rem;
+
+  transition: transform 0.15s ease;
+}
+
+.adventure-show__complete-review:hover
+.adventure-show__complete-review-arrow {
+  transform: translateX(3px);
+}
+
+
+/* BACK TO HOME */
 
 .adventure-show__complete-home {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.5rem;
+
   width: 100%;
-  text-align: center;
-  padding: 0.75rem;
-  border: 2px solid var(--cream);
-  border-radius: 999px;
+
+  padding: 0.8rem 1rem;
+
+  box-sizing: border-box;
+
   background: transparent;
+
+  border: 2px solid rgba(246, 238, 220, 0.8);
+  border-radius: 1.25rem;
+
   color: var(--cream);
+
   font-weight: 600;
+  font-size: 0.9rem;
+
+  text-decoration: none;
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.adventure-show__complete-home i {
+  flex-shrink: 0;
+
   font-size: 0.85rem;
-  transition: background 0.15s ease, transform 0.15s ease;
+
+  color: var(--cream);
 }
 
 .adventure-show__complete-home:hover {
   background: rgba(246, 238, 220, 0.15);
+
+  border-color: var(--cream);
+
   color: var(--cream);
+
   transform: translateY(-1px);
 }
 
-.adventure-show__complete-delete {
-  display: block;
-  width: 100%;
-  margin: 0;
-  text-align: center;
-  padding: 0.75rem;
-  border: 2px solid var(--red-dark);
-  border-radius: 999px;
-  background-color: var(--red);
-  color: white;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(31, 50, 72, 0.25);
-  transition: background 0.15s ease, transform 0.15s ease;
-}
 
-.adventure-show__complete-delete:hover {
-  background-color: var(--red-dark);
-  color: white;
-  transform: translateY(-1px);
-}
+/* MOBILE */
 
-@media (min-width: 640px) {
-  body:has(.adventure-show) {
-    background: var(--card);
+@media (max-width: 576px) {
+  .adventure-show__complete-body {
+    padding: 1rem 1rem 0.9rem;
   }
 
-  .adventure-show {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding: 1.5rem 2rem 2rem;
-    border: 1px solid var(--hairline);
-    border-radius: 1.25rem;
-    box-shadow: 0 20px 45px -20px rgba(31, 50, 72, 0.25);
+  .adventure-show__complete-title {
+    font-size: 1.15rem;
   }
 
-  .adventure-show__hero-img {
-    min-height: 13rem;
-    height: 13rem;
+  .adventure-show__complete-subtitle {
+    font-size: 0.78rem;
   }
 
-  #messages {
-    overflow-y: visible;
-  }
-}
+  .adventure-show__complete-actions {
+    gap: 0.65rem;
 
-@include media-breakpoint-up(lg) {
-  .adventure-show {
-    max-width: 700px;
-    margin-top: 2.5rem;
-    padding: 2rem 2.5rem 2.5rem;
+    padding: 0 0.75rem 0.85rem;
+  }
+
+  .adventure-show__complete-review {
+    gap: 0.7rem;
+
+    padding: 0.85rem 0.9rem;
+  }
+
+  .adventure-show__complete-review-icon {
+    width: 2.75rem;
+    height: 2.75rem;
+
+    font-size: 1.1rem;
+  }
+
+  .adventure-show__complete-review-label {
+    font-size: 0.6rem;
+  }
+
+  .adventure-show__complete-review-title {
+    font-size: 0.9rem;
+  }
+
+  .adventure-show__complete-home {
+    padding: 0.75rem 1rem;
+
+    font-size: 0.85rem;
   }
 }
