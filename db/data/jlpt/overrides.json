@@ -7,7 +7,8 @@
   {
     "content": "宜しく",
     "level": "N3",
-    "note": "jisho: [n3, n1]; rare kanji form of よろしく"
+    "note": "jisho: [n3, n1]; rare kanji form of よろしく",
+    "kana_preferred": true
   },
   {
     "content": "素敵",
@@ -17,7 +18,8 @@
   {
     "content": "お祖母さん",
     "level": "N5",
-    "note": "jisho: [n1, n5]; everyday word, rare kanji spelling"
+    "note": "jisho: [n1, n5]; everyday word, rare kanji spelling",
+    "kana_preferred": true
   },
   {
     "content": "尻尾",
@@ -27,12 +29,14 @@
   {
     "content": "其れに",
     "level": "N4",
-    "note": "jisho: [n4, n1]; rare kanji form of それに"
+    "note": "jisho: [n4, n1]; rare kanji form of それに",
+    "kana_preferred": true
   },
   {
     "content": "其の儘",
     "level": "N3",
-    "note": "jisho: [n3, n1]; rare kanji form of そのまま"
+    "note": "jisho: [n3, n1]; rare kanji form of そのまま",
+    "kana_preferred": true
   },
   {
     "content": "何処か",
