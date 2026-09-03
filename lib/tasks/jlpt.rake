@@ -170,4 +170,34 @@ namespace :jlpt do
       end.uniq.join(' / ')}"
     end
   end
+
+  desc "Probe jisho for N seeded words. Respects robots.txt Crawl-delay: 40."
+  task :probe_jisho, [:count] => :environment do |_t, args|
+    require "net/http"
+    require "uri"
+
+    count  = (args[:count] || 10).to_i
+    sample = JlptEntry.words.where(level: "N1").order("RANDOM()").limit(count)
+
+    sample.each_with_index do |entry, i|
+      uri = URI("https://jisho.org/api/v1/search/words?keyword=#{URI.encode_www_form_component(entry.content)}")
+      req = Net::HTTP::Get.new(uri)
+      # PUT A REAL CONTACT ADDRESS HERE before running.
+      req["User-Agent"] = "Somani/1.0 (JLPT level audit; contact: you@example.com)"
+
+      body = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }.body
+      data = JSON.parse(body)["data"] || []
+
+      hit = data.find do |d|
+        Array(d["japanese"]).any? { |j| j["word"] == entry.content || j["reading"] == entry.content }
+      end
+
+      tags   = hit ? Array(hit["jlpt"]) : []
+      common = hit ? hit["is_common"] : nil
+      puts format("%-12s %-10s seed=%-3s jisho=%-26s common=%s",
+                  entry.content, entry.reading, entry.level, tags.inspect, common.inspect)
+
+      sleep 40 unless i == sample.size - 1
+    end
+  end
 end
