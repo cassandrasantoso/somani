@@ -18,32 +18,34 @@ class JishoLevelVerifier
   def call
     return Result.new(status: :skipped) if @entry.verified_at.present?
 
-    tags    = fetch_tags
+    hit  = fetch_hit
+    tags = hit ? Array(hit["jlpt"]) : []
+
+    # JMdict's "uk" marker as jisho renders it. A factual usage note, independent
+    # of any JLPT reconstruction: the word is normally written in kana, so the
+    # kanji spelling is harder than the word itself (為さる vs なさる).
+    kana = hit ? Array(hit["senses"]).any? { |s| Array(s["tags"]).include?("Usually written using kana alone") } : false
+
     easiest = tags.filter_map { |t| t[TAG, 1]&.to_i }.max
 
     if easiest.blank?
-      # Mark it seen so a re-run doesn't keep re-querying words jisho has no
-      # JLPT data for. Level and level_source are left exactly as they were.
-      @entry.update!(verified_at: Time.current)
+      @entry.update!(verified_at: Time.current, kana_preferred: kana)
       return Result.new(status: :no_data, tags: tags)
     end
 
-    # jisho returns every level tag on the JMdict entry, which groups surface
-    # variants. The easiest belongs to the common form — the same "easiest wins"
-    # rule jlpt:import already applies across files. Confirmed correct by
-    # jlpt:probe_variants: 6/10 multi-tag entries had kept the hardest.
     corrected = "N#{easiest}"
     was       = @entry.level
 
     if corrected == was
-      @entry.update!(verified_at: Time.current, level_source: "jisho")
+      @entry.update!(verified_at: Time.current, level_source: "jisho", kana_preferred: kana)
       Result.new(status: :unchanged, from: was, to: was, tags: tags)
     else
       @entry.update!(
         original_level: @entry.original_level || was,
         level: corrected,
         level_source: "jisho",
-        verified_at: Time.current
+        verified_at: Time.current,
+        kana_preferred: kana
       )
       Result.new(status: :corrected, from: was, to: corrected, tags: tags)
     end
@@ -51,7 +53,7 @@ class JishoLevelVerifier
 
   private
 
-  def fetch_tags
+  def fetch_hit
     uri = URI("#{ENDPOINT}?keyword=#{URI.encode_www_form_component(@entry.content)}")
     req = Net::HTTP::Get.new(uri)
     req["User-Agent"] = USER_AGENT
@@ -64,10 +66,8 @@ class JishoLevelVerifier
 
     # Exact-form match, NOT data[0] — querying 宜しく returns four entries and the
     # first is not the right one.
-    hit = data.find do |d|
+    data.find do |d|
       Array(d["japanese"]).any? { |j| j["word"] == @entry.content || j["reading"] == @entry.content }
     end
-
-    hit ? Array(hit["jlpt"]) : []
   end
 end
