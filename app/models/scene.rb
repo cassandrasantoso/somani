@@ -13,7 +13,7 @@ class Scene < ApplicationRecord
   # returns nil - and the caller assigns the result straight to a required
   # belongs_to.
   def self.nearest_to_words(words)
-    text = words.map(&:surface).join(" ")
+    text = words.map(&:surface).sort.join(" ")
 
     query_embedding = EmbeddingService.generate(text)
 
