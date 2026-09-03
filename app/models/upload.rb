@@ -44,7 +44,7 @@ class Upload < ApplicationRecord
   end
 
   def highest_word_level
-    saved_words.map { |word| SavedWord::LEVEL_ENUM[word.level.to_sym] }.min
+    saved_words.where(level_source: "jlpt").filter_map { |w| SavedWord::LEVEL_ENUM[w.level.to_s.to_sym] }.min
   end
 
   # The scene-less adventure created at upload time (see UploadsController#create)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_01_025602) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -93,10 +93,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_025602) do
     t.string "content"
     t.datetime "created_at", null: false
     t.string "entry_type"
+    t.boolean "kana_preferred"
     t.string "level"
+    t.string "level_source"
     t.text "meaning"
+    t.string "original_level"
     t.string "reading"
     t.datetime "updated_at", null: false
+    t.datetime "verified_at"
+    t.index ["entry_type", "content"], name: "index_jlpt_entries_on_entry_type_and_content"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -109,11 +114,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_01_025602) do
   end
 
   create_table "saved_words", force: :cascade do |t|
+    t.string "category"
     t.datetime "created_at", null: false
     t.text "explanation"
     t.bigint "jlpt_entry_id"
     t.datetime "last_reviewed_at"
     t.string "level"
+    t.string "level_source"
     t.text "meaning"
     t.datetime "next_review_at"
     t.string "reading"

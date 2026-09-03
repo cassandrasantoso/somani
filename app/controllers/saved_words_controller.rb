@@ -56,6 +56,11 @@ class SavedWordsController < ApplicationController
       reading: saved_word_params[:reading].presence || reference&.reading,
       meaning: saved_word_params[:meaning].presence || reference&.meaning,
       level: saved_word_params[:level].presence || reference&.level,
+      level_source: if saved_word_params[:level].presence
+                      "user"
+                    else
+                      (reference ? "jlpt" : nil)
+                    end,
       jlpt_entry: reference
     )
 
@@ -63,6 +68,7 @@ class SavedWordsController < ApplicationController
       UploadedWord.find_or_create_by!(upload: @upload, saved_word: @saved_word)
       apply_word_target(@saved_word)
       GenerateWordExplanationJob.perform_later(@saved_word) if @saved_word.explanation.blank?
+      VerifyJlptLevelJob.perform_later(reference) if reference && reference.verified_at.nil?
       notice = "「#{@saved_word.surface}」 saved."
       @saved_words = @upload.saved_words
       @matched_entries = @upload.matched_jlpt_entries
@@ -88,7 +94,11 @@ class SavedWordsController < ApplicationController
 
   def update
     authorize @saved_word
-    if @saved_word.update(saved_word_params)
+
+    attrs = saved_word_params
+    attrs = attrs.merge(level_source: "user") if attrs[:level].present?
+
+    if @saved_word.update(attrs)
       redirect_to saved_words_path, notice: "「#{@saved_word.surface}」updated."
     else
       render :edit, status: :unprocessable_entity
@@ -115,19 +125,20 @@ class SavedWordsController < ApplicationController
 
   private
 
+  def lookup_entry(surface)
+    return if surface.blank?
+
+    JlptEntry.find_by(content: surface, entry_type: "word") ||
+      JlptEntry.find_by(reading: surface, entry_type: "word") ||
+      lookup_normalized_entry(surface)
+  end
+
   def set_saved_word
     @saved_word = current_user.saved_words.find(params[:id])
   end
 
   def saved_word_params
     params.require(:saved_word).permit(:surface, :reading, :level, :meaning)
-  end
-
-  def lookup_entry(surface)
-    return if surface.blank?
-
-    JlptEntry.find_by(content: surface, entry_type: "word") ||
-      JlptEntry.find_by(reading: surface, entry_type: "word")
   end
 
   # The word's practice target for this upload's (not yet started) adventure —
@@ -139,5 +150,16 @@ class SavedWordsController < ApplicationController
     adventure = @upload.draft_adventure || @upload.adventures.create!(status: "active")
     adventure.word_goals.find_or_initialize_by(saved_word: saved_word)
              .update!(target: target.clamp(WordGoal::RANGE))
+  end
+
+  def lookup_normalized_entry(surface)
+    dictionary_form = WordNormalizer.call(surface)
+    return if dictionary_form.blank? || dictionary_form == surface
+
+    JlptEntry.find_by(content: dictionary_form, entry_type: "word") ||
+      JlptEntry.find_by(reading: dictionary_form, entry_type: "word")
+  rescue StandardError => e
+    Rails.logger.error("WordNormalizer failed for #{surface}: #{e.message}")
+    nil
   end
 end

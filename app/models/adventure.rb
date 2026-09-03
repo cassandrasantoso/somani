@@ -138,7 +138,7 @@ class Adventure < ApplicationRecord
 
     generated_title = generate_title_with_gemini(prompt)
 
-    update!(title: generated_title)
+    update!(title: generated_title) if generated_title.present?
   end
 
   def active? = status == "active"
@@ -202,8 +202,9 @@ class Adventure < ApplicationRecord
         .dig("candidates", 0, "content", "parts", 0, "text")
         .to_s
         .strip
-    rescue StandardError => _e
-      "Unable to generate title!"
+    rescue StandardError => e
+      Rails.logger.error("Adventure##{id} title generation failed: #{e.class}: #{e.message}")
+      nil
     end
   end
 end
