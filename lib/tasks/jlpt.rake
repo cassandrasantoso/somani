@@ -200,4 +200,44 @@ namespace :jlpt do
       sleep 40 unless i == sample.size - 1
     end
   end
+
+  desc "Probe jisho for N1 kanji entries whose kana form is seeded at an easier level."
+  task :probe_variants, [:count] => :environment do |_t, args|
+    require "net/http"
+    require "uri"
+
+    count = (args[:count] || 10).to_i
+
+    # N1 entries written differently from their reading, where that reading
+    # also exists as its own entry at an easier level — the 宜しく/よろしく shape.
+    sample = JlptEntry.words
+                      .where(level: "N1")
+                      .where("content <> reading")
+                      .where(reading: JlptEntry.words.where.not(level: "N1").select(:content))
+                      .order("RANDOM()")
+                      .limit(count)
+
+    puts "candidates in this class: #{JlptEntry.words.where(level: 'N1').where('content <> reading').where(reading: JlptEntry.words.where.not(level: 'N1').select(:content)).count}"
+
+    sample.each_with_index do |entry, i|
+      uri = URI("https://jisho.org/api/v1/search/words?keyword=#{URI.encode_www_form_component(entry.content)}")
+      req = Net::HTTP::Get.new(uri)
+      # PUT A REAL CONTACT ADDRESS HERE before running.
+      req["User-Agent"] = "Somani/1.0 (JLPT level audit; contact: you@example.com)"
+
+      body = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |http| http.request(req) }.body
+      data = JSON.parse(body)["data"] || []
+
+      hit = data.find do |d|
+        Array(d["japanese"]).any? { |j| j["word"] == entry.content || j["reading"] == entry.content }
+      end
+
+      tags     = hit ? Array(hit["jlpt"]) : []
+      kana_row = JlptEntry.words.find_by(content: entry.reading)
+      puts format("%-14s %-12s seed=%-3s kana_form=%-3s jisho=%s",
+                  entry.content, entry.reading, entry.level, kana_row&.level || "-", tags.inspect)
+
+      sleep 40 unless i == sample.size - 1
+    end
+  end
 end
