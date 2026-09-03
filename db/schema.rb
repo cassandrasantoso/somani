@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_03_033923) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_03_051535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -94,9 +94,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_033923) do
     t.datetime "created_at", null: false
     t.string "entry_type"
     t.string "level"
+    t.string "level_source"
     t.text "meaning"
+    t.string "original_level"
     t.string "reading"
     t.datetime "updated_at", null: false
+    t.datetime "verified_at"
     t.index ["entry_type", "content"], name: "index_jlpt_entries_on_entry_type_and_content"
   end
 
