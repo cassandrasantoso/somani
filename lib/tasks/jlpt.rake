@@ -45,7 +45,9 @@ namespace :jlpt do
         entry = JlptEntry.find_by(content: o["content"], entry_type: "word")
         next missed << o["content"] unless entry
 
-        entry.update!(level: o["level"])
+        attrs = { level: o["level"] }
+        attrs[:kana_preferred] = o["kana_preferred"] unless o["kana_preferred"].nil?
+        entry.update!(attrs)
         applied += 1
       end
       puts "applied #{applied} overrides"
