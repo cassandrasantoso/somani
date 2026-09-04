@@ -1,6 +1,6 @@
 <% due_page = action_name == "due" %>
 <% recap = @adventure.present? %>
-
+<div class="my-words">
   <div class="my-words__header">
     <h1>
       <% if recap %>
@@ -152,6 +152,7 @@
           No words saved yet. Words you save from uploads will show up here.
         <% end %>
       </p>
+
     </div>
   <% end %>
 </div>
