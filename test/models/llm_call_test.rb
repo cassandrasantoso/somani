@@ -1,7 +1,7 @@
 require "test_helper"
 
 class LlmCallTest < ActiveSupport::TestCase
-  test "records usage for every GeminiClient call" do
+  test "records usage for every Llm call" do
     original_new = Gemini.method(:new)
     fake = Class.new do
       def generate_content(_payload)
@@ -13,7 +13,7 @@ class LlmCallTest < ActiveSupport::TestCase
 
     text = nil
     assert_difference "LlmCall.count", 1 do
-      text = GeminiClient.generate_text("Say hello")
+      text = Llm.generate_text("Say hello")
     end
 
     assert_equal "こんにちは", text

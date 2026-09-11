@@ -1,6 +1,11 @@
 class RespondToMessageJob < ApplicationJob
   queue_as :default
 
+  # Caps the request size for very long adventures; the append-only
+  # conversation structure keeps every request's prefix identical to the
+  # previous turn's request, which is what implicit caching needs to hit.
+  HISTORY_LIMIT = 30
+
   retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
   discard_on ActiveJob::DeserializationError
 
@@ -26,18 +31,15 @@ class RespondToMessageJob < ApplicationJob
     GenerateAudioJob.perform_later(reply)
     GenerateFuriganaJob.perform_later(reply)
 
-    # after the reply: that's what the user is waiting for. #recheck rescues
-    # internally so a failed word check can't take this job down.
-    CreditWordUsage.recheck(message)
-    # story 8: grade what the learner wrote, out of band. Queued behind the
-    # reply rather than alongside it, so the two don't race for the same rate-limited key.
+    # story 8: grade what the learner wrote, out of band — the review also
+    # credits the practice words the deterministic matcher couldn't reach.
     ReviewMessageJob.perform_later(message)
   end
 
   private
 
   def stream_reply(adventure, mode, stream_id)
-    GeminiClient.stream_conversation(
+    Llm.stream_conversation(
       conversation_contents(adventure),
       system_instruction: system_prompt(adventure, mode)
     ) do |_delta, text|
@@ -50,12 +52,18 @@ class RespondToMessageJob < ApplicationJob
     end
   rescue StandardError => e
     Rails.logger.warn("RespondToMessageJob stream failed, replying whole: #{e.class}: #{e.message}")
-    GeminiClient.generate_conversation(
+    Llm.generate_conversation(
       conversation_contents(adventure),
       system_instruction: system_prompt(adventure, mode)
     )
   end
 
+  # The system prompt stays byte-identical for the whole adventure (persona,
+  # scene, name, difficulty) so Gemini's implicit prompt caching can hit on
+  # every turn: the request prefix — system instruction plus the shared
+  # conversation history — matches the previous turn's request exactly. The
+  # one volatile piece, the practice-word brief, rides on the newest user turn
+  # inside conversation_contents instead.
   def system_prompt(adventure, mode)
     scene     = adventure.scene
     character = scene.character
@@ -70,8 +78,6 @@ class RespondToMessageJob < ApplicationJob
       #{difficulty_instructions(mode)}
 
       #{name_guidance(adventure.user)}
-
-      #{vocabulary_guidance(adventure)}
 
       Stay fully in character. Reply only in natural Japanese dialogue, continuing
       the scene based on what the user just said. Keep responses concise
@@ -163,11 +169,20 @@ class RespondToMessageJob < ApplicationJob
   end
 
   def conversation_contents(adventure)
-    adventure.messages.chronological.map do |msg|
-      {
-        role: msg.role == "assistant" ? "model" : "user",
-        parts: [{ text: msg.body }]
-      }
+    contents = adventure.messages.chronological.last(HISTORY_LIMIT).map do |msg|
+      { role: msg.role == "assistant" ? "model" : "user", parts: [{ text: msg.body }] }
     end
+
+    guidance = vocabulary_guidance(adventure)
+    return contents if guidance.blank? || contents.empty?
+
+    last_user = contents.reverse.find { |content| content[:role] == "user" }
+    if last_user
+      last_user[:parts] << { text: guidance }
+    else
+      contents << { role: "user", parts: [{ text: guidance }] }
+    end
+
+    contents
   end
 end

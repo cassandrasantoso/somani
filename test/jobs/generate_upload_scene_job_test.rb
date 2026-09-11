@@ -39,7 +39,7 @@ class GenerateUploadSceneJobTest < ActiveSupport::TestCase
     embedding = Array.new(EmbeddingService::DIMENSIONS) { 0.1 }
 
     stub_class(EmbeddingService, :generate, embedding) do
-      stub_class(GeminiClient, :generate_json, payload) do
+      stub_class(Llm, :generate_json, payload) do
         GenerateUploadSceneJob.perform_now(@upload)
       end
     end

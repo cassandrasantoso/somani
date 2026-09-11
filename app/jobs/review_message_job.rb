@@ -24,9 +24,11 @@ class ReviewMessageJob < ApplicationJob
     return unless message.role == "user"
     return if message.adventure.draft?         # no review → stays pending
     return if message.feedback.present?
-    return if message.body.to_s.strip.length < MIN_LENGTH && message.word_usages.none?
+    return if message.body.to_s.strip.length < MIN_LENGTH &&
+              message.word_usages.none? &&
+              creditable_words(message).empty?
 
-    data = GeminiClient.generate_json(prompt(message))
+    data = Llm.generate_json(prompt(message))
     return if data.blank?                      # no review → stays pending
     return unless data.is_a?(Hash)
 
@@ -40,6 +42,7 @@ class ReviewMessageJob < ApplicationJob
 
     index_corrections(feedback)
     revoke_for_disconnection(feedback)
+    credit_reported_words(message, data)
     confirm_pending(message)
 
     broadcast(message)
@@ -145,6 +148,7 @@ class ReviewMessageJob < ApplicationJob
       "coherence": "responsive, partial, off_topic, or null",
       "coherence_note": "one short sentence naming what was asked and what
         they answered — only when not responsive, otherwise null",
+      "used_practice_words": ["the practice words they actually used"],
       "corrections": [
         {"kind": "grammar, vocabulary or nuance",
         "wrote": "the exact fragment they wrote",
@@ -171,13 +175,23 @@ class ReviewMessageJob < ApplicationJob
 
   # If they reached for a practice word and fumbled it, fix the usage — don't
   # suggest a cleaner sentence that drops the word. Producing it is the point.
+  # The same list drives used_practice_words: the model both judges the line
+  # and reports which practice words appear in it, which replaces the separate
+  # word-matching call this job used to queue.
   def target_word_note(adventure)
-    words = adventure.target_words.map(&:surface)
+    words = adventure.practice_words(limit: 12)
     return "" if words.empty?
 
     <<~TEXT
-      They are deliberately practising these words: #{words.join('、')}.
+      They are deliberately practising these words: #{words.map(&:surface).join('、')}.
       If one is used imperfectly, correct how it is used but keep the word.
+
+      Separately, report in used_practice_words which of those listed words
+      the learner's writing actually used — count any inflected, conjugated
+      or politeness-shifted form (しました counts as する, 高かった counts as 高い).
+      Do not count a word merely because it shares a kanji with something in
+      the sentence: 銀行 does not count as 行く. Report the exact surfaces as
+      written in the list. Empty array when none were used.
 
       For each correction, set on_practice_word to true when your correction
       changes one of those words or the grammar attached to it — its
@@ -198,6 +212,34 @@ class ReviewMessageJob < ApplicationJob
       "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
       "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
     TEXT
+  end
+
+  def creditable_words(message)
+    adventure = message.adventure
+    already = message.word_usages.pluck(:saved_word_id)
+    adventure.practice_words.reject { |word| already.include?(word.id) }
+  end
+
+  # Words the review itself saw the learner use — the second pass the old
+  # ModelWordMatcher job used to make, now folded into the same call. Only
+  # words that are actually in the practice list can be credited, so a
+  # hallucinated surface is ignored, and insert_all skips duplicates.
+  def credit_reported_words(message, data)
+    reported = Array(data["used_practice_words"]).filter_map { |surface| surface.to_s.strip.presence }
+    return if reported.empty?
+
+    adventure = message.adventure
+    words = creditable_words(message).select { |word| reported.include?(word.surface) }
+    return if words.empty?
+
+    now = Time.current
+    rows = words.map do |word|
+      { adventure_id: adventure.id, saved_word_id: word.id,
+        message_id: message.id, status: "pending",
+        created_at: now, updated_at: now }
+    end
+
+    WordUsage.insert_all(rows, unique_by: %i[message_id saved_word_id])
   end
 
   # Isolated so a bug in the indexer can't be mistaken for a feedback-

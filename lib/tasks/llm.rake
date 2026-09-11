@@ -21,6 +21,8 @@ namespace :llm do
       puts format("  %-24s %-14s %6d calls", model, operation, calls)
     end
 
-    puts format("\nestimated 30-day cost: $%.2f", scope.sum(&:estimated_cost))
+    cached = scope.sum(:cached_tokens)
+    puts format("\ncached tokens (75%% off with implicit caching): %d", cached.to_i)
+    puts format("estimated 30-day cost: $%.2f", scope.sum(&:estimated_cost))
   end
 end

@@ -8,7 +8,8 @@ class GenerateUploadSummaryJob < ApplicationJob
   def perform(upload)
     return if upload.extracted_text.blank?
 
-    upload.update!(summary: GeminiClient.generate_text(summary_prompt(upload.extracted_text)))
+    upload.update!(summary: Llm.generate_text(summary_prompt(upload.extracted_text),
+                                              model: :lite))
     upload.broadcast_summary
     GenerateUploadSceneJob.perform_later(upload)
   end

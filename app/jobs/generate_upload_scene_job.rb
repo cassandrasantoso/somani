@@ -26,7 +26,7 @@ class GenerateUploadSceneJob < ApplicationJob
                    .first
     return if nearest && nearest.neighbor_distance < DEDUP_DISTANCE
 
-    data = GeminiClient.generate_json(scene_prompt(upload, entries))
+    data = Llm.generate_json(scene_prompt(upload, entries), model: :lite)
     return unless valid_payload?(data)
 
     character = Character.create!(

@@ -11,7 +11,7 @@ class WordNormalizer
   # Transport errors propagate, SavedWordsController#lookup_normalized_entry
   # already rescues at the call site.
   def call
-    parsed = GeminiClient.generate_json(prompt, symbolize_names: true)
+    parsed = Llm.generate_json(prompt, symbolize_names: true)
     return nil unless parsed.is_a?(Hash)
 
     parsed[:dictionary_form].to_s.strip.presence

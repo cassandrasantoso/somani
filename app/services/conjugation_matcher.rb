@@ -2,8 +2,8 @@
 # ledger and the correction index. Two definitions would mean the tracker and
 # the corpus disagree about the same sentence.
 #
-# Deterministic first pass. ModelWordMatcher is the paid second pass for the
-# irregulars this cannot reach.
+# Deterministic first pass. The review job's model pass is the paid second
+# pass for the irregulars this can't reach.
 module ConjugationMatcher
   # Bare する and 来る are exact-match only: any string short enough to
   # identify them (し, した, して) also appears in the polite forms of every

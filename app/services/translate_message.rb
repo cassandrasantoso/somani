@@ -9,7 +9,7 @@ class TranslateMessage
   end
 
   def call
-    GeminiClient.generate_text(prompt)
+    Llm.generate_text(prompt)
   end
 
   private

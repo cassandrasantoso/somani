@@ -24,7 +24,7 @@ class ExtractUploadTextJob < ApplicationJob
   def extract_text(upload)
     file = upload.file
 
-    GeminiClient.generate_text(
+    Llm.generate_text(
       extraction_prompt(upload),
       parts: [{ inline_data: { mime_type: file.content_type,
                                data: Base64.strict_encode64(file.download) } }]
