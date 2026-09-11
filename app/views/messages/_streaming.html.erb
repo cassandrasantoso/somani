@@ -1,0 +1,8 @@
+<div class="message-row message-row--assistant" id="<%= stream_id %>">
+  <% if adventure.character.image.attached? %>
+    <%= image_tag adventure.character.image, class: "message-row__avatar", alt: adventure.character.name %>
+  <% end %>
+  <div class="message message--assistant">
+    <p class="blurred"><%= text %><span class="message__cursor" aria-hidden="true">▍</span></p>
+  </div>
+</div>

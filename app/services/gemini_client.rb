@@ -2,6 +2,7 @@ require "gemini-ai"
 
 class GeminiClient
   DEFAULT_MODEL = "gemini-2.5-flash"
+  REQUEST_TIMEOUT = 120
 
   class << self
     def client(model: nil)
@@ -12,8 +13,31 @@ class GeminiClient
           service: "generative-language-api",
           api_key: ENV.fetch("GEMINI_API_KEY")
         },
-        options: { model: resolved }
+        options: {
+          model: resolved,
+          connection: { request: { timeout: REQUEST_TIMEOUT, open_timeout: 10 } }
+        }
       )
+    end
+
+    # Streams a multi-turn conversation. Yields (delta, accumulated_text) per
+    # chunk and returns the full text. Falls over to the caller to rescue —
+    # jobs fall back to generate_conversation when streaming fails.
+    def stream_conversation(contents, system_instruction: nil)
+      payload = { contents: contents }
+      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
+
+      full = +""
+
+      client.stream_generate_content(payload, server_sent_events: true) do |event, _parsed, _raw|
+        delta = event.dig("candidates", 0, "content", "parts", 0, "text").to_s
+        next if delta.empty?
+
+        full << delta
+        yield(delta, +full.dup)
+      end
+
+      full.strip
     end
 
     def generate_text(prompt, system_instruction: nil, parts: [], json: false)

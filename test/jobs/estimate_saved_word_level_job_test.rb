@@ -8,10 +8,13 @@ class EstimateSavedWordLevelJobTest < ActiveSupport::TestCase
   end
 
   def stub_estimator(result)
+    original = WordLevelEstimator.method(:call)
     WordLevelEstimator.define_singleton_method(:call) { |_surface, **| result }
     yield
   ensure
-    WordLevelEstimator.singleton_class.send(:remove_method, :call)
+    WordLevelEstimator.singleton_class.send(:define_method, :call) do |*args, **kwargs, &block|
+      original.call(*args, **kwargs, &block)
+    end
   end
 
   test "grades an unlisted word, learns it as an entry, and queues verification" do
