@@ -82,8 +82,17 @@ class IndexWordCorrections
 
   # Scoped to this message: the learner may have used the word correctly
   # in an earlier turn, and that credit stands.
+  #
+  # A correction only revokes when the practice word's own form changes or
+  # vanishes in the fixed version — producing the word is the point, so a
+  # particle mistake next to a perfectly produced word keeps the credit and
+  # the correction does the teaching instead.
   def revoke_credit(hits)
-    ids = hits.filter_map { |c, word| word.id if c["on_practice_word"] }.uniq
+    ids = hits.filter_map do |correction, word|
+      next unless correction["on_practice_word"]
+
+      word.id if word_form_changed?(correction, word)
+    end.uniq
     return if ids.empty?
 
     changed = @message.word_usages
@@ -97,5 +106,13 @@ class IndexWordCorrections
     @adventure.re_evaluate_goal!
     @adventure.broadcast_tracker
     @adventure.broadcast_goal_banner
+  end
+
+  # Some form of the word appears in the fixed version too, unchanged: the
+  # word itself was produced right and the error was around it. Only a form
+  # that disappears or is replaced counts against the word.
+  def word_form_changed?(correction, word)
+    ConjugationMatcher.match?(correction["wrote"].to_s, word) &&
+      !ConjugationMatcher.match?(correction["better"].to_s, word)
   end
 end

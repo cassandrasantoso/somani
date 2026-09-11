@@ -193,24 +193,24 @@ class ReviewMessageJob < ApplicationJob
       the sentence: 銀行 does not count as 行く. Report the exact surfaces as
       written in the list. Empty array when none were used.
 
-      For each correction, set on_practice_word to true when your correction
-      changes one of those words or the grammar attached to it — its
-      conjugation or form, a する or auxiliary wrongly added to it or missing
-      from it, the particle immediately governing it, or a different word
-      substituted for it.
+      For each correction, set on_practice_word to true only when the
+      practice word's own form is what the correction changes — its
+      conjugation mis-formed, a different word substituted for it, or the
+      word dropped entirely. Set it to false when the word itself is
+      identical in "wrote" and "better" and the real problem is elsewhere
+      in the fragment — including the particles around the word. Producing
+      the word correctly is the learner's goal; a neighboring mistake is a
+      correction, not a reason to take the word away.
 
       For each correction where on_practice_word is true, also set
       practice_word to the exact surface of the practiced word it's about,
       copied exactly from the list above. Set it to null otherwise.
 
-      Set it to false only when the practice word and the grammar attached to
-      it are identical in "wrote" and "better" — the word merely appears
-      inside a fragment whose real problem is elsewhere.
-
       Examples, if 方法 and 食べる were being practised:
       "仕事の方法するのが" → "仕事の方法が"        on_practice_word: true
       "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
       "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
+      "為替のレートを変わりました" → "為替のレートが変わりました"  on_practice_word: false
     TEXT
   end
 
