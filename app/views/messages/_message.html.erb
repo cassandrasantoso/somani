@@ -23,7 +23,7 @@
     </span>
 
     <p class="blurred" data-blur-target="text">
-      <%= message.body %>
+      <%= render_furigana(message) %>
     </p>
     <button data-action="blur#toggle" class="btn-reveal">
       Reveal text

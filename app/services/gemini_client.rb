@@ -31,6 +31,16 @@ class GeminiClient
       client.generate_content(payload).dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
     end
 
+    def generate_conversation_json(contents, system_instruction: nil)
+      payload = { contents: contents,
+                  generation_config: { response_mime_type: "application/json" } }
+      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
+
+      text = client.generate_content(payload).dig("candidates", 0, "content", "parts", 0, "text").to_s
+
+      parse_json(text, symbolize_names: false)
+    end
+
     def generate_json(prompt, symbolize_names: false)
       text = generate_text(prompt, json: true)
 

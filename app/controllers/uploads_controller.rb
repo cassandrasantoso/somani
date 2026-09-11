@@ -48,6 +48,26 @@ class UploadsController < ApplicationController
     redirect_to @upload, notice: "Reading your upload…"
   end
 
+  def sample
+    @upload = Upload.new(user: current_user)
+    @upload.file.attach(
+      io: File.open(Rails.root.join("db", "samples", "menu.txt")),
+      filename: "menu.txt",
+      content_type: "text/plain"
+    )
+    authorize @upload
+
+    if @upload.save
+      @upload.adventures.create!(status: "active")
+      StoreUploadOnCloudinaryJob.perform_later(@upload)
+      ExtractUploadTextJob.perform_later(@upload)
+
+      redirect_to @upload, notice: "Sample upload created — see how it works."
+    else
+      redirect_to new_upload_path, alert: "Could not create the sample upload."
+    end
+  end
+
   def destroy
     authorize @upload
     @upload.destroy

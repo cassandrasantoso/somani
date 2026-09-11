@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :saved_words, only: %i[index new create]   # story 2 - select words from the scanned content
     resources :adventures,  only: %i[new create]         # story 12 - create a new adventure
     member { post :extract }
+    collection { post :sample }
   end
 
   resources :uploaded_words, only: %i[destroy]           # unlink a word

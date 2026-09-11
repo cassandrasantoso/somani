@@ -17,6 +17,21 @@ export default class extends Controller {
     input.style.height = `${input.scrollHeight}px`
   }
 
+  insertWord(event) {
+    const input = this.inputTarget
+    const word = event.params.word
+    const start = input.selectionStart ?? input.value.length
+    const end = input.selectionEnd ?? start
+    const needsSpace = input.value.length > 0 && !input.value.endsWith(" ")
+    const prefix = needsSpace ? " " : ""
+
+    input.value = input.value.slice(0, start) + prefix + word + input.value.slice(end)
+    input.focus()
+    const caret = start + prefix.length + word.length
+    input.setSelectionRange(caret, caret)
+    this.autoResize()
+  }
+
   handleStream(event) {
     const stream = event.target
 
