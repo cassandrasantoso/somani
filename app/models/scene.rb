@@ -7,6 +7,9 @@ class Scene < ApplicationRecord
 
   DEFAULT_LEVEL = "N2".freeze
 
+  # seed: bundled with the app. generated: created from a learner's upload.
+  enum :source, { seed: "seed", generated: "generated" }, default: :seed
+
   # Picks the scene whose description sits closest to the words being
   # practised, by cosine distance over the embeddings. Scenes without an
   # embedding are invisible to this search, so if none are embedded it
