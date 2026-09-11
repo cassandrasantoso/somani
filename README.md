@@ -1,4 +1,5 @@
-# Somani ⛩️
+# Somani 
+(app link: somani.me)
 
 Somani turns Japanese material you actually encounter — a menu, a news
 article, a photo of a sign — into vocabulary you can save, and then into
