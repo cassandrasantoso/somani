@@ -20,6 +20,47 @@ class GeminiClient
       )
     end
 
+    def embed(text, model:)
+      record_usage(model: model, operation: "embed") do
+        client(model: model).embed_content(
+          {
+            content: { parts: [{ text: text }] },
+            output_dimensionality: yield_dimensions(model)
+          }
+        )
+      end
+    end
+
+    def generate_text(prompt, system_instruction: nil, parts: [], json: false)
+      payload = { contents: [{ role: "user", parts: [{ text: prompt }, *parts] }] }
+      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
+      payload[:generation_config] = { response_mime_type: "application/json" } if json
+
+      response = record_usage { client.generate_content(payload) }
+
+      response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
+    end
+
+    def generate_conversation(contents, system_instruction: nil)
+      payload = { contents: contents }
+      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
+
+      response = record_usage { client.generate_content(payload) }
+
+      response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
+    end
+
+    def generate_conversation_json(contents, system_instruction: nil)
+      payload = { contents: contents,
+                  generation_config: { response_mime_type: "application/json" } }
+      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
+
+      text = record_usage { client.generate_content(payload) }
+             .dig("candidates", 0, "content", "parts", 0, "text").to_s
+
+      parse_json(text, symbolize_names: false)
+    end
+
     # Streams a multi-turn conversation. Yields (delta, accumulated_text) per
     # chunk and returns the full text. Falls over to the caller to rescue —
     # jobs fall back to generate_conversation when streaming fails.
@@ -28,8 +69,12 @@ class GeminiClient
       payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
 
       full = +""
+      usage = nil
+      started = monotonic_now
 
       client.stream_generate_content(payload, server_sent_events: true) do |event, _parsed, _raw|
+        usage = event["usageMetadata"] if event.is_a?(Hash) && event["usageMetadata"]
+
         delta = event.dig("candidates", 0, "content", "parts", 0, "text").to_s
         next if delta.empty?
 
@@ -37,32 +82,9 @@ class GeminiClient
         yield(delta, +full.dup)
       end
 
+      log_call(resolved_model, "stream", elapsed_ms(started), usage)
+
       full.strip
-    end
-
-    def generate_text(prompt, system_instruction: nil, parts: [], json: false)
-      payload = { contents: [{ role: "user", parts: [{ text: prompt }, *parts] }] }
-      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
-      payload[:generation_config] = { response_mime_type: "application/json" } if json
-
-      client.generate_content(payload).dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
-    end
-
-    def generate_conversation(contents, system_instruction: nil)
-      payload = { contents: contents }
-      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
-
-      client.generate_content(payload).dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
-    end
-
-    def generate_conversation_json(contents, system_instruction: nil)
-      payload = { contents: contents,
-                  generation_config: { response_mime_type: "application/json" } }
-      payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
-
-      text = client.generate_content(payload).dig("candidates", 0, "content", "parts", 0, "text").to_s
-
-      parse_json(text, symbolize_names: false)
     end
 
     def generate_json(prompt, symbolize_names: false)
@@ -72,6 +94,52 @@ class GeminiClient
     end
 
     private
+
+    def yield_dimensions(model)
+      model == "gemini-embedding-001" ? EmbeddingService::DIMENSIONS : nil
+    end
+
+    def resolved_model
+      ENV.fetch("GEMINI_MODEL", DEFAULT_MODEL)
+    end
+
+    def record_usage(model: nil, operation: "generate")
+      started = monotonic_now
+      response = yield
+
+      log_call(model || resolved_model, operation, elapsed_ms(started), usage_of(response))
+      response
+    end
+
+    def usage_of(response)
+      return {} unless response.is_a?(Hash)
+
+      meta = response["usageMetadata"]
+      return {} if meta.nil?
+
+      { prompt_tokens: meta["promptTokenCount"],
+        completion_tokens: meta["candidatesTokenCount"],
+        total_tokens: meta["totalTokenCount"] }
+    end
+
+    def log_call(model, operation, duration_ms, usage)
+      LlmCall.create!(
+        model: model,
+        operation: operation,
+        duration_ms: duration_ms,
+        **usage.symbolize_keys
+      )
+    rescue StandardError => e
+      Rails.logger.warn("LlmCall logging failed: #{e.class}: #{e.message}")
+    end
+
+    def monotonic_now
+      Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
+    def elapsed_ms(started)
+      ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000).round
+    end
 
     def parse_json(text, symbolize_names:)
       cleaned = text.to_s.gsub(/```(?:json)?/, "").strip

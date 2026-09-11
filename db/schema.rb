@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_000400) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_000500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -102,6 +102,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_000400) do
     t.datetime "updated_at", null: false
     t.datetime "verified_at"
     t.index ["entry_type", "content"], name: "index_jlpt_entries_on_entry_type_and_content"
+  end
+
+  create_table "llm_calls", force: :cascade do |t|
+    t.integer "completion_tokens"
+    t.datetime "created_at", null: false
+    t.integer "duration_ms"
+    t.string "model", null: false
+    t.string "operation", null: false
+    t.integer "prompt_tokens"
+    t.integer "total_tokens"
+    t.index ["created_at"], name: "index_llm_calls_on_created_at"
+    t.index ["model", "operation"], name: "index_llm_calls_on_model_and_operation"
   end
 
   create_table "messages", force: :cascade do |t|
