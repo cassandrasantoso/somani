@@ -82,8 +82,18 @@ class IndexWordCorrections
 
   # Scoped to this message: the learner may have used the word correctly
   # in an earlier turn, and that credit stands.
+  #
+  # A correction revokes when it touches the word's own usage — its form
+  # reshaped, the particle or grammar immediately attached to it changed,
+  # or the word substituted away or dropped. A mistake elsewhere in the
+  # clause keeps the credit: producing the word with its immediate grammar
+  # intact is the point, and the correction does the teaching there.
   def revoke_credit(hits)
-    ids = hits.filter_map { |c, word| word.id if c["on_practice_word"] }.uniq
+    ids = hits.filter_map do |correction, word|
+      next unless correction["on_practice_word"]
+
+      word.id if word_usage_changed?(correction, word)
+    end.uniq
     return if ids.empty?
 
     changed = @message.word_usages
@@ -97,5 +107,38 @@ class IndexWordCorrections
     @adventure.re_evaluate_goal!
     @adventure.broadcast_tracker
     @adventure.broadcast_goal_banner
+  end
+
+  # Same form on both sides with the same characters hugging it means the
+  # correction happened somewhere else in the sentence. Anything else —
+  # a different form of the word (飲む → 飲み), a changed particle next to
+  # it (予約に → 予約を), or the word gone from the fixed version — is a
+  # change to the word's own usage and revokes.
+  def word_usage_changed?(correction, word)
+    wrote = correction["wrote"].to_s
+    better = correction["better"].to_s
+
+    wrote_form = longest_form_in(wrote, word)
+    better_form = longest_form_in(better, word)
+
+    return true if wrote_form.present? && better_form.blank?
+    return false if wrote_form.blank?
+    return true if wrote_form != better_form
+
+    vicinity(wrote, wrote_form) != vicinity(better, better_form)
+  end
+
+  def longest_form_in(text, word)
+    ConjugationMatcher.forms(word).select { |form| text.include?(form) }.max_by(&:length)
+  end
+
+  # The characters immediately before and after the matched form — "^" and
+  # "$" at the string edges. First occurrence only; corrections quoting the
+  # surrounding clause, not a bare particle, is the norm.
+  def vicinity(text, form)
+    index = text.index(form)
+
+    [index.positive? ? text[index - 1] : "^",
+     text[index + form.length] || "$"]
   end
 end

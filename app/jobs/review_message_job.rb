@@ -194,23 +194,24 @@ class ReviewMessageJob < ApplicationJob
       written in the list. Empty array when none were used.
 
       For each correction, set on_practice_word to true when your correction
-      changes one of those words or the grammar attached to it — its
-      conjugation or form, a する or auxiliary wrongly added to it or missing
-      from it, the particle immediately governing it, or a different word
-      substituted for it.
+      changes the word's own form or the grammar immediately attached to it —
+      its conjugation mis-formed, a wrong particle directly governing it, a
+      する or auxiliary wrongly added to it or missing from it, or a different
+      word substituted for it.
 
       For each correction where on_practice_word is true, also set
       practice_word to the exact surface of the practiced word it's about,
       copied exactly from the list above. Set it to null otherwise.
 
-      Set it to false only when the practice word and the grammar attached to
-      it are identical in "wrote" and "better" — the word merely appears
-      inside a fragment whose real problem is elsewhere.
+      Set it to false when the word and the grammar attached to it are
+      identical in "wrote" and "better" — the word merely appears inside a
+      fragment whose real problem is somewhere else in the sentence.
 
       Examples, if 方法 and 食べる were being practised:
       "仕事の方法するのが" → "仕事の方法が"        on_practice_word: true
       "寿司を食べるました" → "寿司を食べました"      on_practice_word: true
       "方法を教えてくれ"   → "方法を教えてください"  on_practice_word: false
+      "為替のレートを変わりました" → "為替のレートが変わりました"  on_practice_word: false
     TEXT
   end
 

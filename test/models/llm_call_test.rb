@@ -19,7 +19,7 @@ class LlmCallTest < ActiveSupport::TestCase
     assert_equal "こんにちは", text
 
     call = LlmCall.last
-    assert_equal "gemini-2.5-flash", call.model
+    assert_equal "gemini-3.1-flash-lite", call.model
     assert_equal "generate", call.operation
     assert_equal 12, call.prompt_tokens
     assert_equal 5, call.completion_tokens
@@ -40,6 +40,6 @@ class LlmCallTest < ActiveSupport::TestCase
   test "unknown models fall back to the flash price" do
     call = LlmCall.new(model: "some-future-model", prompt_tokens: 1_000_000, completion_tokens: 0)
 
-    assert_in_delta 0.30, call.estimated_cost, 0.0001
+    assert_in_delta 0.25, call.estimated_cost, 0.0001
   end
 end

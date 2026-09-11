@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_000800) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_001100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -90,6 +90,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_000800) do
   end
 
   create_table "jlpt_entries", force: :cascade do |t|
+    t.boolean "common", default: false, null: false
     t.string "content"
     t.datetime "created_at", null: false
     t.string "entry_type"
@@ -131,10 +132,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_000800) do
     t.integer "comprehension", null: false
     t.datetime "created_at", null: false
     t.integer "duration_ms", null: false
+    t.string "mode", default: "reading", null: false
     t.bigint "reading_passage_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.integer "wpm", null: false
+    t.integer "wpm"
     t.index ["user_id", "reading_passage_id"], name: "index_reading_attempts_on_user_id_and_reading_passage_id"
     t.index ["user_id"], name: "index_reading_attempts_on_user_id"
   end

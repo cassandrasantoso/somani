@@ -55,6 +55,40 @@ namespace :jlpt do
     end
   end
 
+  desc "Mark existing jlpt_entries as common using JMdict (needs the jmdict-eng JSON downloaded)"
+  task :mark_common, [:path] => :environment do |_t, args|
+    path = args[:path] || Rails.root.join("db/data/jmdict-eng.json")
+    abort("JMdict JSON not found at #{path}") unless File.exist?(path)
+
+    data = JSON.parse(File.read(path))
+    words = data.is_a?(Hash) ? data["words"] : data
+
+    common_forms = words.flat_map do |word|
+      next [] unless Array(word["kanji"]).any? { |form| form["common"] } ||
+                     Array(word["kana"]).any? { |form| form["common"] }
+
+      (Array(word["kanji"]) + Array(word["kana"])).map { |form| form["text"] }
+    end.compact.uniq
+
+    marked = 0
+    common_forms.each_slice(1000) do |slice|
+      marked += JlptEntry.where(content: slice).update_all(common: true)
+    end
+
+    Rails.cache.delete("jlpt/entry_contents")
+    puts "marked #{marked} of #{JlptEntry.count} entries common (from #{common_forms.size} JMdict common forms)"
+  end
+
+  desc "Import JMdict common words as level-less entries (see task source for the download)"
+  task :import_jmdict, [:path] => :environment do |_t, args|
+    path = args[:path] || Rails.root.join("db/data/jmdict-eng.json")
+    abort("JMdict JSON not found at #{path} — download it first") unless File.exist?(path)
+
+    result = JmdictImport.call(path)
+    puts "considered #{result[:considered]} JMdict words, imported #{result[:imported]}"
+    puts "jlpt_entries: #{result[:total]} total"
+  end
+
   desc "Score the level estimator against seeded words (read-only)"
   task eval_levels: :environment do
     sample = JlptEntry.words.where.not(level: nil).order("RANDOM()").limit(100)

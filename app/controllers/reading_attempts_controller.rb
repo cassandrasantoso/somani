@@ -6,13 +6,19 @@ class ReadingAttemptsController < ApplicationController
     answers = Array(params[:answers]).map(&:to_i)
     comprehension = score(answers, @passage)
     duration_ms = params[:duration_ms].to_i
-    wpm = duration_ms.positive? ? (@passage.char_count / (duration_ms / 60_000.0)).round : 0
+    mode = params[:mode] == "listening" ? :listening : :reading
+    wpm = if mode == :listening
+            nil
+          else
+            duration_ms.positive? ? (@passage.char_count / (duration_ms / 60_000.0)).round : 0
+          end
 
     @attempt = current_user.reading_attempts.build(
       reading_passage: @passage,
       duration_ms: duration_ms,
       wpm: wpm,
-      comprehension: comprehension
+      comprehension: comprehension,
+      mode: mode
     )
 
     if @attempt.save

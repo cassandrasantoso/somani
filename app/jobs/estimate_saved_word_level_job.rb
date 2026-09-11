@@ -11,6 +11,10 @@ class EstimateSavedWordLevelJob < ApplicationJob
   def perform(saved_word)
     return if saved_word.jlpt_entry.present?
     return if saved_word.level_source == "user"
+    # Pure-katakana words not already in the dictionary are loanwords —
+    # phonetic, outside what JLPT levels measure. The estimator guesses
+    # "uncommon = N1" for them; don't let it.
+    return if saved_word.surface.match?(/\A[\p{Katakana}ー・\s]+\z/)
 
     result = WordLevelEstimator.call(
       saved_word.surface,

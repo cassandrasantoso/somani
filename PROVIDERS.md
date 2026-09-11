@@ -47,6 +47,11 @@ Usage logging (`LlmCall`) and JSON parsing are handled by the facade.
 - **Embeddings stay on Gemini** (`Llm.embed` always routes to the Gemini
   provider): the scene vectors in Postgres live in `gemini-embedding-001`'s
   space. Switching embedding provider means re-embedding the scene library.
+- **PDF and audio uploads require the Gemini provider.** Extraction sends
+  those files as inline data, which the OpenAI-compatible provider only
+  supports for images — it raises a clear error for PDFs/audio. Keep
+  `LLM_PROVIDER=gemini` if learners upload documents or recordings (the
+  default), or extend `parts_to_content` in the OpenAI provider.
 - The OpenAI-compatible provider handles text and images; audio uploads
   raise a clear error and need the Gemini path.
 - `bin/rails llm:usage` reports per-model costs, whichever provider is on.
