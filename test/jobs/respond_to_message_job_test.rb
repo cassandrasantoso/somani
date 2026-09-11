@@ -22,8 +22,8 @@ class RespondToMessageJobTest < ActiveSupport::TestCase
   end
 
   def stub_streaming(text_chunks)
-    original = GeminiClient.method(:stream_conversation)
-    GeminiClient.define_singleton_method(:stream_conversation) do |_contents, system_instruction: nil, &block|
+    original = Llm.method(:stream_conversation)
+    Llm.define_singleton_method(:stream_conversation) do |_contents, system_instruction: nil, &block|
       accumulated = +""
       text_chunks.each { |chunk| accumulated << chunk }
       text_chunks.each_with_index { |chunk, i| block.call(chunk, text_chunks.first(i + 1).join) }
@@ -31,7 +31,7 @@ class RespondToMessageJobTest < ActiveSupport::TestCase
     end
     yield
   ensure
-    GeminiClient.singleton_class.send(:define_method, :stream_conversation) do |*args, **kwargs, &block|
+    Llm.singleton_class.send(:define_method, :stream_conversation) do |*args, **kwargs, &block|
       original.call(*args, **kwargs, &block)
     end
   end
@@ -61,10 +61,10 @@ class RespondToMessageJobTest < ActiveSupport::TestCase
   end
 
   test "falls back to a whole reply when streaming fails" do
-    original_stream = GeminiClient.method(:stream_conversation)
-    original_generate = GeminiClient.method(:generate_conversation)
-    GeminiClient.define_singleton_method(:stream_conversation) { |_contents, system_instruction: nil| raise "boom" }
-    GeminiClient.define_singleton_method(:generate_conversation) { |_contents, system_instruction: nil| "フォールバックです。" }
+    original_stream = Llm.method(:stream_conversation)
+    original_generate = Llm.method(:generate_conversation)
+    Llm.define_singleton_method(:stream_conversation) { |_contents, system_instruction: nil| raise "boom" }
+    Llm.define_singleton_method(:generate_conversation) { |_contents, system_instruction: nil| "フォールバックです。" }
 
     perform_enqueued_jobs(except: [GenerateAudioJob, GenerateFuriganaJob, ReviewMessageJob]) do
       RespondToMessageJob.perform_later(@message)
@@ -73,10 +73,10 @@ class RespondToMessageJobTest < ActiveSupport::TestCase
     reply = @adventure.messages.where(role: "assistant").last
     assert_equal "フォールバックです。", reply.body
   ensure
-    GeminiClient.singleton_class.send(:define_method, :stream_conversation) do |*args, **kwargs, &block|
+    Llm.singleton_class.send(:define_method, :stream_conversation) do |*args, **kwargs, &block|
       original_stream.call(*args, **kwargs, &block)
     end
-    GeminiClient.singleton_class.send(:define_method, :generate_conversation) do |*args, **kwargs, &block|
+    Llm.singleton_class.send(:define_method, :generate_conversation) do |*args, **kwargs, &block|
       original_generate.call(*args, **kwargs, &block)
     end
   end

@@ -21,11 +21,11 @@ class GenerateFuriganaJobTest < ActiveSupport::TestCase
   end
 
   def stub_payload(payload)
-    original = GeminiClient.method(:generate_json)
-    GeminiClient.define_singleton_method(:generate_json) { |_prompt, **| payload }
+    original = Llm.method(:generate_json)
+    Llm.define_singleton_method(:generate_json) { |_prompt, **| payload }
     yield
   ensure
-    GeminiClient.singleton_class.send(:define_method, :generate_json) do |*args, **kwargs, &block|
+    Llm.singleton_class.send(:define_method, :generate_json) do |*args, **kwargs, &block|
       original.call(*args, **kwargs, &block)
     end
   end

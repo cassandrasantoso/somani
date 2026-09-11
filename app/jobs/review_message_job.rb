@@ -28,7 +28,7 @@ class ReviewMessageJob < ApplicationJob
               message.word_usages.none? &&
               creditable_words(message).empty?
 
-    data = GeminiClient.generate_json(prompt(message))
+    data = Llm.generate_json(prompt(message))
     return if data.blank?                      # no review → stays pending
     return unless data.is_a?(Hash)
 

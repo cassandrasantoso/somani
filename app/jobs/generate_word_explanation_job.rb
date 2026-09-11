@@ -7,7 +7,7 @@ class GenerateWordExplanationJob < ApplicationJob
   def perform(saved_word)
     return if saved_word.explanation.present?
 
-    saved_word.update!(explanation: GeminiClient.generate_text(explanation_prompt(saved_word)))
+    saved_word.update!(explanation: Llm.generate_text(explanation_prompt(saved_word)))
   end
 
   private

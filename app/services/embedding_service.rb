@@ -1,8 +1,8 @@
 class EmbeddingService
-  MODEL = "gemini-embedding-001"
-  DIMENSIONS = 768
+  MODEL = Llm::GeminiProvider::EMBED_MODEL
+  DIMENSIONS = Llm::GeminiProvider::EMBED_DIMENSIONS
 
   def self.generate(text)
-    GeminiClient.embed(text, model: MODEL).dig("embedding", "values")
+    Llm.embed(text)
   end
 end

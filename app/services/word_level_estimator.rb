@@ -15,7 +15,7 @@ class WordLevelEstimator
   # Transport/API errors (rate limits, network failures) are not rescued here and propagate to the caller,
   # matching how ReviewMessageJob#perform rescues at the call site rather than inside parsing.
   def call
-    parsed = GeminiClient.generate_json(prompt, symbolize_names: true, model: GeminiClient::LITE_MODEL)
+    parsed = Llm.generate_json(prompt, symbolize_names: true, model: :lite)
     return nil unless parsed.is_a?(Hash)
 
     level = VALID_LEVELS.include?(parsed[:level]) ? parsed[:level] : nil

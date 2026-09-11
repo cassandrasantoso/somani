@@ -39,7 +39,7 @@ class RespondToMessageJob < ApplicationJob
   private
 
   def stream_reply(adventure, mode, stream_id)
-    GeminiClient.stream_conversation(
+    Llm.stream_conversation(
       conversation_contents(adventure),
       system_instruction: system_prompt(adventure, mode)
     ) do |_delta, text|
@@ -52,7 +52,7 @@ class RespondToMessageJob < ApplicationJob
     end
   rescue StandardError => e
     Rails.logger.warn("RespondToMessageJob stream failed, replying whole: #{e.class}: #{e.message}")
-    GeminiClient.generate_conversation(
+    Llm.generate_conversation(
       conversation_contents(adventure),
       system_instruction: system_prompt(adventure, mode)
     )

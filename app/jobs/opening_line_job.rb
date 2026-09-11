@@ -28,7 +28,7 @@ class OpeningLineJob < ApplicationJob
   private
 
   def stream_opening(adventure, stream_id)
-    GeminiClient.stream_conversation([], system_instruction: prompt(adventure)) do |_delta, text|
+    Llm.stream_conversation([], system_instruction: prompt(adventure)) do |_delta, text|
       Turbo::StreamsChannel.broadcast_replace_to(
         adventure,
         target: stream_id,
@@ -38,7 +38,7 @@ class OpeningLineJob < ApplicationJob
     end
   rescue StandardError => e
     Rails.logger.warn("OpeningLineJob stream failed, opening whole: #{e.class}: #{e.message}")
-    GeminiClient.generate_text(prompt(adventure))
+    Llm.generate_text(prompt(adventure))
   end
 
   def name_guidance(user)

@@ -139,7 +139,7 @@ class Adventure < ApplicationRecord
       - Do not explain anything
     PROMPT
 
-    generated_title = GeminiClient.generate_text(prompt)
+    generated_title = Llm.generate_text(prompt)
 
     update!(title: generated_title) if generated_title.present?
   rescue StandardError => e
