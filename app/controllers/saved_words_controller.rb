@@ -69,6 +69,7 @@ class SavedWordsController < ApplicationController
       apply_word_target(@saved_word)
       GenerateWordExplanationJob.perform_later(@saved_word) if @saved_word.explanation.blank?
       VerifyJlptLevelJob.perform_later(reference) if reference && reference.verified_at.nil?
+      EstimateSavedWordLevelJob.perform_later(@saved_word) if reference.nil? && @saved_word.level.blank?
       notice = "「#{@saved_word.surface}」 saved."
       @saved_words = @upload.saved_words
       @matched_entries = @upload.matched_jlpt_entries
