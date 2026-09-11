@@ -134,3 +134,40 @@
   text-decoration: none;
   transform: translateY(-1px);
 }
+
+.friends-page__section {
+  margin-bottom: 1.5rem;
+}
+
+.friends-page__section-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.friends-leaderboard {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.friends-leaderboard__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 0.75rem;
+  padding: 0.6rem 1rem;
+}
+
+.friends-leaderboard__row--me {
+  border-color: var(--sage);
+  background: var(--sage-light);
+}
+
+.friends-leaderboard__count {
+  font-weight: 700;
+  color: var(--sage);
+}

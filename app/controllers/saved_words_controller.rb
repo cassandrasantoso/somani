@@ -109,6 +109,7 @@ class SavedWordsController < ApplicationController
     authorize @saved_word, :update?
 
     SrsSchedule.call(@saved_word, params[:grade].presence || "good")
+    TouchStreak.call(current_user)
 
     redirect_back fallback_location: saved_words_path
   end

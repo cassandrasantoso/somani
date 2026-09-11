@@ -4,6 +4,18 @@
     <p class="friends-page__subtitle"><%= @followers_count %> people follow your progress</p>
   </div>
 
+  <div class="friends-page__section">
+    <h2 class="friends-page__section-title"><i class="fa-solid fa-trophy"></i> This week's words</h2>
+    <ol class="friends-leaderboard">
+      <% @leaderboard.each do |user, count| %>
+        <li class="friends-leaderboard__row <%= "friends-leaderboard__row--me" if user == current_user %>">
+          <span class="friends-leaderboard__name"><%= user.username %></span>
+          <span class="friends-leaderboard__count"><%= pluralize(count, "word") %></span>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+
   <div class="upload-card friends-add-card">
     <h2 class="upload-card__title">Add a friend</h2>
     <%= form_with url: friendships_path, method: :post, local: true, class: "friends-add-form" do |f| %>

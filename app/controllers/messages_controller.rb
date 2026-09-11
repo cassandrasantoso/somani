@@ -9,6 +9,7 @@ class MessagesController < ApplicationController
 
     if @message.save
       CreditWordUsage.call(@message)
+      TouchStreak.call(current_user)
       RespondToMessageJob.perform_later(@message, mode: params[:mode])
       @message = @adventure.messages.new
       respond_to do |format|
