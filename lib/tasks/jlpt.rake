@@ -55,6 +55,16 @@ namespace :jlpt do
     end
   end
 
+  desc "Import JMdict common words as level-less entries (download jmdict-eng JSON from github.com/scriptin/jmdict-simplified releases first)"
+  task :import_jmdict, [:path] => :environment do |_t, args|
+    path = args[:path] || Rails.root.join("db/data/jmdict-eng.json")
+    abort("JMdict JSON not found at #{path} — download it first") unless File.exist?(path)
+
+    result = JmdictImport.call(path)
+    puts "considered #{result[:considered]} JMdict words, imported #{result[:imported]}"
+    puts "jlpt_entries: #{result[:total]} total"
+  end
+
   desc "Score the level estimator against seeded words (read-only)"
   task eval_levels: :environment do
     sample = JlptEntry.words.where.not(level: nil).order("RANDOM()").limit(100)

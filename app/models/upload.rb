@@ -39,6 +39,14 @@ class Upload < ApplicationRecord
   # cached (the full list is ~8k rows), matched in memory, and only the
   # matches go back to the database through the indexed equality lookup —
   # no per-request sequential scan.
+  #
+  # Two exclusions keep the highlights trustworthy:
+  # - estimator-graded entries stay out until jisho verifies them
+  #   (verification flips level_source to "jisho", which graduates them in)
+  # - katakana-only entries at N1/N2 don't match: they're loanwords the
+  #   source lists tagged N1 for being uncommon (バー, ポット, ドライ), and
+  #   reading phonetic katakana isn't what the JLPT levels measure.
+  #   Common loanwords stay matchable at N3–N5.
   def matched_jlpt_entries
     return JlptEntry.none if extracted_text.blank?
 
@@ -50,7 +58,14 @@ class Upload < ApplicationRecord
 
   def self.entry_contents
     Rails.cache.fetch("jlpt/entry_contents", expires_in: 1.hour) do
-      JlptEntry.words.where.not(content: [nil, ""]).distinct.pluck(:content)
+      katakana_only = /\A[\p{Katakana}ー]+\z/
+
+      JlptEntry.words
+               .where(level_source: [nil, "jisho", "jmdict"])
+               .where.not(content: [nil, ""])
+               .pluck(:content, :level)
+               .reject { |content, level| level.in?(%w[N1 N2]) && content.match?(katakana_only) }
+               .map(&:first).uniq
     end
   end
 
