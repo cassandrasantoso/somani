@@ -34,7 +34,7 @@ class IndexWordCorrectionsTest < ActiveSupport::TestCase
     feedback
   end
 
-  test "keeps the credit when the word survives the correction unchanged" do
+  test "keeps the credit when the correction's real problem is elsewhere" do
     feedback_with([{
       "kind" => "grammar",
       "wrote" => "為替のレートを昨日から変わりました",
@@ -50,22 +50,30 @@ class IndexWordCorrectionsTest < ActiveSupport::TestCase
     assert WordCorrection.exists?(saved_word: @word, feedback: @message.feedback)
   end
 
-  test "revokes when the word is substituted away in the correction" do
-    feedback_with([{
-      "kind" => "vocabulary",
-      "wrote" => "為替を教えてください",
-      "better" => "レートを教えてください",
-      "why" => "Wrong word here",
-      "on_practice_word" => true,
-      "practice_word" => "為替"
-    }])
+  test "revokes when the particle governing the word changes" do
+    message = @adventure.messages.create!(role: "user", body: "レストランに予約しました。")
+    saved = SavedWord.create!(user: @user, surface: "予約", reading: "よやく", meaning: "reservation", level: "N4")
+    UploadedWord.create!(upload: @upload, saved_word: saved)
+    message.word_usages.create!(adventure: @adventure, saved_word: saved, status: "pending")
 
-    IndexWordCorrections.call(@message.feedback)
+    feedback = message.create_feedback!(
+      assessment: "Test", level_estimate: "N4", coherence: "responsive",
+      corrections: [{
+        "kind" => "grammar",
+        "wrote" => "レストランに予約しました",
+        "better" => "レストランを予約しました",
+        "why" => "予約 takes を",
+        "on_practice_word" => true,
+        "practice_word" => "予約"
+      }]
+    )
 
-    assert_equal "revoked", @message.word_usages.reload.first.status
+    IndexWordCorrections.call(feedback)
+
+    assert_equal "revoked", message.word_usages.reload.find_by(saved_word: saved).status
   end
 
-  test "keeps the credit when attached grammar is wrong but the word is produced" do
+  test "revokes when the word's own conjugation is mis-formed" do
     message = @adventure.messages.create!(role: "user", body: "寿司を食べるました。")
     saved = SavedWord.create!(user: @user, surface: "食べる", reading: "たべる", meaning: "to eat", level: "N5")
     UploadedWord.create!(upload: @upload, saved_word: saved)
@@ -85,7 +93,7 @@ class IndexWordCorrectionsTest < ActiveSupport::TestCase
 
     IndexWordCorrections.call(feedback)
 
-    assert_equal "pending", message.word_usages.reload.find_by(saved_word: saved).status
+    assert_equal "revoked", message.word_usages.reload.find_by(saved_word: saved).status
     assert WordCorrection.exists?(saved_word: saved, feedback: feedback)
   end
 end
