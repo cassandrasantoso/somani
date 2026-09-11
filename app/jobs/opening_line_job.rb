@@ -1,31 +1,18 @@
 # app/jobs/opening_line_job.rb
-require "gemini-ai"
-
 class OpeningLineJob < ApplicationJob
   queue_as :default
 
   retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  discard_on ActiveJob::DeserializationError
 
   def perform(adventure)
-    opening_text = generate_opening(adventure)
+    opening_text = GeminiClient.generate_text(prompt(adventure))
 
-    adventure.messages.create!(role: "assistant", body: opening_text)
+    message = adventure.messages.create!(role: "assistant", body: opening_text)
+    GenerateAudioJob.perform_later(message)
   end
 
   private
-
-  def generate_opening(adventure)
-    response = gemini_client.generate_content({
-                                                contents: [
-                                                  {
-                                                    role: "user",
-                                                    parts: [{ text: prompt(adventure) }]
-                                                  }
-                                                ]
-                                              })
-
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
-  end
 
   def name_guidance(user)
     name = user.username.presence
@@ -88,15 +75,5 @@ class OpeningLineJob < ApplicationJob
       Do not use the words yourself and do not mention that they are being
       practised. Open the door; let them walk through it.
     TEXT
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

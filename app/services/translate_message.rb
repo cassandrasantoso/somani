@@ -1,6 +1,4 @@
 # app/services/translate_message.rb
-require "gemini-ai"
-
 class TranslateMessage
   def self.call(message)
     new(message).call
@@ -11,16 +9,7 @@ class TranslateMessage
   end
 
   def call
-    response = gemini_client.generate_content({
-                                                contents: [
-                                                  {
-                                                    role: "user",
-                                                    parts: [{ text: prompt }]
-                                                  }
-                                                ]
-                                              })
-
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
+    GeminiClient.generate_text(prompt)
   end
 
   private
@@ -36,15 +25,5 @@ class TranslateMessage
       Japanese text:
       #{message.body}
     PROMPT
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

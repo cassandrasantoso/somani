@@ -413,6 +413,13 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
+    sentry-rails (7.0.0)
+      railties (>= 5.2.0)
+      sentry-ruby (~> 7.0.0)
+    sentry-ruby (7.0.0)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      logger
     signet (0.22.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -523,6 +530,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   sassc-rails
   selenium-webdriver
+  sentry-rails
   simple_form!
   solid_cable
   solid_cache
@@ -689,6 +697,8 @@ CHECKSUMS
   sassc-rails (2.1.2) sha256=5f4fdf3881fc9bdc8e856ffbd9850d70a2878866feae8114aa45996179952db5
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   selenium-webdriver (4.48.0) sha256=0c8376ebc8a0a4879343fe6fe6eccdcea76748611cd25de370b33eded2077a94
+  sentry-rails (7.0.0) sha256=6ac6a010e088632e46710ce42db75aa5281a6b52a547efee10568cc2ed80605a
+  sentry-ruby (7.0.0) sha256=e9616ff521355a983fad404ca575d8bb1f1949a8cac42a7a893dd02156bcdb1a
   signet (0.22.0) sha256=b76d495ccb07ad35dbc89f3e920665a9d8ed717141955034005d7843dcfe4780
   simple_form (5.4.1)
   solid_cable (4.0.2) sha256=084636a67679ad00d23088b33c84047e614bcf41ee559db24b414d83cdc42d03

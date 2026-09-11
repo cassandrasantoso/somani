@@ -1,21 +1,21 @@
 # app/jobs/generate_upload_summary_job.rb
-require "gemini-ai"
-
 class GenerateUploadSummaryJob < ApplicationJob
   queue_as :default
 
   retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  discard_on ActiveJob::DeserializationError
 
   def perform(upload)
     return if upload.extracted_text.blank?
 
-    upload.update!(summary: generate_summary(upload.extracted_text))
+    upload.update!(summary: GeminiClient.generate_text(summary_prompt(upload.extracted_text)))
+    upload.broadcast_summary
   end
 
   private
 
-  def generate_summary(text)
-    prompt = <<~PROMPT
+  def summary_prompt(text)
+    <<~PROMPT
       Identify the main topic of the following Japanese text.
 
       Return exactly one English sentence using this format:
@@ -32,31 +32,5 @@ class GenerateUploadSummaryJob < ApplicationJob
       Japanese text:
       #{text}
     PROMPT
-
-    response = gemini_client.generate_content({
-                                                contents: [
-                                                  {
-                                                    role: "user",
-                                                    parts: [
-                                                      { text: prompt }
-                                                    ]
-                                                  }
-                                                ]
-                                              })
-
-    response
-      .dig("candidates", 0, "content", "parts", 0, "text")
-      .to_s
-      .strip
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

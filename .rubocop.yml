@@ -40,3 +40,19 @@ Style/EmptyMethod:
   Enabled: false
 Bundler/OrderedGems:
   Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false
+Style/CommentedKeyword:
+  Enabled: false
+Style/NumericPredicate:
+  Enabled: false
+Style/MultilineBlockChain:
+  Enabled: false

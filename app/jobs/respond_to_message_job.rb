@@ -1,13 +1,15 @@
-require "gemini-ai"
-
 class RespondToMessageJob < ApplicationJob
   queue_as :default
+
+  retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  discard_on ActiveJob::DeserializationError
 
   def perform(message, mode: nil)
     adventure = message.adventure
     reply_text = generate_reply(adventure, mode)
 
-    adventure.messages.create!(role: "assistant", body: reply_text)
+    reply = adventure.messages.create!(role: "assistant", body: reply_text)
+    GenerateAudioJob.perform_later(reply)
 
     # after the reply: that's what the user is waiting for. #recheck rescues
     # internally so a failed word check can't take this job down.
@@ -20,14 +22,10 @@ class RespondToMessageJob < ApplicationJob
   private
 
   def generate_reply(adventure, mode)
-    response = gemini_client.generate_content({
-                                                system_instruction: {
-                                                  parts: [{ text: system_prompt(adventure, mode) }]
-                                                },
-                                                contents: conversation_contents(adventure)
-                                              })
-
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
+    GeminiClient.generate_conversation(
+      conversation_contents(adventure),
+      system_instruction: system_prompt(adventure, mode)
+    )
   end
 
   def name_guidance(user)
@@ -142,15 +140,5 @@ class RespondToMessageJob < ApplicationJob
         parts: [{ text: msg.body }]
       }
     end
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

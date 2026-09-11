@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -156,6 +156,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
   create_table "uploads", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "extracted_text"
+    t.string "extraction_status", default: "pending", null: false
     t.string "file_location"
     t.string "media_type"
     t.text "summary"

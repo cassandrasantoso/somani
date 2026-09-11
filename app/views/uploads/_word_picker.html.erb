@@ -2,11 +2,23 @@
     data-action="turbo:submit-end->word-picker#closeModal">
     <div class="upload-card">
       <h2 class="upload-card__title">Study Material<br>読み取ったテキスト</h2>
-      <p class="extracted" data-word-picker-target="text"
-        data-action="mouseup->word-picker#capture">
-        <%= highlight_jlpt_matches(upload.extracted_text, matched_entries) %>
-      </p>
-      <p class="upload-card__hint">Tap a highlighted word to view and add it to your study list.</p>
+      <% if upload.pending? %>
+        <div class="extracted-status">
+          <div class="loader" aria-hidden="true"></div>
+          <p class="extracted-status__text">Reading your upload…</p>
+        </div>
+      <% elsif upload.failed? %>
+        <div class="extracted-status">
+          <p class="extracted-status__text">We could not read that file.</p>
+          <%= button_to "Try again", extract_upload_path(upload), class: "extracted-status__retry" %>
+        </div>
+      <% else %>
+        <p class="extracted" data-word-picker-target="text"
+          data-action="mouseup->word-picker#capture">
+          <%= highlight_jlpt_matches(upload.extracted_text, matched_entries) %>
+        </p>
+        <p class="upload-card__hint">Tap a highlighted word to view and add it to your study list.</p>
+      <% end %>
     </div>
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     data-action="show.bs.modal->word-picker#prefill">

@@ -11,21 +11,10 @@ class WordNormalizer
   # Transport errors propagate, SavedWordsController#lookup_normalized_entry
   # already rescues at the call site.
   def call
-    client = Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: {
-        model: ENV.fetch("GEMINI_MODEL")
-      }
-    )
+    parsed = GeminiClient.generate_json(prompt, symbolize_names: true)
+    return nil unless parsed.is_a?(Hash)
 
-    response = client.generate_content(
-      { contents: [{ role: "user", parts: [{ text: prompt }] }] }
-    )
-
-    parse(response.dig("candidates", 0, "content", "parts", 0, "text").to_s)
+    parsed[:dictionary_form].to_s.strip.presence
   end
 
   private
@@ -45,17 +34,5 @@ class WordNormalizer
       Respond with only JSON, no other text:
       {"dictionary_form": "上がる"}
     PROMPT
-  end
-
-  # Same fence-stripping as WordLevelEstimator#parse and ReviewMessageJob#parse.
-  def parse(text)
-    cleaned = text.gsub(/```(?:json)?/, "").strip
-    match   = cleaned[/\{.*\}/m]
-    return nil unless match
-
-    JSON.parse(match, symbolize_names: true)[:dictionary_form].to_s.strip.presence
-  rescue JSON::ParserError
-    Rails.logger.warn("WordNormalizer unparseable for #{@surface.inspect}: #{text.truncate(200)}")
-    nil
   end
 end
