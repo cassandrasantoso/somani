@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_11_000700) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_000800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -125,6 +125,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_000700) do
     t.string "role"
     t.datetime "updated_at", null: false
     t.index ["adventure_id"], name: "index_messages_on_adventure_id"
+  end
+
+  create_table "reading_attempts", force: :cascade do |t|
+    t.integer "comprehension", null: false
+    t.datetime "created_at", null: false
+    t.integer "duration_ms", null: false
+    t.bigint "reading_passage_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.integer "wpm", null: false
+    t.index ["user_id", "reading_passage_id"], name: "index_reading_attempts_on_user_id_and_reading_passage_id"
+    t.index ["user_id"], name: "index_reading_attempts_on_user_id"
+  end
+
+  create_table "reading_passages", force: :cascade do |t|
+    t.integer "char_count", null: false
+    t.datetime "created_at", null: false
+    t.integer "position", null: false
+    t.jsonb "questions", default: [], null: false
+    t.text "text", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "upload_id", null: false
+    t.index ["upload_id", "position"], name: "index_reading_passages_on_upload_id_and_position", unique: true
   end
 
   create_table "saved_words", force: :cascade do |t|
@@ -256,6 +279,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_11_000700) do
   add_foreign_key "friendships", "users", column: "followed_id"
   add_foreign_key "friendships", "users", column: "follower_id"
   add_foreign_key "messages", "adventures"
+  add_foreign_key "reading_attempts", "reading_passages"
+  add_foreign_key "reading_attempts", "users"
+  add_foreign_key "reading_passages", "uploads"
   add_foreign_key "saved_words", "jlpt_entries"
   add_foreign_key "saved_words", "users"
   add_foreign_key "scenes", "characters"

@@ -1,0 +1,37 @@
+<div class="reading-drill" id="reading-drill-<%= passage.id %>">
+  <div class="reading-drill__header">
+    <p class="reading-drill__eyebrow">速読 Speed reading · Passage <%= passage.position %></p>
+  </div>
+
+  <div class="reading-drill__scores">
+    <div class="reading-drill__score">
+      <span class="reading-drill__score-value"><%= attempt.wpm %></span>
+      <span class="reading-drill__score-label">chars / min</span>
+    </div>
+    <div class="reading-drill__score">
+      <span class="reading-drill__score-value"><%= attempt.comprehension %>%</span>
+      <span class="reading-drill__score-label">comprehension</span>
+    </div>
+    <div class="reading-drill__score">
+      <span class="reading-drill__score-value"><%= attempt.next_target_wpm %></span>
+      <span class="reading-drill__score-label">next target</span>
+    </div>
+  </div>
+
+  <p class="reading-drill__verdict">
+    <% if attempt.comprehension >= 70 %>
+      <% if attempt.next_target_wpm > (attempt.wpm * 1.05).round %>
+        Solid comprehension — now push the speed.
+      <% else %>
+        New personal pace. Keep this comprehension and go faster.
+      <% end %>
+    <% else %>
+      Comprehension under 70% — slow down 10-15% and rebuild accuracy first.
+    <% end %>
+  </p>
+
+  <div class="reading-drill__actions">
+    <%= link_to "Read again", reading_passage_path(passage), class: "reading-drill__btn reading-drill__btn--primary" %>
+    <%= link_to "Back to drill list", upload_reading_drill_path(passage.upload), class: "reading-drill__btn reading-drill__btn--ghost" %>
+  </div>
+</div>

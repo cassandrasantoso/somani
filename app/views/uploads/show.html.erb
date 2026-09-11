@@ -124,4 +124,7 @@
     <% if policy(@upload).destroy? %>
       <%= button_to "Delete upload", @upload, method: :delete, class: "upload-show__btn upload-show__btn--danger" %>
     <% end %>
+    <%= button_to "速読 Practice speed reading", upload_reading_drill_path(@upload),
+                  method: :post,
+                  class: "upload-show__btn" %>
   </div>
