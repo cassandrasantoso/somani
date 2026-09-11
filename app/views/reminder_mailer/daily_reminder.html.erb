@@ -1,0 +1,10 @@
+<p>こんにちは、<%= @user.username %>！</p>
+
+<p>You have <%= pluralize(@due_count, "word") %> due for review on Somani.</p>
+
+<p>
+  <%= link_to "Start a review session", due_saved_words_url %>
+</p>
+
+<p>少しずつ、毎日。<br>
+— Somani</p>

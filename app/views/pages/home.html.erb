@@ -56,6 +56,16 @@
                   <div class="progress-bar__fill progress-bar__fill--navy" style="width: <%= @adventures_completed_pct %>%"></div>
                 </div>
               </div>
+
+              <div class="progress-stat">
+                <div class="progress-stat__labels">
+                  <span>Day streak 🔥</span>
+                  <span><%= pluralize current_user.current_streak, "day" %></span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-bar__fill progress-bar__fill--navy" style="width: <%= [current_user.current_streak * 10, 100].min %>%"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -261,7 +261,7 @@ namespace :jlpt do
     end
   end
 
-  desc "Verify seeded levels against jisho. scope: variants | n1 | all. Resumable."
+  desc "Verify seeded levels against jisho. scope: variants | conflicts | n1 | all. Resumable."
   task :verify_levels, %i[scope limit] => :environment do |_t, args|
     scope = (args[:scope] || "variants").to_s
 
@@ -272,9 +272,23 @@ namespace :jlpt do
                  .where(level: "N1")
                  .where("content <> reading")
                  .where(reading: JlptEntry.words.where.not(level: "N1").select(:content))
+      when "conflicts"
+        # Words the raw seed lists disagree about — import keeps the easiest
+        # level, but only jisho can settle which one is right.
+        conflicted = {}
+        (1..5).each do |n|
+          path = Rails.root.join("db/data/jlpt/n#{n}.json")
+          next unless path.exist?
+
+          words = JSON.parse(path.read)
+          words = words["words"] if words.is_a?(Hash)
+          words.each { |w| (conflicted[w["word"].presence || w["furigana"]] ||= []) << n }
+        end
+        surfaces = conflicted.select { |_surface, levels| levels.uniq.size > 1 }.keys
+        JlptEntry.words.where(content: surfaces)
       when "n1"  then JlptEntry.words.where(level: "N1")
       when "all" then JlptEntry.words
-      else abort("scope must be variants, n1, or all")
+      else abort("scope must be variants, conflicts, n1, or all")
       end
 
     pending = base.where(verified_at: nil).order(:id)
