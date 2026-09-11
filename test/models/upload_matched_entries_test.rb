@@ -12,7 +12,7 @@ class UploadMatchedEntriesTest < ActiveSupport::TestCase
     )
     @upload.save!
 
-    JlptEntry.create!(content: "ラーメン", reading: "らーめん", meaning: "ramen", level: "N5", entry_type: "word")
+    JlptEntry.create!(content: "ラーメン", reading: "らーめん", meaning: "ramen", level: "N5", common: true, entry_type: "word")
     JlptEntry.create!(content: "水", reading: "みず", meaning: "water", level: "N5", entry_type: "word")
     JlptEntry.create!(content: "食べる", reading: "たべる", meaning: "to eat", level: "N5", entry_type: "word")
     JlptEntry.create!(content: "寿司", reading: "すし", meaning: "sushi", level: "N5", entry_type: "word")
@@ -35,9 +35,11 @@ class UploadMatchedEntriesTest < ActiveSupport::TestCase
     assert_not_includes @upload.matched_jlpt_entries.map(&:content), "を"
   end
 
-  test "N1 and N2 katakana loanwords are not matched" do
-    JlptEntry.create!(content: "レギュラー", reading: "れぎゅらー", meaning: "regular", level: "N1", entry_type: "word")
-    JlptEntry.create!(content: "ニャンテスト", reading: "にゃんてすと", meaning: "synthetic", level: "N2", entry_type: "word")
+  test "N1 and N2 katakana loanwords are not matched, even when common" do
+    JlptEntry.create!(content: "レギュラー", reading: "れぎゅらー", meaning: "regular",
+                      level: "N1", common: true, entry_type: "word")
+    JlptEntry.create!(content: "ニャンテスト", reading: "にゃんてすと", meaning: "synthetic",
+                      level: "N2", common: true, entry_type: "word")
     Rails.cache.delete("jlpt/entry_contents")
 
     upload = Upload.new(user: @user, media_type: "document",
@@ -54,12 +56,15 @@ class UploadMatchedEntriesTest < ActiveSupport::TestCase
     assert_not_includes matched, "ニャンテスト"
   end
 
-  test "common loanwords at N3 to N5 still match" do
-    JlptEntry.create!(content: "テレビ試験", reading: "てれびしけん", meaning: "tv", level: "N5", entry_type: "word")
+  test "common loanwords at N3 to N5 match, uncommon ones do not" do
+    JlptEntry.create!(content: "テレビニャン", reading: "てれびにゃん", meaning: "tv",
+                      level: "N5", common: true, entry_type: "word")
+    JlptEntry.create!(content: "テープニャン", reading: "てーぷにゃん", meaning: "tape",
+                      level: "N5", common: false, entry_type: "word")
     Rails.cache.delete("jlpt/entry_contents")
 
     upload = Upload.new(user: @user, media_type: "document",
-                        extracted_text: "テレビ試験を見ました。")
+                        extracted_text: "テレビニャンとテープニャンを見ました。")
     upload.file.attach(
       io: File.open(Rails.root.join("public/icon.png")),
       filename: "icon.png",
@@ -67,7 +72,9 @@ class UploadMatchedEntriesTest < ActiveSupport::TestCase
     )
     upload.save!
 
-    assert_includes upload.reload.matched_jlpt_entries.map(&:content), "テレビ試験"
+    matched = upload.reload.matched_jlpt_entries.map(&:content)
+    assert_includes matched, "テレビニャン"
+    assert_not_includes matched, "テープニャン"
   end
 
   test "estimator-graded entries stay out of matching until jisho verifies" do

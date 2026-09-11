@@ -60,6 +60,7 @@ class JmdictImport
       entry_type: "word",
       level: nil,
       level_source: "jmdict",
+      common: true,
       created_at: now,
       updated_at: now }
   end

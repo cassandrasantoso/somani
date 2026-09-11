@@ -63,8 +63,8 @@ class Upload < ApplicationRecord
       JlptEntry.words
                .where(level_source: [nil, "jisho", "jmdict"])
                .where.not(content: [nil, ""])
-               .pluck(:content, :level)
-               .reject { |content, level| level.in?(%w[N1 N2]) && content.match?(katakana_only) }
+               .pluck(:content, :level, :common)
+               .reject { |content, level, common| content.match?(katakana_only) && (level.in?(%w[N1 N2]) || !common) }
                .map(&:first).uniq
     end
   end
