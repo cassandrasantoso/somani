@@ -9,8 +9,9 @@ class GenerateFuriganaJob < ApplicationJob
   def perform(message)
     return if message.furigana.present?
     return unless message.role == "assistant" && message.body.present?
+    return unless message.body.match?(/\p{Han}/)
 
-    data = GeminiClient.generate_json(prompt(message))
+    data = GeminiClient.generate_json(prompt(message), model: GeminiClient::LITE_MODEL)
     segments = valid_segments(data, message.body.to_s.strip)
     return if segments.nil?
 

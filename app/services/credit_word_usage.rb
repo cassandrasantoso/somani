@@ -3,34 +3,18 @@ class CreditWordUsage
     new(message).call
   end
 
-  def self.recheck(message)
-    new(message).recheck
-  end
-
   def initialize(message)
     @message   = message
     @adventure = message.adventure
   end
 
   # first pass, runs in the request: records what the deterministic matcher can see straight away, as pending.
-  # Nothing is counted until the review agrees.
+  # Nothing is counted until the review agrees — the review also reports the
+  # inflected matches this can't reach (see ReviewMessageJob#credit_reported_words).
   def call
     return unless @message.role == "user"
 
     credit(@adventure.target_words.to_a.select { |w| used?(w) })
-  end
-
-  # second pass, runs in the background job — asks the model about words the
-  # first pass couldn't reach, like する and 来る
-  def recheck
-    return unless @message.role == "user"
-
-    words = unchecked_words
-    return if words.empty?
-
-    credit(ModelWordMatcher.call(@message.body, words))
-  rescue StandardError => e
-    Rails.logger.error("CreditWordUsage.recheck failed: #{e.message}")
   end
 
   private
@@ -52,13 +36,7 @@ class CreditWordUsage
     # ReviewMessageJob#confirm_pending does that once the review agrees.
   end
 
-  # practice words this message has no usage row for yet, whatever their status
-  def unchecked_words
-    already = @message.word_usages.pluck(:saved_word_id)
-    @adventure.practice_words.reject { |w| already.include?(w.id) }
-  end
-
-  # Deterministic first pass. ModelWordMatcher (in #recheck) is the paid
+  # Deterministic first pass. The review job's model pass is the paid
   # second pass for the irregulars this can't reach.
   def used?(word)
     ConjugationMatcher.match?(@message.body, word)

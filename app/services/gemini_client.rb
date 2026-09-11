@@ -2,6 +2,9 @@ require "gemini-ai"
 
 class GeminiClient
   DEFAULT_MODEL = "gemini-2.5-flash"
+  # Mechanical work (furigana, level estimates, summaries, scenes) runs on a
+  # ~3-6x cheaper model; quality-critical roleplay and review stay on flash.
+  LITE_MODEL = "gemini-2.5-flash-lite"
   REQUEST_TIMEOUT = 120
 
   class << self
@@ -31,12 +34,12 @@ class GeminiClient
       end
     end
 
-    def generate_text(prompt, system_instruction: nil, parts: [], json: false)
+    def generate_text(prompt, system_instruction: nil, parts: [], json: false, model: nil)
       payload = { contents: [{ role: "user", parts: [{ text: prompt }, *parts] }] }
       payload[:system_instruction] = { parts: [{ text: system_instruction }] } if system_instruction
       payload[:generation_config] = { response_mime_type: "application/json" } if json
 
-      response = record_usage { client.generate_content(payload) }
+      response = record_usage(model: model) { client(model: model).generate_content(payload) }
 
       response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
     end
@@ -87,8 +90,8 @@ class GeminiClient
       full.strip
     end
 
-    def generate_json(prompt, symbolize_names: false)
-      text = generate_text(prompt, json: true)
+    def generate_json(prompt, symbolize_names: false, model: nil)
+      text = generate_text(prompt, json: true, model: model)
 
       parse_json(text, symbolize_names: symbolize_names)
     end
@@ -119,7 +122,8 @@ class GeminiClient
 
       { prompt_tokens: meta["promptTokenCount"],
         completion_tokens: meta["candidatesTokenCount"],
-        total_tokens: meta["totalTokenCount"] }
+        total_tokens: meta["totalTokenCount"],
+        cached_tokens: meta["cachedContentTokenCount"] }
     end
 
     def log_call(model, operation, duration_ms, usage)
