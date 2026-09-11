@@ -1,31 +1,23 @@
-require "gemini-ai"
-
 class ModelWordMatcher
   def self.call(body, words)
     new(body, words).call
   end
 
   def initialize(body, words)
-    @body  = body.to_s
+    @body  = body
     @words = words
   end
 
   def call
     return [] if @body.blank? || @words.empty?
 
-    parse(raw_response).filter_map do |i|
-      @words[i - 1] if i.between?(1, @words.size)
-    end
+    data = GeminiClient.generate_json(prompt)
+    return [] unless data.is_a?(Array)
+
+    data.grep(Integer).filter_map { |i| @words[i - 1] if i.between?(1, @words.size) }
   end
 
   private
-
-  def raw_response
-    response = gemini_client.generate_content(
-      { contents: [{ role: "user", parts: [{ text: prompt }] }] }
-    )
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s
-  end
 
   def prompt
     listed = @words.each_with_index.map { |w, i| "#{i + 1}. #{w.surface}" }.join("\n")
@@ -48,26 +40,5 @@ class ModelWordMatcher
       Return only a JSON array of the numbers, for example [1,3].
       Return [] if none were used.
     PROMPT
-  end
-
-  # Asked for bare JSON, but models wrap it in prose or a code fence often
-  # enough that pulling the first bracketed group out is worth the two lines.
-  def parse(text)
-    match = text[/\[[^\]]*\]/]
-    return [] if match.nil?
-
-    JSON.parse(match).grep(Integer)
-  rescue JSON::ParserError
-    []
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

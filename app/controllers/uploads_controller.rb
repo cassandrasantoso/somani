@@ -1,8 +1,5 @@
-require "gemini-ai"
-require "base64"
-
 class UploadsController < ApplicationController
-  before_action :set_upload, only: %i[show destroy]
+  before_action :set_upload, only: %i[show extract destroy]
 
   def index
     @uploads = policy_scope(Upload).includes(adventures: :scene).order(created_at: :desc)
@@ -22,7 +19,6 @@ class UploadsController < ApplicationController
   end
 
   def create
-    file = upload_params[:file]
     @upload = Upload.new(upload_params)
     @upload.user = current_user
     authorize @upload
@@ -33,32 +29,42 @@ class UploadsController < ApplicationController
       # has picked words and an AI scene gets chosen.
       @upload.adventures.create!(status: "active")
 
-      # The Cloudinary upload doesn't depend on extract_text (it reads straight
-      # from the tempfile), so it runs on its own thread and persists
-      # file_location itself as soon as it's done - if extract_text blows up
-      # below, the row still ends up with an image instead of a permanent nil.
-      cloudinary_thread = Thread.new do
-        cloudinary_value = Cloudinary::Uploader.upload(file.path, folder: "somani/media", resource_type: "auto")
-        @upload.update_column(:file_location, cloudinary_value["url"])
-      end
-
-      begin
-        text = extract_text(@upload)
-      rescue Faraday::TooManyRequestsError
-        @upload.destroy
-        @upload = Upload.new(upload_params.except(:file))
-        @upload.errors.add(:base, "Too many uploads right now - please wait a moment and try again.")
-        return render :new, status: :too_many_requests
-      end
-
-      @upload.update!(extracted_text: text)
-      cloudinary_thread.join
-
-      GenerateUploadSummaryJob.perform_now(@upload)
+      StoreUploadOnCloudinaryJob.perform_later(@upload)
+      ExtractUploadTextJob.perform_later(@upload)
 
       redirect_to @upload, notice: "Upload successful."
     else
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def extract
+    authorize @upload
+    return redirect_to @upload, alert: "This upload has already been read." if @upload.ready?
+
+    @upload.update!(extraction_status: :pending)
+    ExtractUploadTextJob.perform_later(@upload)
+
+    redirect_to @upload, notice: "Reading your upload…"
+  end
+
+  def sample
+    @upload = Upload.new(user: current_user)
+    @upload.file.attach(
+      io: File.open(Rails.root.join("db", "samples", "menu.txt")),
+      filename: "menu.txt",
+      content_type: "text/plain"
+    )
+    authorize @upload
+
+    if @upload.save
+      @upload.adventures.create!(status: "active")
+      StoreUploadOnCloudinaryJob.perform_later(@upload)
+      ExtractUploadTextJob.perform_later(@upload)
+
+      redirect_to @upload, notice: "Sample upload created — see how it works."
+    else
+      redirect_to new_upload_path, alert: "Could not create the sample upload."
     end
   end
 
@@ -76,59 +82,5 @@ class UploadsController < ApplicationController
 
   def upload_params
     params.require(:upload).permit(:file)
-  end
-
-  # ↓ new — moved from ExtractContentJob
-  def extract_text(upload)
-    file = upload.file
-    data = Base64.strict_encode64(file.download)
-
-    response = gemini_client.generate_content({
-                                                contents: [
-                                                  {
-                                                    role: "user",
-                                                    parts: [
-                                                      { text: extraction_prompt(upload) },
-                                                      {
-                                                        inline_data: {
-                                                          mime_type: file.content_type,
-                                                          data: data
-                                                        }
-                                                      }
-                                                    ]
-                                                  }
-                                                ]
-                                              })
-
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
-  end
-
-  def extraction_prompt(upload)
-    <<~PROMPT
-      #{extraction_task(upload.media_type)}
-
-      Return only the Japanese text itself, exactly as it appears, with no
-      commentary, labels, headings, or explanation. Do not translate anything.
-      If there is no Japanese in the file, return nothing at all.
-    PROMPT
-  end
-
-  def extraction_task(media_type)
-    case media_type
-    when "photo"    then "Transcribe all Japanese text visible in this image."
-    when "document" then "Extract all Japanese text content from this document."
-    when "audio"    then "Transcribe the Japanese speech in this audio recording."
-    else                 "Extract or transcribe any Japanese text or speech in this file."
-    end
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

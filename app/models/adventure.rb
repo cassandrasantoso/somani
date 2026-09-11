@@ -1,5 +1,3 @@
-require "gemini-ai"
-
 class Adventure < ApplicationRecord
   STATUSES = %w[active completed].freeze
   PROMPT_FOCUS_LIMIT = 4
@@ -141,9 +139,11 @@ class Adventure < ApplicationRecord
       - Do not explain anything
     PROMPT
 
-    generated_title = generate_title_with_gemini(prompt)
+    generated_title = GeminiClient.generate_text(prompt)
 
     update!(title: generated_title) if generated_title.present?
+  rescue StandardError => e
+    Rails.logger.error("Adventure##{id} title generation failed: #{e.class}: #{e.message}")
   end
 
   def active? = status == "active"
@@ -176,41 +176,5 @@ class Adventure < ApplicationRecord
       partial: "adventures/goal_banner",
       locals: { adventure: self }
     )
-  end
-
-  private
-
-  def generate_title_with_gemini(prompt)
-    client = Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: {
-        model: ENV.fetch("GEMINI_MODEL")
-      }
-    )
-    begin
-      response = client.generate_content(
-        {
-          contents: [
-            {
-              role: "user",
-              parts: [
-                { text: prompt }
-              ]
-            }
-          ]
-        }
-      )
-
-      response
-        .dig("candidates", 0, "content", "parts", 0, "text")
-        .to_s
-        .strip
-    rescue StandardError => e
-      Rails.logger.error("Adventure##{id} title generation failed: #{e.class}: #{e.message}")
-      nil
-    end
   end
 end

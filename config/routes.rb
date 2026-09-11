@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   resources :uploads, only: %i[index new create show destroy] do  # story 1 - upload media, AI maps to JLPT level
     resources :saved_words, only: %i[index new create]   # story 2 - select words from the scanned content
     resources :adventures,  only: %i[new create]         # story 12 - create a new adventure
+    member { post :extract }
+    collection { post :sample }
   end
 
   resources :uploaded_words, only: %i[destroy]           # unlink a word

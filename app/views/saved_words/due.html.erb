@@ -1,2 +1,61 @@
-<h1>SavedWords#due</h1>
-<p>Find me in app/views/saved_words/due.html.erb</p>
+<div class="my-words">
+  <div class="my-words__header">
+    <h1>Due for review</h1>
+    <p class="my-words__subtitle">
+      <%= pluralize(@saved_words.size, "word") %> ready for another look
+    </p>
+  </div>
+
+  <% if @saved_words.any? %>
+    <div class="quiz" data-controller="quiz" data-quiz-index="0">
+      <p class="quiz__progress" data-quiz-target="progress">1 / <%= @saved_words.size %></p>
+
+      <% @saved_words.each do |word| %>
+        <div class="quiz-card"
+             data-quiz-target="card"
+             data-quiz-review-url="<%= review_saved_word_path(word) %>"
+             hidden>
+          <p class="quiz-card__surface"><%= word.surface %></p>
+
+          <% pronounceable = word.reading.presence || word.surface %>
+          <span class="quiz-card__listen"
+                data-controller="audio-player"
+                data-audio-player-url-value="<%= pronunciation_path(text: pronounceable) %>">
+            <button type="button" class="quiz-card__listen-btn" data-action="audio-player#play">▶ Listen</button>
+          </span>
+
+          <div class="quiz-card__answer" data-quiz-target="answer" hidden>
+            <% if word.reading.present? %>
+              <p class="quiz-card__reading"><%= word.reading %></p>
+            <% end %>
+            <% if word.meaning.present? %>
+              <p class="quiz-card__meaning"><%= word.meaning %></p>
+            <% end %>
+            <% if word.level.present? %>
+              <span class="quiz-card__level" data-level="<%= word.level %>"><%= word.level %></span>
+            <% end %>
+            <% if word.explanation.present? %>
+              <p class="quiz-card__explanation"><%= word.explanation %></p>
+            <% end %>
+          </div>
+
+          <button type="button" class="quiz-card__btn quiz-card__btn--reveal" data-action="quiz#reveal" data-quiz-target="reveal">
+            Show answer
+          </button>
+
+          <div class="quiz-card__grades" data-quiz-target="grades" hidden>
+            <button type="button" class="quiz-card__btn quiz-card__btn--again" data-action="quiz#grade" data-quiz-grade-param="again">Again</button>
+            <button type="button" class="quiz-card__btn quiz-card__btn--good" data-action="quiz#grade" data-quiz-grade-param="good">Good</button>
+            <button type="button" class="quiz-card__btn quiz-card__btn--easy" data-action="quiz#grade" data-quiz-grade-param="easy">Easy</button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="my-words__empty">
+      <i class="fa-solid fa-book-open"></i>
+      <p>Nothing due for review right now — check back later.</p>
+      <%= link_to "Back to my words", saved_words_path, class: "quiz__back" %>
+    </div>
+  <% end %>
+</div>

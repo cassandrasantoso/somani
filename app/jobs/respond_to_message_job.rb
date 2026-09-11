@@ -1,13 +1,15 @@
-require "gemini-ai"
-
 class RespondToMessageJob < ApplicationJob
   queue_as :default
 
+  retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  discard_on ActiveJob::DeserializationError
+
   def perform(message, mode: nil)
     adventure = message.adventure
-    reply_text = generate_reply(adventure, mode)
+    body, furigana = generate_reply(adventure, mode)
 
-    adventure.messages.create!(role: "assistant", body: reply_text)
+    reply = adventure.messages.create!(role: "assistant", body: body, furigana: furigana)
+    GenerateAudioJob.perform_later(reply)
 
     # after the reply: that's what the user is waiting for. #recheck rescues
     # internally so a failed word check can't take this job down.
@@ -19,15 +21,39 @@ class RespondToMessageJob < ApplicationJob
 
   private
 
+  # Returns [body, furigana]. furigana is nil when the model's segmented
+  # response was unusable and the reply fell back to plain text.
   def generate_reply(adventure, mode)
-    response = gemini_client.generate_content({
-                                                system_instruction: {
-                                                  parts: [{ text: system_prompt(adventure, mode) }]
-                                                },
-                                                contents: conversation_contents(adventure)
-                                              })
+    data = GeminiClient.generate_conversation_json(
+      conversation_contents(adventure),
+      system_instruction: system_prompt(adventure, mode)
+    )
+    segments = valid_segments(data)
 
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
+    return plain_reply(adventure, mode) if segments.nil?
+
+    [segments.map { |s| s["base"] }.join, segments]
+  end
+
+  def plain_reply(adventure, mode)
+    [GeminiClient.generate_conversation(
+      conversation_contents(adventure),
+      system_instruction: system_prompt(adventure, mode)
+    ), nil]
+  end
+
+  # [{"base" => "今日", "reading" => "きょう"}, {"base" => "は"}] — or nil when
+  # the response isn't a usable segment list, so the caller can fall back.
+  def valid_segments(data)
+    return nil unless data.is_a?(Hash) && data["segments"].is_a?(Array)
+
+    segments = data["segments"].filter_map do |segment|
+      next unless segment.is_a?(Hash) && segment["base"].is_a?(String) && segment["base"].present?
+
+      { "base" => segment["base"], "reading" => segment["reading"].to_s.presence }
+    end
+
+    segments.empty? ? nil : segments
   end
 
   def name_guidance(user)
@@ -69,10 +95,21 @@ class RespondToMessageJob < ApplicationJob
 
       #{vocabulary_guidance(adventure)}
 
-      Stay fully in character. Reply only in natural Japanese dialogue, continuing
-      the scene based on what the user just said. Keep responses concise
-      (1-2 sentences MAX). Do not break character, do not include English
-      translations, and do not add stage directions or narration outside dialogue.
+      Stay fully in character. Continue the scene based on what the user just
+      said. Keep responses concise (1-2 sentences MAX). Do not break character,
+      do not include English translations, and do not add stage directions or
+      narration outside dialogue.
+
+      Return the reply as JSON in exactly this shape:
+      {"segments": [{"base": "今日", "reading": "きょう"}, {"base": "は"}]}
+
+      Segment rules:
+      - Concatenated in order, the base values must form your complete reply
+        exactly, character for character.
+      - A segment with kanji in it carries that chunk's kana reading.
+        Runs of plain kana, punctuation and numbers have no reading (null).
+      - Keep segments short: never merge two words into one segment.
+      - Readings are hiragana, or katakana when the base itself is katakana.
     PROMPT
   end
 
@@ -142,15 +179,5 @@ class RespondToMessageJob < ApplicationJob
         parts: [{ text: msg.body }]
       }
     end
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

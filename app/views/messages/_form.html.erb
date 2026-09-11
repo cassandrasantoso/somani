@@ -3,9 +3,24 @@
         id: "message-form",
         class: "chat-form",
         data: {
+          controller: "kana-input",
           action: "submit->chat#showLoader"
         }
       } do |f| %>
+
+  <% if defined?(practice_words) && practice_words.any? %>
+    <div class="chat-form__chips">
+      <% practice_words.each do |word| %>
+        <button type="button"
+                class="chat-form__chip"
+                data-action="chat#insertWord"
+                data-chat-word-param="<%= word.surface %>"
+                title="<%= word.meaning %>">
+          <%= word.surface %>
+        </button>
+      <% end %>
+    </div>
+  <% end %>
 
   <div class="chat-form__input-wrapper">
 
@@ -18,12 +33,20 @@
             rows: 1,
             data: {
               chat_target: "input",
+              kana_input_target: "input",
               action: "input->chat#autoResize"
             }
           },
           wrapper_html: {
             class: "chat-form__field"
           } %>
+
+    <button type="button"
+            class="chat-form__kana"
+            data-kana-input-target="toggle"
+            data-action="kana-input#toggle"
+            aria-pressed="false"
+            title="Toggle romaji → kana conversion">あ</button>
 
     <%= f.submit "➤",
           class: "chat-form__send",

@@ -762,3 +762,39 @@
     flex: 1;
   }
 }
+
+.extracted-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.extracted-status__text {
+  color: var(--dark-cream);
+  opacity: 0.9;
+}
+
+.extracted-status__retry {
+  background: var(--sage);
+  color: var(--card);
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+}
+
+.upload-sample-btn {
+  background: transparent;
+  color: var(--sage);
+  border: 1px dashed var(--sage);
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+}
+
+.upload-sample-btn:hover {
+  background: var(--sage-light);
+}

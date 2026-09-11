@@ -1,5 +1,3 @@
-require "gemini-ai"
-
 class ReviewMessageJob < ApplicationJob
   queue_as :default
 
@@ -28,8 +26,9 @@ class ReviewMessageJob < ApplicationJob
     return if message.feedback.present?
     return if message.body.to_s.strip.length < MIN_LENGTH && message.word_usages.none?
 
-    data = parse(raw_response(message))
+    data = GeminiClient.generate_json(prompt(message))
     return if data.blank?                      # no review → stays pending
+    return unless data.is_a?(Hash)
 
     feedback = message.create_feedback!(
       assessment: data["assessment"].to_s.strip.presence,
@@ -71,36 +70,12 @@ class ReviewMessageJob < ApplicationJob
     end
   end
 
-  def raw_response(message)
-    response = gemini_client.generate_content(
-      { contents: [{ role: "user", parts: [{ text: prompt(message) }] }] }
-    )
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s
-  end
-
-  def parse(text)
-    cleaned = text.gsub(/```(?:json)?/, "").strip
-    match   = cleaned[/\{.*\}/m]
-    match ? JSON.parse(match) : nil
-  rescue JSON::ParserError
-    Rails.logger.warn("ReviewMessageJob unparseable: #{text.truncate(200)}")
-    nil
-  end
-
   def broadcast(message)
     message.broadcast_replace_to(
       message.adventure,
       target: ActionView::RecordIdentifier.dom_id(message, :feedback),
       partial: "feedbacks/feedback",
       locals: { message: message }
-    )
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: { service: "generative-language-api",
-                     api_key: ENV.fetch("GEMINI_API_KEY") },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
     )
   end
 

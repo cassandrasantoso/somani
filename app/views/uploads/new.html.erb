@@ -8,6 +8,13 @@
     <h1>📝Upload media</h1>
   </div>
 
+  <div class="m-3 text-center">
+    <%= button_to "No Japanese material yet? Try a sample menu",
+                  sample_uploads_path,
+                  method: :post,
+                  class: "upload-sample-btn" %>
+  </div>
+
   <%= simple_form_for @upload,
                        html: {
                          class: "upload-form-card p-4 m-3 w-70",

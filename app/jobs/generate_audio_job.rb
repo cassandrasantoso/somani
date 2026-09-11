@@ -2,7 +2,12 @@
 class GenerateAudioJob < ApplicationJob
   queue_as :default
 
+  retry_on AzureTextToSpeech::Error, wait: :polynomially_longer, attempts: 3
+  discard_on ActiveJob::DeserializationError
+
   def perform(message)
+    return if message.audio.attached?
+
     character = message.adventure.scene.character
     audio_data = AzureTextToSpeech.synthesize(message.body, voice_name: character.voice)
 

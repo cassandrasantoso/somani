@@ -42,6 +42,8 @@ class Scene < ApplicationRecord
   private
 
   def enqueue_embedding
+    return if ENV["GEMINI_API_KEY"].blank?
+
     GenerateSceneEmbeddingJob.perform_later(self)
   end
 end

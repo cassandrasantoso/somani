@@ -1,0 +1,14 @@
+<%# AI-generated summary %>
+<% if upload.summary.present? %>
+  <section class="upload-insight">
+    <div class="upload-insight__icon" aria-hidden="true">
+       <%= image_tag "somani_bird.png",
+                  class: "upload-insight__bird",
+                  alt: "Somani bird" %>
+    </div>
+
+    <p class="upload-insight__text">
+      <%= upload.summary %>
+    </p>
+  </section>
+<% end %>
