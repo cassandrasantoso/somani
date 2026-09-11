@@ -135,3 +135,13 @@
   opacity: 0.75;
   letter-spacing: 0.02em;
 }
+
+.message__cursor {
+  animation: message-cursor-blink 0.8s steps(1) infinite;
+}
+
+@keyframes message-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}

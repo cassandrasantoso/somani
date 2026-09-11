@@ -3,15 +3,6 @@ class EmbeddingService
   DIMENSIONS = 768
 
   def self.generate(text)
-    GeminiClient.client(model: MODEL).embed_content(
-      {
-        content: {
-          parts: [
-            { text: text }
-          ]
-        },
-        output_dimensionality: DIMENSIONS
-      }
-    ).dig("embedding", "values")
+    GeminiClient.embed(text, model: MODEL).dig("embedding", "values")
   end
 end

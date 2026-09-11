@@ -20,10 +20,13 @@ class GenerateUploadSceneJobTest < ActiveSupport::TestCase
   end
 
   def stub_class(klass, method, result)
+    original = klass.method(method)
     klass.define_singleton_method(method) { |_arg, **| result }
     yield
   ensure
-    klass.singleton_class.send(:remove_method, method)
+    klass.singleton_class.send(:define_method, method) do |*args, **kwargs, &block|
+      original.call(*args, **kwargs, &block)
+    end
   end
 
   test "creates a character and generated scene from the upload topic" do

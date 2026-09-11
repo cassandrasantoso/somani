@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resource :settings, only: %i[edit update]
 
   get "about" => "pages#about", as: :about
+  post "timezone" => "timezone#create"
 
   # ownership root
   resources :uploads, only: %i[index new create show destroy] do  # story 1 - upload media, AI maps to JLPT level
