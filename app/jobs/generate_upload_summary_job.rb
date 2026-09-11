@@ -10,6 +10,7 @@ class GenerateUploadSummaryJob < ApplicationJob
 
     upload.update!(summary: GeminiClient.generate_text(summary_prompt(upload.extracted_text)))
     upload.broadcast_summary
+    GenerateUploadSceneJob.perform_later(upload)
   end
 
   private
