@@ -4,8 +4,11 @@ class Llm
   # The default provider. Model selection comes from GEMINI_MODEL and
   # GEMINI_LITE_MODEL; mechanical calls pass model: :lite.
   class GeminiProvider
-    DEFAULT_MODEL = "gemini-2.5-flash"
-    LITE_MODEL = "gemini-2.5-flash-lite"
+    # Defaults proven against the current API (September 2026): this model
+    # family is what fresh keys resolve. GEMINI_MODEL / GEMINI_LITE_MODEL
+    # override both — raise them for a heavier tier if the key allows it.
+    DEFAULT_MODEL = "gemini-3.1-flash-lite"
+    LITE_MODEL = "gemini-3.1-flash-lite"
     EMBED_MODEL = "gemini-embedding-001"
     EMBED_DIMENSIONS = 768
     REQUEST_TIMEOUT = 120
