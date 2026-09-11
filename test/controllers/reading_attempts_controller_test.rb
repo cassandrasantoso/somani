@@ -44,6 +44,37 @@ class ReadingAttemptsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 50, ReadingAttempt.last.comprehension
   end
 
+  test "listening attempts record comprehension without speed" do
+    assert_difference "ReadingAttempt.count", 1 do
+      post reading_passage_reading_attempts_path(@passage),
+           params: { answers: [0, 1], duration_ms: 45_000, mode: "listening" },
+           as: :turbo_stream
+    end
+
+    attempt = ReadingAttempt.last
+    assert attempt.listening?
+    assert_nil attempt.wpm
+    assert_equal 100, attempt.comprehension
+  end
+
+  test "listening attempts reject a speed value" do
+    attempt = ReadingAttempt.new(user: @user, reading_passage: @passage,
+                                 duration_ms: 10_000, wpm: 400,
+                                 comprehension: 80, mode: :listening)
+
+    assert_not attempt.valid?
+    assert_not_empty attempt.errors[:wpm]
+  end
+
+  test "reading attempts still require speed" do
+    attempt = ReadingAttempt.new(user: @user, reading_passage: @passage,
+                                 duration_ms: 10_000, wpm: nil,
+                                 comprehension: 80, mode: :reading)
+
+    assert_not attempt.valid?
+    assert_not_empty attempt.errors[:wpm]
+  end
+
   test "rejects another user's passage" do
     other = User.create!(email: "attempt-other@example.com", password: "password123", username: "attemptother")
     other_upload = Upload.new(user: other, media_type: "document", extracted_text: "他人の文章。")

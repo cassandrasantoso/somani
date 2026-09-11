@@ -1,6 +1,7 @@
 class ReadingPassage < ApplicationRecord
   belongs_to :upload
   has_many :reading_attempts, dependent: :destroy
+  has_one_attached :audio
 
   MIN_PASSAGE_CHARS = 250
   MAX_PASSAGE_CHARS = 600

@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   end
 
   resources :reading_passages, only: %i[show] do
+    member { get :audio }
     resources :reading_attempts, only: %i[create]
   end
 

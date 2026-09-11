@@ -4,29 +4,38 @@
   </div>
 
   <div class="reading-drill__scores">
-    <div class="reading-drill__score">
-      <span class="reading-drill__score-value"><%= attempt.wpm %></span>
-      <span class="reading-drill__score-label">chars / min</span>
-    </div>
+    <% if attempt.wpm.present? %>
+      <div class="reading-drill__score">
+        <span class="reading-drill__score-value"><%= attempt.wpm %></span>
+        <span class="reading-drill__score-label">chars / min</span>
+      </div>
+    <% else %>
+      <div class="reading-drill__score">
+        <span class="reading-drill__score-value">👂</span>
+        <span class="reading-drill__score-label">listening</span>
+      </div>
+    <% end %>
     <div class="reading-drill__score">
       <span class="reading-drill__score-value"><%= attempt.comprehension %>%</span>
       <span class="reading-drill__score-label">comprehension</span>
     </div>
-    <div class="reading-drill__score">
-      <span class="reading-drill__score-value"><%= attempt.next_target_wpm %></span>
-      <span class="reading-drill__score-label">next target</span>
-    </div>
+    <% if attempt.wpm.present? %>
+      <div class="reading-drill__score">
+        <span class="reading-drill__score-value"><%= attempt.next_target_wpm %></span>
+        <span class="reading-drill__score-label">next target</span>
+      </div>
+    <% end %>
   </div>
 
   <p class="reading-drill__verdict">
-    <% if attempt.comprehension >= 70 %>
-      <% if attempt.next_target_wpm > (attempt.wpm * 1.05).round %>
-        Solid comprehension — now push the speed.
-      <% else %>
-        New personal pace. Keep this comprehension and go faster.
-      <% end %>
+    <% if attempt.comprehension < 70 %>
+      Comprehension under 70% — <% if attempt.listening? %>listen again more carefully<% else %>slow down 10-15% and rebuild accuracy first<% end %>.
+    <% elsif attempt.listening? %>
+      Solid listening comprehension — try it again at natural speed, or switch to reading mode.
+    <% elsif attempt.next_target_wpm > (attempt.wpm * 1.05).round %>
+      Solid comprehension — now push the speed.
     <% else %>
-      Comprehension under 70% — slow down 10-15% and rebuild accuracy first.
+      New personal pace. Keep this comprehension and go faster.
     <% end %>
   </p>
 

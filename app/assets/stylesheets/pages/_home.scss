@@ -618,3 +618,64 @@
     padding: 0.85rem 2.5rem;
   }
 }
+
+.today-card {
+  background: var(--card);
+  border: 1px solid var(--hairline);
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.today-card__eyebrow {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sage);
+  font-weight: 700;
+}
+
+.today-card__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.today-card__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  flex: 1;
+}
+
+.today-card__item:hover {
+  background: var(--sage-light);
+}
+
+.today-card__item--empty {
+  color: var(--dark-cream);
+}
+
+.today-card__value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--sage);
+}
+
+.today-card__item--empty .today-card__value {
+  color: var(--dark-cream);
+}
+
+.today-card__label {
+  font-size: 0.9rem;
+  color: var(--dark-cream);
+}
+
+.today-card__divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--hairline);
+}

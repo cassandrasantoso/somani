@@ -197,3 +197,13 @@
   justify-content: center;
   flex-wrap: wrap;
 }
+
+.reading-drill__choices {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.reading-drill__listen {
+  display: contents;
+}

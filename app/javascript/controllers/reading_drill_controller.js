@@ -1,12 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["intro", "reading", "quiz", "timer"]
+  static targets = ["intro", "reading", "listening", "quiz", "timer"]
   static values = { attemptUrl: String }
 
   connect() {
     this.startedAt = null
     this.timerInterval = null
+    this.mode = "reading"
   }
 
   disconnect() {
@@ -14,16 +15,25 @@ export default class extends Controller {
   }
 
   start() {
-    this.startedAt = performance.now()
-    this.introTarget.hidden = true
-    this.readingTarget.hidden = false
-    this.startTimer()
+    this.mode = "reading"
+    this.begin(this.readingTarget)
+  }
+
+  startListening() {
+    this.mode = "listening"
+    this.begin(this.listeningTarget)
+  }
+
+  listenAndPlay() {
+    this.startClock()
   }
 
   finish() {
     this.durationMs = Math.round(performance.now() - this.startedAt)
     this.stopTimer()
-    this.readingTarget.hidden = true
+
+    const stage = this.mode === "listening" ? this.listeningTarget : this.readingTarget
+    stage.hidden = true
     this.quizTarget.hidden = false
   }
 
@@ -44,7 +54,7 @@ export default class extends Controller {
         "Accept": "text/vnd.turbo-stream.html",
         "X-CSRF-Token": token ? token.content : ""
       },
-      body: JSON.stringify({ answers: answers, duration_ms: this.durationMs })
+      body: JSON.stringify({ answers: answers, duration_ms: this.durationMs, mode: this.mode })
     })
       .then((response) => response.text())
       .then((html) => window.Turbo.renderStreamMessage(html))
@@ -53,7 +63,17 @@ export default class extends Controller {
 
   private
 
-  startTimer() {
+  begin(stage) {
+    this.startedAt = performance.now()
+    this.introTarget.hidden = true
+    stage.hidden = false
+    this.startClock()
+  }
+
+  startClock() {
+    if (this.timerInterval) return
+
+    this.startedAt ||= performance.now()
     this.timerInterval = setInterval(() => {
       const elapsed = (performance.now() - this.startedAt) / 1000
       this.timerTarget.textContent = elapsed.toFixed(1)

@@ -18,7 +18,10 @@
     <div class="reading-drill__stage reading-drill__stage--intro" data-reading-drill-target="intro">
       <p><%= passage.char_count %> characters. Read it once at your natural speed, then answer <%= passage.questions.size %> questions.</p>
       <p class="reading-drill__hint">Speed without comprehension doesn't count — the quiz grades both.</p>
-      <button type="button" class="reading-drill__btn reading-drill__btn--primary" data-action="reading-drill#start">Start reading</button>
+      <div class="reading-drill__choices">
+        <button type="button" class="reading-drill__btn reading-drill__btn--primary" data-action="reading-drill#start">Start reading</button>
+        <button type="button" class="reading-drill__btn" data-action="reading-drill#startListening">Listen instead</button>
+      </div>
     </div>
 
     <div class="reading-drill__stage" data-reading-drill-target="reading" hidden>
@@ -27,6 +30,17 @@
         <%= passage.text %>
       </div>
       <button type="button" class="reading-drill__btn reading-drill__btn--primary" data-action="reading-drill#finish">Finished</button>
+    </div>
+
+    <div class="reading-drill__stage" data-reading-drill-target="listening" hidden>
+      <p class="reading-drill__timer"><span data-reading-drill-target="timer">0.0</span>s</p>
+      <p>Close your eyes or look away — the text stays hidden. Play the audio, listen once, then answer.</p>
+      <span class="reading-drill__listen"
+            data-controller="audio-player"
+            data-audio-player-url-value="<%= audio_reading_passage_path(passage) %>">
+        <button type="button" class="reading-drill__btn reading-drill__btn--primary" data-action="audio-player#play reading-drill#listenAndPlay">▶ Play</button>
+      </span>
+      <button type="button" class="reading-drill__btn" data-action="reading-drill#finish">Finished</button>
     </div>
 
     <div class="reading-drill__stage" data-reading-drill-target="quiz" hidden>

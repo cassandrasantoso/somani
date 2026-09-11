@@ -28,6 +28,28 @@
             <p class="welcome-card__subtitle">🌸Welcome back to Somani🌸</p>
           </div>
         </div>
+
+        <div class="today-card">
+          <p class="today-card__eyebrow">今日 Today</p>
+          <div class="today-card__row">
+            <%= link_to due_saved_words_path, class: "today-card__item #{'today-card__item--empty' if @due_words_count.zero?}" do %>
+              <span class="today-card__value"><%= @due_words_count %></span>
+              <span class="today-card__label"><%= @due_words_count.zero? ? "words — all caught up ✨" : "words due for review" %></span>
+            <% end %>
+            <span class="today-card__divider" aria-hidden="true"></span>
+            <% if @drill_uploads.any? %>
+              <%= link_to upload_reading_drill_path(@drill_uploads.first), class: "today-card__item" do %>
+                <span class="today-card__value">⚡</span>
+                <span class="today-card__label">speed reading ready</span>
+              <% end %>
+            <% else %>
+              <%= link_to uploads_path, class: "today-card__item today-card__item--empty" do %>
+                <span class="today-card__value">＋</span>
+                <span class="today-card__label">upload to unlock drills</span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
       </div>
 
       <div class=" col-lg-4 order-lg-2">
