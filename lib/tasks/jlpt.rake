@@ -55,7 +55,7 @@ namespace :jlpt do
     end
   end
 
-  desc "Import JMdict common words as level-less entries (download jmdict-eng JSON from github.com/scriptin/jmdict-simplified releases first)"
+  desc "Import JMdict common words as level-less entries (see task source for the download)"
   task :import_jmdict, [:path] => :environment do |_t, args|
     path = args[:path] || Rails.root.join("db/data/jmdict-eng.json")
     abort("JMdict JSON not found at #{path} — download it first") unless File.exist?(path)
