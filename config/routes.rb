@@ -27,6 +27,11 @@ Rails.application.routes.draw do
     resources :adventures,  only: %i[new create]         # story 12 - create a new adventure
     member { post :extract }
     collection { post :sample }
+    resource :reading_drill, only: %i[show create]
+  end
+
+  resources :reading_passages, only: %i[show] do
+    resources :reading_attempts, only: %i[create]
   end
 
   resources :uploaded_words, only: %i[destroy]           # unlink a word

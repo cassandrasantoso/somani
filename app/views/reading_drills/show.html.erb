@@ -1,0 +1,15 @@
+<%= turbo_stream_from @upload %>
+
+<div class="reading-drill-page">
+  <div class="reading-drill-page__header">
+    <h1>速読 Speed reading</h1>
+    <p class="reading-drill-page__subtitle">
+      <%= @passages.size %> passages from
+      <%= @upload.summary.present? ? @upload.summary : "your upload" %>
+    </p>
+  </div>
+
+  <div id="reading-drill">
+    <%= render "reading_drills/drill", upload: @upload %>
+  </div>
+</div>

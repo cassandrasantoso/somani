@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "reading-drill-#{@passage.id}" do %>
+  <%= render "reading_attempts/results", attempt: @attempt, passage: @passage %>
+<% end %>

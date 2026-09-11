@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :adventures, through: :uploads
   # this keeps user's words alive when an upload is deleted:
   has_many :saved_words, dependent: :destroy
+  has_many :reading_attempts, dependent: :destroy
   has_one_attached :avatar
 
   has_many :active_friendships, class_name: "Friendship", foreign_key: :follower_id, dependent: :destroy

@@ -1,0 +1,28 @@
+<% passages = upload.reading_passages.order(:position) %>
+
+<% if passages.any? %>
+  <ol class="reading-drill-list">
+    <% passages.each do |passage| %>
+      <% attempts = passage.reading_attempts.where(user: upload.user) %>
+      <% best = attempts.where("comprehension >= ?", 70).maximum(:wpm) %>
+
+      <li class="reading-drill-list__item">
+        <div class="reading-drill-list__info">
+          <span class="reading-drill-list__position">Passage <%= passage.position %></span>
+          <span class="reading-drill-list__meta"><%= passage.char_count %> chars · <%= passage.questions.size %> questions</span>
+          <% if best %>
+            <span class="reading-drill-list__best">best <%= best %> chars/min</span>
+          <% end %>
+        </div>
+        <%= link_to "Practice", reading_passage_path(passage), class: "reading-drill-list__btn" %>
+      </li>
+    <% end %>
+  </ol>
+<% elsif upload.extracted_text.blank? %>
+  <p class="reading-drill-list__empty">This upload has no extracted text to practice with.</p>
+<% else %>
+  <div class="reading-drill-list__preparing">
+    <div class="loader" aria-hidden="true"></div>
+    <p>Preparing your drill…</p>
+  </div>
+<% end %>

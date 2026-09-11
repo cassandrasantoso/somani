@@ -12,6 +12,7 @@ class Upload < ApplicationRecord
   has_many :uploaded_words, dependent: :destroy
   has_many :saved_words, through: :uploaded_words
   has_many :adventures, dependent: :destroy
+  has_many :reading_passages, dependent: :destroy
 
   has_one_attached :file
 
@@ -87,6 +88,15 @@ class Upload < ApplicationRecord
       self,
       target: "upload-summary",
       partial: "uploads/summary",
+      locals: { upload: self }
+    )
+  end
+
+  def broadcast_reading_drill
+    broadcast_replace_to(
+      self,
+      target: "reading-drill",
+      partial: "reading_drills/drill",
       locals: { upload: self }
     )
   end
