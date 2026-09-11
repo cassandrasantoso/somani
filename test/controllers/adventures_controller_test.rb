@@ -31,12 +31,17 @@ class AdventuresControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Minitest 6 dropped Minitest::Mock from this app's bundle, so Gemini.new is
-  # swapped out by hand instead — same effect, no extra dependency.
+  # swapped out by hand instead — same effect, no extra dependency. The
+  # original method is restored afterwards: removing it outright deletes
+  # Gemini.new for every later test in the same process.
   def stub_gemini
+    original_new = Gemini.method(:new)
     Gemini.define_singleton_method(:new) { |*_args, **_kwargs| FakeGeminiClient.new }
     yield
   ensure
-    Gemini.singleton_class.send(:remove_method, :new)
+    Gemini.singleton_class.send(:define_method, :new) do |*args, **kwargs, &block|
+      original_new.call(*args, **kwargs, &block)
+    end
   end
 
   test "create finishes the draft adventure with an AI-picked scene, word targets already set" do

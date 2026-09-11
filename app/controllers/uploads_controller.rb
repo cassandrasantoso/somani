@@ -23,6 +23,10 @@ class UploadsController < ApplicationController
     @upload.user = current_user
     authorize @upload
 
+    if DailyLimit.upload_exceeded?(current_user)
+      return redirect_to uploads_path, alert: "Daily upload limit reached — see you tomorrow!"
+    end
+
     if @upload.save
       # Created scene-less (see Adventure#draft?) so the show page has an
       # adventure id to attach the word-target form to before the learner
@@ -49,6 +53,10 @@ class UploadsController < ApplicationController
   end
 
   def sample
+    if DailyLimit.upload_exceeded?(current_user)
+      return redirect_to uploads_path, alert: "Daily upload limit reached — see you tomorrow!"
+    end
+
     @upload = Upload.new(user: current_user)
     @upload.file.attach(
       io: File.open(Rails.root.join("db", "samples", "menu.txt")),

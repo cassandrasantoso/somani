@@ -4,6 +4,11 @@ class MessagesController < ApplicationController
   # story 7 — saves the user's line, then hands off to the AI
   def create
     @adventure = Adventure.find(params[:adventure_id])
+
+    if DailyLimit.message_exceeded?(current_user)
+      return redirect_to @adventure, alert: "Daily message limit reached — see you tomorrow!"
+    end
+
     @message = @adventure.messages.new(message_params.merge(role: "user"))
     authorize @message
 

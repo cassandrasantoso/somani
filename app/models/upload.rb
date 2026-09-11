@@ -34,15 +34,23 @@ class Upload < ApplicationRecord
     nil
   end
 
-  # Seeded words that appear in this upload's text, found in one query
+  # Seeded words that appear in this upload's text. The candidate contents are
+  # cached (the full list is ~8k rows), matched in memory, and only the
+  # matches go back to the database through the indexed equality lookup —
+  # no per-request sequential scan.
   def matched_jlpt_entries
     return JlptEntry.none if extracted_text.blank?
 
-    candidates = JlptEntry.words
-                          .where.not(content: [nil, ""])
-                          .where("? LIKE '%' || content || '%'", extracted_text)
+    matched = self.class.entry_contents.select { |content| extracted_text.include?(content) }
+    matched = matched.reject { |content| content.length == 1 && content.match?(UNSAFE_SINGLE_CHAR) }
 
-    candidates.reject { |entry| entry.content.length == 1 && entry.content.match?(UNSAFE_SINGLE_CHAR) }
+    JlptEntry.words.where(content: matched)
+  end
+
+  def self.entry_contents
+    Rails.cache.fetch("jlpt/entry_contents", expires_in: 1.hour) do
+      JlptEntry.words.where.not(content: [nil, ""]).distinct.pluck(:content)
+    end
   end
 
   def highest_word_level
