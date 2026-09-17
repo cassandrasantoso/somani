@@ -1,30 +1,40 @@
 # app/jobs/opening_line_job.rb
-require "gemini-ai"
-
 class OpeningLineJob < ApplicationJob
   queue_as :default
 
   retry_on Faraday::TooManyRequestsError, wait: :polynomially_longer, attempts: 5
+  discard_on ActiveJob::DeserializationError
 
   def perform(adventure)
-    opening_text = generate_opening(adventure)
+    body, furigana = generate_opening(adventure)
 
-    adventure.messages.create!(role: "assistant", body: opening_text)
+    message = adventure.messages.create!(role: "assistant", body: body, furigana: furigana)
+    GenerateAudioJob.perform_later(message)
   end
 
   private
 
+  # Returns [body, furigana]; furigana is nil when the segmented response was
+  # unusable and the opening fell back to plain text (see RespondToMessageJob).
   def generate_opening(adventure)
-    response = gemini_client.generate_content({
-                                                contents: [
-                                                  {
-                                                    role: "user",
-                                                    parts: [{ text: prompt(adventure) }]
-                                                  }
-                                                ]
-                                              })
+    data = GeminiClient.generate_json(prompt(adventure))
+    segments = valid_segments(data)
 
-    response.dig("candidates", 0, "content", "parts", 0, "text").to_s.strip
+    return [GeminiClient.generate_text(prompt(adventure)), nil] if segments.nil?
+
+    [segments.map { |s| s["base"] }.join, segments]
+  end
+
+  def valid_segments(data)
+    return nil unless data.is_a?(Hash) && data["segments"].is_a?(Array)
+
+    segments = data["segments"].filter_map do |segment|
+      next unless segment.is_a?(Hash) && segment["base"].is_a?(String) && segment["base"].present?
+
+      { "base" => segment["base"], "reading" => segment["reading"].to_s.presence }
+    end
+
+    segments.empty? ? nil : segments
   end
 
   def name_guidance(user)
@@ -66,9 +76,20 @@ class OpeningLineJob < ApplicationJob
 
       Write the character's OPENING line to start this scene — the very first
       thing they say to the learner, setting the scene and inviting a reply.
-      Reply only in natural Japanese dialogue. Keep it concise (1-2 sentences MAX).
+      Stay fully in character. Keep it concise (1-2 sentences MAX).
       Do not break character, do not include English translations, and do not
       add stage directions or narration outside dialogue.
+
+      Return the line as JSON in exactly this shape:
+      {"segments": [{"base": "今日", "reading": "きょう"}, {"base": "は"}]}
+
+      Segment rules:
+      - Concatenated in order, the base values must form your complete line
+        exactly, character for character.
+      - A segment with kanji in it carries that chunk's kana reading.
+        Runs of plain kana, punctuation and numbers have no reading (null).
+      - Keep segments short: never merge two words into one segment.
+      - Readings are hiragana, or katakana when the base itself is katakana.
     PROMPT
   end
 
@@ -88,15 +109,5 @@ class OpeningLineJob < ApplicationJob
       Do not use the words yourself and do not mention that they are being
       practised. Open the door; let them walk through it.
     TEXT
-  end
-
-  def gemini_client
-    Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: { model: ENV.fetch("GEMINI_MODEL") }
-    )
   end
 end

@@ -235,7 +235,10 @@ namespace :jlpt do
                       .order("RANDOM()")
                       .limit(count)
 
-    puts "candidates in this class: #{JlptEntry.words.where(level: 'N1').where('content <> reading').where(reading: JlptEntry.words.where.not(level: 'N1').select(:content)).count}"
+    overlapping = JlptEntry.words.where(level: "N1")
+                           .where("content <> reading")
+                           .where(reading: JlptEntry.words.where.not(level: "N1").select(:content))
+    puts "candidates in this class: #{overlapping.count}"
 
     sample.each_with_index do |entry, i|
       uri = URI("https://jisho.org/api/v1/search/words?keyword=#{URI.encode_www_form_component(entry.content)}")

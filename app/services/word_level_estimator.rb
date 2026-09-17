@@ -11,35 +11,23 @@ class WordLevelEstimator
     @meaning = meaning
   end
 
-  # Returns { in_scope:, level:, category: } or nil if the response couldn't be parsed at all (see #parse).
+  # Returns { in_scope:, level:, category: } or nil if the response couldn't be parsed at all.
   # Transport/API errors (rate limits, network failures) are not rescued here and propagate to the caller,
   # matching how ReviewMessageJob#perform rescues at the call site rather than inside parsing.
   def call
-    client = Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: {
-        model: ENV.fetch("GEMINI_MODEL")
-      }
-    )
+    parsed = GeminiClient.generate_json(prompt, symbolize_names: true)
+    return nil unless parsed.is_a?(Hash)
 
-    response = client.generate_content(
-      {
-        contents: [
-          {
-            role: "user",
-            parts: [
-              { text: prompt }
-            ]
-          }
-        ]
-      }
-    )
+    level = VALID_LEVELS.include?(parsed[:level]) ? parsed[:level] : nil
 
-    text = response.dig("candidates", 0, "content", "parts", 0, "text").to_s
-    parse(text)
+    {
+      # Strict equality on purpose, matching ReviewMessageJob#sanitize:
+      # anything but a literal true — missing, null, a stray string means "not in scope."
+      # A confused model should shrink what it affects, not risk mislabeling a word N1.
+      in_scope: parsed[:in_scope] == true,
+      level: level,
+      category: parsed[:category].to_s.strip.presence
+    }
   end
 
   private
@@ -68,30 +56,5 @@ class WordLevelEstimator
       Respond with only JSON, no other text:
       {"in_scope": true|false, "level": "N3"|null, "category": "loanword"|null}
     PROMPT
-  end
-
-  # Same fence-stripping + brace-extraction as ReviewMessageJob#parse,
-  # so a markdown-wrapped or chatty response doesn't blow up JSON.parse.
-  # Returns nil on anything unparseable rather than raising,
-  # the caller decides what "no estimate" means.
-  def parse(text)
-    cleaned = text.gsub(/```(?:json)?/, "").strip
-    match   = cleaned[/\{.*\}/m]
-    return nil unless match
-
-    parsed = JSON.parse(match, symbolize_names: true)
-    level  = VALID_LEVELS.include?(parsed[:level]) ? parsed[:level] : nil
-
-    {
-      # Strict equality on purpose, matching ReviewMessageJob#sanitize:
-      # anything but a literal true — missing, null, a stray string means "not in scope."
-      # A confused model should shrink what it affects, not risk mislabeling a word N1.
-      in_scope: parsed[:in_scope] == true,
-      level: level,
-      category: parsed[:category].to_s.strip.presence
-    }
-  rescue JSON::ParserError
-    Rails.logger.warn("WordLevelEstimator unparseable for #{@surface.inspect}: #{text.truncate(200)}")
-    nil
   end
 end

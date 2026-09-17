@@ -20,6 +20,8 @@ class Upload < ApplicationRecord
   validates :file, presence: true
   validate  :file_must_be_readable
 
+  enum :extraction_status, { pending: "pending", ready: "ready", failed: "failed" }, default: :pending
+
   UNSAFE_SINGLE_CHAR = /\A[\p{Hiragana}\p{Katakana}ー]\z/
 
   def self.media_type_for(content_type)
@@ -56,6 +58,29 @@ class Upload < ApplicationRecord
   # { saved_word_id => target } for the draft adventure, or {} before one exists.
   def word_targets
     draft_adventure&.goal_targets || {}
+  end
+
+  # Same locals the word picker is rendered with everywhere else
+  # (UploadsController#show, SavedWordsController#create), so the async
+  # extraction completion can refresh the study material in place.
+  def broadcast_word_picker
+    broadcast_replace_to(
+      self,
+      target: "word-picker",
+      partial: "uploads/word_picker",
+      locals: { upload: self,
+                matched_entries: matched_jlpt_entries,
+                already_saved_surfaces: user.saved_words.pluck(:surface) }
+    )
+  end
+
+  def broadcast_summary
+    broadcast_replace_to(
+      self,
+      target: "upload-summary",
+      partial: "uploads/summary",
+      locals: { upload: self }
+    )
   end
 
   private

@@ -107,14 +107,14 @@ class SavedWordsController < ApplicationController
 
   def review
     authorize @saved_word, :update?
-    @saved_word.update(last_reviewed_at: Time.current,
-                       next_review_at: 1.day.from_now)
+
+    SrsSchedule.call(@saved_word, params[:grade].presence || "good")
+
     redirect_back fallback_location: saved_words_path
   end
 
   def due
     @saved_words = policy_scope(SavedWord).due.includes(adventures: { scene: :character })
-    render :index
   end
 
   def destroy

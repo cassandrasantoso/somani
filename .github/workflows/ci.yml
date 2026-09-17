@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/somani_test
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Prepare database
+        run: bin/rails db:prepare
+      - name: Style (RuboCop)
+        run: bin/rubocop
+      - name: Security (bundler-audit)
+        run: bin/bundler-audit
+      - name: Security (importmap audit)
+        run: bin/importmap audit
+      - name: Security (Brakeman)
+        run: bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error
+      - name: Tests
+        run: bin/rails test

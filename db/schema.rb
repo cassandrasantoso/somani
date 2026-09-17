@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_11_000200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "vector"
@@ -108,6 +108,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
     t.bigint "adventure_id", null: false
     t.text "body"
     t.datetime "created_at", null: false
+    t.jsonb "furigana"
     t.string "role"
     t.datetime "updated_at", null: false
     t.index ["adventure_id"], name: "index_messages_on_adventure_id"
@@ -124,6 +125,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
     t.text "meaning"
     t.datetime "next_review_at"
     t.string "reading"
+    t.decimal "review_ease", precision: 3, scale: 2, default: "2.5", null: false
+    t.integer "review_interval_days"
+    t.integer "review_repetitions", default: 0, null: false
     t.string "surface"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -156,6 +160,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_03_092941) do
   create_table "uploads", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.text "extracted_text"
+    t.string "extraction_status", default: "pending", null: false
     t.string "file_location"
     t.string "media_type"
     t.text "summary"

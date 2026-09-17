@@ -1,4 +1,6 @@
 <%# story 2 - can select words/phrases from the scanned content %>
+<%= turbo_stream_from @upload %>
+
 <details class="upload-preview mt-2">
   <summary class="upload-show__header">
       <div>
@@ -45,20 +47,9 @@
   </div>
 </details>
 
-  <%# AI-generated summary %>
-  <% if @upload.summary.present? %>
-    <section class="upload-insight">
-      <div class="upload-insight__icon" aria-hidden="true">
-         <%= image_tag "somani_bird.png",
-                    class: "upload-insight__bird",
-                    alt: "Somani bird" %>
-      </div>
-
-      <p class="upload-insight__text">
-        <%= @upload.summary %>
-      </p>
-    </section>
-  <% end %>
+  <div id="upload-summary">
+    <%= render "summary", upload: @upload %>
+  </div>
 
   <section class="upload-section upload-section--words">
       <div class="upload-section__heading">

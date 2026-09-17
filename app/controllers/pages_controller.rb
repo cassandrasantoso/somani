@@ -9,7 +9,7 @@ class PagesController < ApplicationController
 
     @uploads = current_user.uploads.order(created_at: :desc).limit(5)
     @active_adventures = current_user.adventures.started.where(status: "active")
-     .includes(scene: :character).order(updated_at: :desc)
+                                     .includes(scene: :character).order(updated_at: :desc)
 
     @adventures_completed_pct = current_user.adventures_completed_pct
   end

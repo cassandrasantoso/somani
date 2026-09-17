@@ -81,3 +81,40 @@ center.chat-form {
 .chat-form__send:active {
   transform: translateY(0);
 }
+
+.chat-form__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0 0.5rem 0.5rem;
+}
+
+.chat-form__chip {
+  background: var(--card);
+  border: 1px solid var(--sage);
+  color: var(--sage);
+  border-radius: 999px;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.chat-form__chip:hover {
+  background: var(--sage);
+  color: var(--card);
+}
+
+.chat-form__kana {
+  background: transparent;
+  border: 1px solid var(--hairline);
+  color: var(--dark-cream);
+  border-radius: 0.5rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  flex-shrink: 0;
+}
+
+.chat-form__kana[aria-pressed="true"] {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: var(--card);
+}

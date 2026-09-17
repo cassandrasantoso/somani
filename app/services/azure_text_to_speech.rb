@@ -3,6 +3,8 @@ require "faraday"
 class AzureTextToSpeech
   AZURE_TTS_URL = "https://%s.tts.speech.microsoft.com/cognitiveservices/v1"
 
+  class Error < StandardError; end
+
   HD_VOICE_OVERRIDES = {
     "ja-JP-NanamiNeural" => "ja-JP-Nanami:DragonHDLatestNeural", # Yuki
     "ja-JP-KeitaNeural" => "ja-JP-Masaru:DragonHDLatestNeural"   # Takeshi
@@ -38,9 +40,11 @@ class AzureTextToSpeech
       req.body = ssml
     end
 
-    raise "Azure TTS error: #{response.status} #{response.body}" unless response.success?
+    raise Error, "Azure TTS error: #{response.status} #{response.body}" unless response.success?
 
     response.body
+  rescue Faraday::Error => e
+    raise Error, "Azure TTS error: #{e.class}: #{e.message}"
   end
 
   private

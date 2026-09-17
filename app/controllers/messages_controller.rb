@@ -29,6 +29,9 @@ class MessagesController < ApplicationController
     authorize @message, :show?
     GenerateAudioJob.perform_now(@message) unless @message.audio.attached?
     redirect_to rails_blob_path(@message.audio, disposition: "inline")
+  rescue AzureTextToSpeech::Error => e
+    Rails.logger.error("Messages#audio message=#{@message.id}: #{e.message}")
+    head :service_unavailable
   end
 
   # story 16 — click a message, translate it

@@ -25,6 +25,10 @@ Rails.application.configure do
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
 
+  # Enqueue jobs without executing them, so tests never make live
+  # API calls from background threads.
+  config.active_job.queue_adapter = :test
+
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
